@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint --edit
+# `git rev-parse --git-dir`/hooks/commit-msg $1
