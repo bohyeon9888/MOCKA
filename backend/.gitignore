@@ -329,10 +329,5 @@ $RECYCLE.BIN/
 
 src/main/resources/*
 src/main/resources/static/*
-
-fe/web/public/sw.*
-fe/web/public/workbox-*
-**/qodana.yml
-**/.DS_Store
-
-
+/qodana.yaml
+/src/main/generated/
