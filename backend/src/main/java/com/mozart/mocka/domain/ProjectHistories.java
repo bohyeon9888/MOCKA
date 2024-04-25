@@ -12,16 +12,12 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql = "UPDATE Hash_keys SET is_deleted = TRUE WHERE base_id = ?")
+@SQLDelete(sql = "UPDATE project_histories SET is_deleted = TRUE WHERE history_id = ?")
 public class ProjectHistories extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long baseId;
+    @EmbeddedId
+    private ProjectHistoryPK projectHistoryPK;
 
     @Column
-    private Long projectId;
+    private String projectRole;
 
-    @Column
-    private String uri;
 }
