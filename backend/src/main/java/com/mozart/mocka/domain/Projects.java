@@ -26,7 +26,7 @@ public class Projects extends BaseEntity {
     private String projectHashKey;
 
     @Column
-    private Boolean projectVisibility;
+    private String projectVisibility;
 
     @Column
     private String commonUri;
