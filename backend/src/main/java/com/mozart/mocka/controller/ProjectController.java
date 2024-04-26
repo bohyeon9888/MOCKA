@@ -1,6 +1,7 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.dto.request.ProjectRequestDto;
+import com.mozart.mocka.dto.response.ProjectsListResponseDto;
 import com.mozart.mocka.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,12 +9,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/project")
 public class ProjectController {
     private final ProjectService projectService;
+
+    @GetMapping
+    public ResponseEntity<List<ProjectsListResponseDto>> getProjectList(){
+        Long memberId = 1L;
+        return new ResponseEntity<>(projectService.getProjectList(memberId),HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<?> createProject(@RequestBody ProjectRequestDto request){

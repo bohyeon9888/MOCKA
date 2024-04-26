@@ -3,13 +3,16 @@ package com.mozart.mocka.service;
 import com.mozart.mocka.domain.ProjectHistories;
 import com.mozart.mocka.domain.ProjectHistoryPK;
 import com.mozart.mocka.domain.Projects;
+import com.mozart.mocka.dto.response.ProjectsListResponseDto;
 import com.mozart.mocka.repository.BaseUriRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
 import com.mozart.mocka.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,5 +92,10 @@ public class ProjectService {
         return  ProjectHistoryPK.builder()
                 .projectId(projectId).memberId(memberId)
                 .build();
+    }
+
+    public List<ProjectsListResponseDto> getProjectList(Long memberId) {
+        List<ProjectsListResponseDto> projectsList = projectRepository.findMyList(memberId);
+        return projectsList;
     }
 }
