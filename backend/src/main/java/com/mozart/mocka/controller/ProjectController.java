@@ -26,6 +26,20 @@ public class ProjectController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PutMapping("{projectId}")
+    public ResponseEntity<?> updateProject(@RequestBody ProjectRequestDto request, @PathVariable("projectId") Long projectId){
+        Long memberId = 1L;
+        int editNum = request.getVisibility().charAt(0) - '0';
+        if(editNum > 2 || editNum < 0)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        boolean check = projectService.update(projectId,memberId, request.getProjectName(),request.getCommonUri(),request.getVisibility());
+        if(check)
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
     @DeleteMapping("{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable("projectId") Long projectId){
         Long memberId = 1L;
