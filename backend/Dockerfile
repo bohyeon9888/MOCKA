@@ -12,7 +12,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 VOLUME /tmp
-COPY --from=gradlebuild /build/build/libs/*.jar /app/
+COPY --from=gradlebuild /build/build/libs/mocka-0.0.1-SNAPSHOT.jar /app/mocka-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8081
-ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","*.jar"]
+ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mocka-0.0.1-SNAPSHOT.jar"]
