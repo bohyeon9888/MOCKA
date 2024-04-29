@@ -12,7 +12,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 VOLUME /tmp
-COPY --from=gradlebuild /build/build/libs/*.jar /app/spring-boot-application.jar
+COPY --from=gradlebuild /build/build/libs/*.jar /app/
 
 EXPOSE 8081
 ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","spring-boot-application.jar"]
