@@ -1,5 +1,8 @@
 package com.mozart.mocka.dto;
 
+import lombok.Data;
+
+@Data
 public class ApiDto {
     String key;
     String type;
