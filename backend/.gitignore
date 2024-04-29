@@ -327,7 +327,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-src/main/resources/application-dev.yml
+src/main/resources/application.yml
 !**/application-env.yml
 src/main/resources/static/*
 /qodana.yaml
