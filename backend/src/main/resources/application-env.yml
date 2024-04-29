@@ -1,0 +1,8 @@
+spring:
+  security:
+    banned-path: "/invite/*, /project/*"
+
+logging:
+  level:
+    org:
+      springframework: DEBUG
