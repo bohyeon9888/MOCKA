@@ -15,4 +15,4 @@ VOLUME /tmp
 COPY --from=gradlebuild /build/build/libs/*.jar /app/
 
 EXPOSE 8081
-ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","spring-boot-application.jar"]
+ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","*.jar"]
