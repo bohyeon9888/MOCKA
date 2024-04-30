@@ -27,4 +27,7 @@ public class Members extends BaseEntity {
 
     @Column
     private String memberProfile;
+
+    @Column
+    private String memberRole;
 }

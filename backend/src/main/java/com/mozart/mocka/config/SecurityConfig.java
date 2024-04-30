@@ -1,6 +1,11 @@
 package com.mozart.mocka.config;
 
+import com.mozart.mocka.jwt.CustomAuthenticationSuccessHandler;
+import com.mozart.mocka.jwt.JWTFilter;
+import com.mozart.mocka.jwt.JWTUtil;
+import com.mozart.mocka.service.CustormOauth2UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +27,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    private final AuthenticationConfiguration authenticationConfiguration;
-
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
-        this.authenticationConfiguration = authenticationConfiguration;
-    }
+    private final CustormOauth2UserService customOAuth2UserService;
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final JWTUtil jwtUtil;
 
     @Value("#{'${spring.security.banned-path}'.split(',')}")
     private String[] paths;
@@ -56,15 +60,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable());
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource()));
-
         http.formLogin((login) -> login.disable());
-
         http.httpBasic((basic) -> basic.disable());
+
+        http.oauth2Login((oauth2) -> oauth2
+                .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig.userService(customOAuth2UserService))
+                .successHandler(successHandler));
 
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers( paths).authenticated()
                 .anyRequest().permitAll());
 
+        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
