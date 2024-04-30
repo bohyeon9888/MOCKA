@@ -1,18 +1,19 @@
-package com.mozart.mocka.dto.request;
+package com.mozart.mocka.dto.response;
 
 import com.mozart.mocka.dto.ApiDto;
 import com.mozart.mocka.dto.PathVariableDto;
-import com.mozart.mocka.dto.RequestApiDto;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class ApiCreateRequestDto {
+@Builder
+public class ApiListResponseDto {
     String apiMethod;
     String apiUri;
     List<PathVariableDto> apiPathVariable;
-    List<RequestApiDto> apiRequest;
+    List<ApiDto> apiRequest;
     boolean apiResponseIsArray;
     int apiResponseSize;
     List<ApiDto> apiResponse;
