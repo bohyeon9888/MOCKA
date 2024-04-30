@@ -2,10 +2,13 @@ package com.mozart.mocka.service;
 
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -120,5 +123,24 @@ public class InitializerService {
             "test {\n" +
             "    useJUnitPlatform()\n" +
             "}";
+    }
+
+    public Path packageProject(Path projectRoot) throws IOException {
+        Path zipPath = projectRoot.resolveSibling(projectRoot.getFileName().toString() + ".zip");
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath.toFile()))) {
+            Files.walk(projectRoot)
+                .filter(path -> !Files.isDirectory(path))
+                .forEach(path -> {
+                    ZipEntry zipEntry = new ZipEntry(projectRoot.relativize(path).toString());
+                    try {
+                        zos.putNextEntry(zipEntry);
+                        Files.copy(path, zos);
+                        zos.closeEntry();
+                    } catch (IOException e) {
+                        System.err.println("Error while zipping: " + e.getMessage());
+                    }
+                });
+        }
+        return zipPath;
     }
 }
