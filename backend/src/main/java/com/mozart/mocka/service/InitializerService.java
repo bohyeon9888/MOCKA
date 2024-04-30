@@ -4,9 +4,9 @@ import com.mozart.mocka.dto.request.InitializerRequestDto;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.nio.file.*;
+import java.util.Comparator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class InitializerService {
 
+    // 파일 생성
     public Path createInitializerFiles(InitializerRequestDto request) throws IOException {
         Path projectRoot = Paths.get(request.getSpringArtifactId());
         createDirectories(projectRoot, request);
@@ -125,6 +126,7 @@ public class InitializerService {
             "}";
     }
 
+    // 파일 압축
     public Path packageProject(Path projectRoot) throws IOException {
         Path zipPath = projectRoot.resolveSibling(projectRoot.getFileName().toString() + ".zip");
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath.toFile()))) {
@@ -142,5 +144,20 @@ public class InitializerService {
                 });
         }
         return zipPath;
+    }
+
+    // 파일 삭제
+    public void cleanUpFiles(Path zipPath, Path projectRoot) {
+        try {
+            // zip 파일 삭제
+            Files.deleteIfExists(zipPath);
+            // 원본 파일 삭제
+            Files.walk(projectRoot)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } catch (IOException e) {
+            System.err.println("Error cleaning up project files: " + e.getMessage());
+        }
     }
 }
