@@ -2,33 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  font-family: "Pretendard", "-apple-system", "BlinkMacSystemFont", "system-ui",
-    "Roboto";
-  line-height: 1;
-}
+@layer base {
+  body {
+    @apply font-Pretendard leading-none;
+  }
 
-h1 {
-  font-size: 40px;
-  font-weight: 700;
-}
+  h1 {
+    @apply text-1 font-bold;
+  }
 
-h2 {
-  font-size: 24px;
-  font-weight: 600;
-}
+  h2 {
+    @apply text-2 font-semibold;
+  }
 
-h3 {
-  font-size: 20px;
-  font-weight: 600;
-}
+  h3 {
+    @apply text-3 font-semibold;
+  }
 
-h4 {
-  font-size: 15px;
-  font-weight: 600;
-}
+  h4 {
+    @apply text-4 font-medium;
+  }
 
-h5 {
-  font-size: 12px;
-  font-weight: 500;
+  h5 {
+    @apply text-5 font-normal;
+  }
 }
