@@ -2,10 +2,7 @@ package com.mozart.mocka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mozart.mocka.domain.ApiPath;
 import com.mozart.mocka.domain.ApiProjects;
-import com.mozart.mocka.domain.ApiRequest;
-import com.mozart.mocka.domain.ApiResponse;
 import com.mozart.mocka.dto.ApiDto;
 import com.mozart.mocka.dto.PathVariableDto;
 import com.mozart.mocka.dto.RequestApiDto;
@@ -33,15 +30,17 @@ public class ApiService {
             //uri contain check
             if(!dto.getApiUri().contains(path.getKey()))
                 return;
-            apiPathRepository.create(apiProject.getApiId(), path.getKey(), path.getValue());
+            apiPathRepository.create(apiProject.getApiId(), path.getKey(), path.getType());
         }
 
         ObjectMapper mapper = new ObjectMapper();
         for (RequestApiDto path : dto.getApiRequest()) {
-            apiRequestRepository.create(apiProject.getApiId(), path.getKey(),path.getType(), mapper.writeValueAsString(path.getValue()) );
+            System.out.println("request///" + path.isArrayList());
+            apiRequestRepository.create(apiProject.getApiId(), path.getKey(),path.getType(),path.isArrayList(), mapper.writeValueAsString(path.getValue()) );
         }
         for (ApiDto path : dto.getApiResponse()) {
-            apiResponseRepository.create(apiProject.getApiId(), path.getKey(), path.getType(), mapper.writeValueAsString(path.getValue()), path.getFakerLocale(), path.getFakerMajor(), path.getFakerSub(),path.isArray(), path.getArraySize());
+            System.out.println("response///" + path.isArrayList());
+            apiResponseRepository.create(apiProject.getApiId(), path.getKey(), path.getType(), mapper.writeValueAsString(path.getValue()), path.getFakerLocale(), path.getFakerMajor(), path.getFakerSub(),path.isArrayList(), path.getArraySize());
         }
     }
 
@@ -57,5 +56,12 @@ public class ApiService {
         System.out.println(apiUri);
         int id = apiProjectRepository.createApi(projectId, apiMethod, apiUri, apiUriStr, apiResponseIsArray, apiResponseSize);
         return apiProjectRepository.findById((long) id).orElse(null);
+    }
+
+    public void deleteApi(Long projectId, Long apiId) {
+        apiPathRepository.deleteByApiProject_ApiId(apiId);
+        apiRequestRepository.deleteByApiProject_ApiId(apiId);
+        apiResponseRepository.deleteByApiProject_ApiId(apiId);
+        apiProjectRepository.deleteByApiId(apiId);
     }
 }

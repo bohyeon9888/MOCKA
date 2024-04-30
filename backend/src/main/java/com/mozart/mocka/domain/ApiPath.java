@@ -1,5 +1,7 @@
 package com.mozart.mocka.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,12 +19,13 @@ public class ApiPath {
 
     @ManyToOne
     @JoinColumn(name = "api_id", nullable = false)
+    @JsonIgnore
     private ApiProjects apiProject;
 
     @Column
     private String key;
 
-    @Column(columnDefinition = "jsonb")
+    @Column //(columnDefinition = "jsonb")
     private String data; // JSONB 데이터를 저장
 
     public ApiPath(ApiProjects apiProject,String key, String data) {

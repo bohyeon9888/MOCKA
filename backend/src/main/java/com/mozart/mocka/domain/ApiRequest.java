@@ -1,11 +1,14 @@
 package com.mozart.mocka.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Data
@@ -16,8 +19,8 @@ public class ApiRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private boolean isArray;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isArray;
 
     @Column
     private String key;
@@ -36,6 +39,7 @@ public class ApiRequest {
 
     @ManyToOne
     @JoinColumn(name = "api_id", nullable = false)
+    @JsonIgnore
     private ApiProjects apiProject;
 
     @Column(columnDefinition = "jsonb")
@@ -44,7 +48,8 @@ public class ApiRequest {
     public ApiRequest(ApiProjects apiProject, String key, String type, Object data) {
         this.apiProject = apiProject;
         this.key = key;
-        this.type = (String) data;
+        this.type = type;
+        this.data = (String) data;
     }
 
 }

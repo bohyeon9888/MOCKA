@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PathVariableDto {
     String key;
-    String value;
+    String type;
 
 }

@@ -5,6 +5,8 @@ import com.mozart.mocka.dto.request.ApiCreateRequestDto;
 import com.mozart.mocka.service.ApiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,14 @@ public class MethodController {
         //method 중복 체크
 
         apiService.createApi(projectId, requestDto);
-        return null;
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("{projectId}/{apiId}")
+    public ResponseEntity<?> deleteApi(@PathVariable("projectId") Long projectId, @PathVariable("apiId") Long apiId){
+        //delete 삭제 인증 체크
+
+        apiService.deleteApi(projectId, apiId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

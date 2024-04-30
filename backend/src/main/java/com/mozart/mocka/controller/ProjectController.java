@@ -59,4 +59,14 @@ public class ProjectController {
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    @GetMapping("{projectId}")
+    public ResponseEntity<?> receiveProjectDetail(@PathVariable("projectId") Long projectId){
+        Long memberId = 1L;
+       int authority = projectService.checkAuthority(projectId,memberId);
+       if(authority > 1)
+           return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+       return new ResponseEntity<>(projectService.getProjectAPIList(projectId), HttpStatus.OK);
+    }
 }

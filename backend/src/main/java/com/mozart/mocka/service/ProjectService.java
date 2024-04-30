@@ -1,16 +1,14 @@
 package com.mozart.mocka.service;
 
-import com.mozart.mocka.domain.ProjectHistories;
-import com.mozart.mocka.domain.ProjectHistoryPK;
-import com.mozart.mocka.domain.Projects;
+import com.mozart.mocka.domain.*;
+import com.mozart.mocka.dto.response.ApiListResponseDto;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
-import com.mozart.mocka.repository.BaseUriRepository;
-import com.mozart.mocka.repository.ProjectHistoryRepository;
-import com.mozart.mocka.repository.ProjectRepository;
+import com.mozart.mocka.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +19,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectHistoryRepository projectHistoryRepository;
     private final BaseUriRepository baseUriRepository;
+    private final ApiProjectRepository apiProjectRepository;
 
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
         Projects projects = Projects.builder()
@@ -96,5 +95,26 @@ public class ProjectService {
     public List<ProjectsListResponseDto> getProjectList(Long memberId) {
         List<ProjectsListResponseDto> projectsList = projectRepository.findMyList(memberId);
         return projectsList;
+    }
+
+    public List<?> getProjectAPIList(Long projectId) {
+        return apiProjectRepository.findByProjectId(projectId);
+//        List<ApiListResponseDto> resultDto = new ArrayList<>();
+
+//        for (ApiProjects apiProject : apiProjectsList) {
+//            List<ApiPath> paths = apiPathRepository.findByApiId
+//            ApiListResponseDto responseDto = ApiListResponseDto.builder()
+//                    .apiMethod(apiProject.getApiMethod())
+//                    .apiUri(apiProject.getApiUriStr())
+//                    .apiPathVariable()
+//                    .apiRequest()
+//                    .apiResponseIsArray(apiProject.isApiResponseIsArray())
+//                    .apiResponseSize(apiProject.getApiResponseSize())
+//                    .apiResponse()
+//                    .build();
+//            resultDto.add(responseDto);
+//        }
+
+//        return apiProjectsList;
     }
 }

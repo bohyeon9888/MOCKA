@@ -1,6 +1,7 @@
 package com.mozart.mocka.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class ApiResponse {
     private Long id;
 
     @Column
-    private boolean isArray;
+    private Boolean isArray;
 
     @Column
     private int arraySize;
@@ -39,6 +40,7 @@ public class ApiResponse {
 
     @ManyToOne
     @JoinColumn(name = "api_id", nullable = false)
+    @JsonIgnore
     private ApiProjects apiProject;
 
     @Column(columnDefinition = "jsonb")

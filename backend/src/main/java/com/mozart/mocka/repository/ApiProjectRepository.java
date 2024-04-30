@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
 //
 //    INSERT INTO your_table (api_uri)
@@ -23,4 +25,7 @@ int createApi(@Param("id") Long projectId,
                @Param("array") boolean apiResponseIsArray,
                @Param("size") int apiResponseSize);
 
+    List<ApiProjects> findByProjectId(Long projectId);
+
+    void deleteByApiId(Long apiId);
 }

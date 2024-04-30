@@ -6,6 +6,6 @@ import lombok.Data;
 public class RequestApiDto {
     String key;
     String type;
-    boolean isArray;
+    boolean arrayList;
     Object value;
 }

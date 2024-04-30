@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -35,6 +38,13 @@ public class ApiProjects {
 
     @Column
     private int apiResponseSize;
+
+    @OneToMany(mappedBy = "apiProject")
+    private List<ApiPath> apiPaths = new ArrayList<>();
+    @OneToMany(mappedBy = "apiProject")
+    private List<ApiRequest> apiRequests = new ArrayList<>();
+    @OneToMany(mappedBy = "apiProject")
+    private List<ApiResponse> apiResponses = new ArrayList<>();
 
     public ApiProjects(Long projectId, String apiMethod, String apiUri, boolean isArray, int arraySize) {
         this.projectId = projectId;
