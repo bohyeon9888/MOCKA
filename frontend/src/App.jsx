@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container m-4 flex flex-col text-xl font-bold">
+      <div className="font-Pretendard">
+        <span className="font-Fira">API</span> Colors
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className="container mt-4 flex space-x-4">
+        <div className="font-Akshar w-20 rounded-3xl bg-get-color p-2 text-center">
+          GET
+        </div>
+        <div className="font-Akshar w-20 rounded-3xl bg-post-color p-2 text-center">
+          POST
+        </div>
+        <div className="font-Akshar w-20 rounded-3xl bg-put-color p-2 text-center">
+          PUT
+        </div>
+        <div className="font-Akshar w-20 rounded-3xl bg-delete-color p-2 text-center">
+          DELETE
+        </div>
+        <div className="font-Akshar w-20 rounded-3xl bg-patch-color p-2 text-center">
+          PATCH
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      <div className="mt-4 flex flex-col space-y-3">
+        <div className="font-Pretendard">Pretendard font</div>
+        <h1>h1 Pretendard 40px Bold</h1>
+        <h2>h2 Pretendard 24px SemiBold</h2>
+        <h3>h3 Pretendard 20px SemiBold</h3>
+        <h4>h4 Pretendard 15px Medium</h4>
+        <h5>h5 Pretendard 12px Regular</h5>
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
