@@ -28,6 +28,7 @@
     "msw": "^2.2.2"
   },
   "dependencies": {
-    "patch-package": "^8.0.0"
+    "patch-package": "^8.0.0",
+    "react-router-dom": "^6.23.0"
   }
 }
