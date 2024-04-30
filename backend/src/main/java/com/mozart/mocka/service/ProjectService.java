@@ -4,6 +4,7 @@ import com.mozart.mocka.domain.*;
 import com.mozart.mocka.dto.response.ApiListResponseDto;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
 import com.mozart.mocka.repository.*;
+import com.mozart.mocka.util.LogExecutionTime;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class ProjectService {
     private final BaseUriRepository baseUriRepository;
     private final ApiProjectRepository apiProjectRepository;
 
+    @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
         Projects projects = Projects.builder()
                 .projectName(projectName)
@@ -37,7 +39,7 @@ public class ProjectService {
                 .build();
         projectHistoryRepository.save(projectHistories);
     }
-
+    @LogExecutionTime
     public Boolean delete(Long memberId, Long projectId) {
         //is owner?
         if(checkAuthority(projectId,memberId) > 8)
@@ -69,6 +71,7 @@ public class ProjectService {
     *  2 : viewer
     *  10 : none
     * */
+    @LogExecutionTime
     public int checkAuthority(Long projectId, Long memberId){
         ProjectHistoryPK pk = makePK(projectId,memberId);
         Optional<ProjectHistories> projects = projectHistoryRepository.findById(pk);
@@ -91,12 +94,12 @@ public class ProjectService {
                 .projectId(projectId).memberId(memberId)
                 .build();
     }
-
+    @LogExecutionTime
     public List<ProjectsListResponseDto> getProjectList(Long memberId) {
         List<ProjectsListResponseDto> projectsList = projectRepository.findMyList(memberId);
         return projectsList;
     }
-
+    @LogExecutionTime
     public List<?> getProjectAPIList(Long projectId) {
         return apiProjectRepository.findByProjectId(projectId);
 //        List<ApiListResponseDto> resultDto = new ArrayList<>();
