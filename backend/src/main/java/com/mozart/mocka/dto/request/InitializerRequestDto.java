@@ -1,5 +1,6 @@
 package com.mozart.mocka.dto.request;
 
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -14,5 +15,5 @@ public class InitializerRequestDto {
     private String springName;
     private String springDescription;
     private String springPackageName;
-    private String springDependencyName;
+    private List<String> springDependencyName;
 }
