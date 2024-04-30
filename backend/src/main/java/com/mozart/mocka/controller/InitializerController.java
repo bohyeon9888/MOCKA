@@ -5,6 +5,7 @@ import com.mozart.mocka.service.InitializerService;
 import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +20,25 @@ public class InitializerController {
 
     private final InitializerService initializerService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createProject(@RequestBody InitializerRequestDto request) {
         try {
             Path projectFolder = initializerService.createInitializerFiles(request);
             return ResponseEntity.ok().body("Project files created at: " + projectFolder.toString());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error creating project files: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/download")
+    public ResponseEntity<?> download(@RequestBody InitializerRequestDto request) {
+        try {
+            Path projectRoot = initializerService.createInitializerFiles(request);
+            Path zipPath = initializerService.packageProject(projectRoot);
+            FileSystemResource fileResource = new FileSystemResource(zipPath);
+            return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"" + zipPath.getFileName().toString() + "\"")
+                .body(fileResource);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error creating project files: " + e.getMessage());
         }
