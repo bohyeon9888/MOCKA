@@ -25,14 +25,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// spring security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// spring oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	// configuration
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	implementation 'org.hibernate:hibernate-core:6.1.5.Final'  // 최신 버전 확인 필요
 //	implementation 'com.vladmihalcea:hibernate-types-60:2.16.3'
