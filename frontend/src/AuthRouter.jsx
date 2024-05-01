@@ -26,11 +26,10 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login/google" element={<Login />} />
         <Route path="/main" element={<Main />} />
         <Route element={<RequireAuthRoutes />}>
           <Route path="/" element={<Home />} />
-          {/* <Route path="/edit" element={<Home />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>
