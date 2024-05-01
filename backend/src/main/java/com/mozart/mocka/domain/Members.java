@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,4 +31,7 @@ public class Members extends BaseEntity {
 
     @Column
     private String memberRole;
+
+    @Column(name = "member_providerid")
+    private String memberProviderId;
 }

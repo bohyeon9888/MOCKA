@@ -37,7 +37,7 @@ public class CustormOauth2UserService extends DefaultOAuth2UserService {
 
         } else { return null; }
 
-        oatuhService.saveUser(oAuth2Response);
+        oatuhService.createMember(oAuth2Response);
 
         String role = "ROLE_USER";
 

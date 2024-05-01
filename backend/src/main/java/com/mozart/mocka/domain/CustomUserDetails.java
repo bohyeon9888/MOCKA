@@ -43,6 +43,8 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getMemberId();
     }
 
+    public String getProviderId() { return userEntity.getMemberProviderId(); };
+
     public String getEmail() {
         return userEntity.getMemberEmail();
     }
