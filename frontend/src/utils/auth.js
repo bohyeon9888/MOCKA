@@ -12,3 +12,7 @@ export function login(token) {
 export function logout() {
   Cookies.remove("access_token");
 }
+
+export function getToken() {
+  return Cookies.get("access_token");
+}

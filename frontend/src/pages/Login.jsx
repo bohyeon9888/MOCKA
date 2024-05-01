@@ -1,7 +1,6 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../utils/auth";
+import { googleLogin } from "../apis/social";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,17 +13,9 @@ export default function Login() {
 
   useEffect(() => {
     const code = getQueryStringValue("code");
-    axios
-      .get(`http://localhost:8081/api/oauth/callback/google?code=${code}`)
-      .then(({ data }) => {
-        console.log(data);
-        login(data.accessToken);
-        sessionStorage.setItem(
-          "profile",
-          JSON.stringify({ nickname: data.nickname, profile: data.profile }),
-        );
-        navigate("/", { replace: true });
-      });
+    googleLogin(code).finally(() => {
+      navigate("/");
+    });
   }, []);
 
   return <div>Login</div>;
