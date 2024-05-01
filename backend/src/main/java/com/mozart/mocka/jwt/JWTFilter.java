@@ -52,13 +52,13 @@ public class JWTFilter extends OncePerRequestFilter {
         logger.info("token name : " + name);
         String role = jwtUtil.getRole(token);
 //        System.out.println(role);
-        String profile = jwtUtil.getProfile(token);
-        logger.info("token profile : " + profile);
+//        String profile = jwtUtil.getProfile(token);
+//        logger.info("token profile : " + profile);
 
         //userEntity를 생성하여 값 set
         Members userEntity = Members.builder()
                 .memberNickname(name)
-                .memberProfile(profile)
+//                .memberProfile(profile)
                 .memberRole(role)
                 .build();
 
