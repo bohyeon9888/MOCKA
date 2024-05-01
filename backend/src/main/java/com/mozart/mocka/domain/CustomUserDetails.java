@@ -49,7 +49,7 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getMemberEmail();
     }
 
-    public String getPicture() {
+    public String getProfile() {
         return userEntity.getMemberProfile();
     }
 
