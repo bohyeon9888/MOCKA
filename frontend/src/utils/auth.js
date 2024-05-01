@@ -18,7 +18,7 @@ export function getToken() {
 }
 
 export function getValueFromToken(key) {
-  const token = getToken().split(" ")[1];
+  const token = getToken();
   if (!token) return undefined;
 
   const base64Url = token.split(".")[1];

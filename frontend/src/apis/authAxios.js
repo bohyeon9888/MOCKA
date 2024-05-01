@@ -9,7 +9,7 @@ const authAxios = axios.create({
 authAxios.interceptors.request.use(
   (config) => {
     const accessToken = getToken();
-    if (accessToken) config.headers["Authorization"] = accessToken;
+    if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
 
     return config;
   },
