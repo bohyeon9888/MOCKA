@@ -43,7 +43,8 @@ public class InitializerService {
         Files.createDirectories(controllerDir); // 컨트롤러 디렉토리 생성
 
         for (ApiProjects api : apis) {
-            String className = api.getApiMethod() + "Controller";
+            String controllerName = api.getApiUriStr().split("/")[1];
+            String className = controllerName + "Controller";
             Path controllerFile = controllerDir.resolve(className + ".java");
 
             List<String> lines;
@@ -57,9 +58,13 @@ public class InitializerService {
                 // 새 컨트롤러 파일 생성
                 lines = new ArrayList<>();
                 lines.add("package " + request.getSpringPackageName() + ".controller;\n");
-                lines.add("import org.springframework.web.bind.annotation.*;");
+                lines.add("import lombok.extern.slf4j.Slf4j;");
+                lines.add("import org.springframework.web.bind.annotation.RequestMapping;");
+                lines.add("import org.springframework.web.bind.annotation.RestController;");
                 lines.add("import org.springframework.http.ResponseEntity;\n");
+                lines.add("@Slf4j");
                 lines.add("@RestController");
+                lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
                 lines.add("public class " + className + " {");
                 lines.addAll(generateMethodLines(api));
                 lines.add("}");
@@ -73,12 +78,27 @@ public class InitializerService {
 
     private List<String> generateMethodLines(ApiProjects api) {
         List<String> methodLines = new ArrayList<>();
-        String methodName = "handle" + api.getApiMethod().toUpperCase();
-        methodLines.add("\n    @" + api.getApiMethod().toUpperCase() + "Mapping(\"" + api.getApiUriStr() + "\")");
+        String requestUri = setUri(api.getApiUriStr());
+        String methodName = "autoCreatedAPI" + api.getApiId();
+        methodLines.add("\n    @" + api.getApiMethod().toUpperCase() + "Mapping(\"" + requestUri + "\")");
         methodLines.add("    public ResponseEntity<?> " + methodName + "() {");
         methodLines.add("        return ResponseEntity.ok().body(\"This is a response from " + api.getApiMethod().toUpperCase() + " endpoint.\");");
         methodLines.add("    }");
         return methodLines;
+    }
+
+    public String setUri(String uri) {
+        if (uri == null || uri.isEmpty()) {
+            return uri;
+        }
+
+        String[] segments = uri.split("/");
+        StringBuilder result = new StringBuilder();
+        for (int i = 2; i < segments.length; i++) {
+            result.append("/").append(segments[i]);
+        }
+
+        return result.toString();
     }
 
     private void createDirectories(Path projectRoot, InitializerRequestDto request) throws IOException {
