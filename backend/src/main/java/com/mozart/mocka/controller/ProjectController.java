@@ -78,12 +78,7 @@ public class ProjectController {
        int authority = projectService.checkAuthority(projectId,memberId);
        if(authority > 1)
            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-       long startTime = System.currentTimeMillis();
        JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId));
-       long endTime = System.currentTimeMillis();
-       long executionTime = endTime - startTime;
-       log.info(executionTime + "ms");
-
        return new ResponseEntity<>(jsonNode, HttpStatus.OK);
     }
 }

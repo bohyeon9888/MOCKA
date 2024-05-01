@@ -28,6 +28,5 @@ public class ApiLogger implements HandlerInterceptor {
         log.info("[" + handler + "] executeTime : " + executionTime + "ms");
         log.info("==================== END ======================");
         log.info("===============================================");
-//        HandlerInterceptor.super.postHandle(request, response, handler, modelAndView);
     }
 }
