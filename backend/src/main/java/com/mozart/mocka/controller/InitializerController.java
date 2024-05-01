@@ -1,18 +1,22 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.repository.ApiProjectRepository;
 import com.mozart.mocka.service.InitializerService;
+import com.mozart.mocka.service.ProjectService;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,21 +29,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class InitializerController {
 
     private final InitializerService initializerService;
+    private final ApiProjectRepository apiProjectRepository;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createProject(@RequestBody InitializerRequestDto request) {
-        try {
-            Path projectFolder = initializerService.createInitializerFiles(request);
-            return ResponseEntity.ok().body("Project files created at: " + projectFolder.toString());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error creating project files: " + e.getMessage());
-        }
-    }
+    @PostMapping("/create/{projectId}")
+    public ResponseEntity<Resource> download(
+        @PathVariable("projectId") Long projectId,
+        @RequestBody InitializerRequestDto request) {
 
-    @PostMapping("/download")
-    public ResponseEntity<Resource> download(@RequestBody InitializerRequestDto request) {
+        List<ApiProjects> apis = apiProjectRepository.findByProjectId(projectId);
+        // 프로젝트 가져오기
+
         try {
-            Path projectRoot = initializerService.createInitializerFiles(request);
+            Path projectRoot = initializerService.createInitializerFiles(request, apis);
             Path zipPath = initializerService.packageProject(projectRoot);
 
             if (!Files.exists(zipPath)) {
