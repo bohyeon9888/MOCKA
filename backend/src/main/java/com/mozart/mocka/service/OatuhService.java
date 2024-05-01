@@ -104,9 +104,9 @@ public class OatuhService {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         Map<String, Object> resp = new HashMap<>();
-        resp.put("profile_img_url", oAuth2Response.getProfileImg());
         resp.put("nickname", oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4));
-        resp.put("token", "Bearer " + jwtToken); // 예시 토큰 값, 실제로는 생성된 토큰 사용
+        resp.put("profile", oAuth2Response.getProfileImg());
+        resp.put("accessToken", "Bearer " + jwtToken); // 예시 토큰 값, 실제로는 생성된 토큰 사용
 
         return resp;
     }
