@@ -9,7 +9,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class ApiLogger implements HandlerInterceptor {
     private static final String START_TIME_ATTR_NAME = "startTime";
-    private static final String EXECUTION_TIME_ATTR_NAME = "executionTime";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -26,7 +25,6 @@ public class ApiLogger implements HandlerInterceptor {
         long startTime = (Long) request.getAttribute(START_TIME_ATTR_NAME);
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
-        System.out.println(response.getOutputStream());
         log.info("[" + handler + "] executeTime : " + executionTime + "ms");
         log.info("==================== END ======================");
         log.info("===============================================");

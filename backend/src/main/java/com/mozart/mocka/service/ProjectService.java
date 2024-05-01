@@ -1,5 +1,6 @@
 package com.mozart.mocka.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozart.mocka.domain.*;
 import com.mozart.mocka.dto.response.ApiListResponseDto;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
@@ -21,7 +22,7 @@ public class ProjectService {
     private final ProjectHistoryRepository projectHistoryRepository;
     private final BaseUriRepository baseUriRepository;
     private final ApiProjectRepository apiProjectRepository;
-
+    private final ObjectMapper mapper;
     @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
         Projects projects = Projects.builder()
@@ -100,7 +101,7 @@ public class ProjectService {
         return projectsList;
     }
     @LogExecutionTime
-    public List<?> getProjectAPIList(Long projectId) {
+    public List<ApiProjects> getProjectAPIList(Long projectId) {
         return apiProjectRepository.findByProjectId(projectId);
 //        List<ApiListResponseDto> resultDto = new ArrayList<>();
 
