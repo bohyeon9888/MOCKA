@@ -16,7 +16,8 @@ function RequireAuthRoutes() {
   const location = useLocation();
   const loggedIn = isAuthenticated();
 
-  if (!loggedIn) return <Navigate to="/" replace state={{ from: location }} />;
+  if (!loggedIn)
+    return <Navigate to="/main" replace state={{ from: location }} />;
 
   return <Outlet />;
 }
@@ -26,9 +27,10 @@ function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Main />} />
+        <Route path="/main" element={<Main />} />
         <Route element={<RequireAuthRoutes />}>
-          <Route path="/edit" element={<Home />} />
+          <Route path="/" element={<Home />} />
+          {/* <Route path="/edit" element={<Home />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>
