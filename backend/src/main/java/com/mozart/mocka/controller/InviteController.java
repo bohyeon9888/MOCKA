@@ -17,6 +17,6 @@ public class InviteController {
     @GetMapping
     public void testApi() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
+        log.info("auth name : " + auth.getName());
     }
 }

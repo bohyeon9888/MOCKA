@@ -91,9 +91,10 @@ public class OatuhService {
         String role = "ROLE_USER";
 
         createMember(oAuth2Response);
+        String name = oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4);
 
         // JWT Token 생성
-        String jwtToken = jwtUtil.createJwt(oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4), role, 18000000L);
+        String jwtToken = jwtUtil.createJwt(name, oAuth2Response.getProfileImg(), role, 18000000L);
 
         // Authentication 객체 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -106,7 +107,7 @@ public class OatuhService {
         Map<String, Object> resp = new HashMap<>();
         resp.put("nickname", oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4));
         resp.put("profile", oAuth2Response.getProfileImg());
-        resp.put("accessToken", "Bearer " + jwtToken); // 예시 토큰 값, 실제로는 생성된 토큰 사용
+        resp.put("accessToken", jwtToken); // 예시 토큰 값, 실제로는 생성된 토큰 사용
 
         return resp;
     }
