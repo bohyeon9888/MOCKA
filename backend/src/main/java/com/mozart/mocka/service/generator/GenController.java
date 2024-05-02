@@ -2,8 +2,11 @@ package com.mozart.mocka.service.generator;
 
 import com.mozart.mocka.domain.ApiPath;
 import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.ApiRequest;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiPathRepository;
+import com.mozart.mocka.repository.ApiRequestRepository;
+import com.mozart.mocka.repository.ApiResponseRepository;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GenController {
     private final ApiPathRepository apiPathRepository;
+    private final ApiRequestRepository apiRequestRepository;
+    private final ApiResponseRepository apiResponseRepository;
 
     public void createController(
         Path projectRoot, List<ApiProjects> apis, InitializerRequestDto request) throws IOException {
@@ -67,6 +72,7 @@ public class GenController {
 
         Long apiId = api.getApiId();
         List<ApiPath> apiPaths = apiPathRepository.findByApiProject_ApiId(apiId);
+        List<ApiRequest> apiRequests = apiRequestRepository.findByApiProject_ApiId(apiId);
         if (apiPaths.isEmpty()) {
             methodLines.add("    public ResponseEntity<?> autoCreatedApiNo" + index + " () {");
         }
@@ -74,12 +80,16 @@ public class GenController {
             methodLines.add("    public ResponseEntity<?> autoCreatedApiNo" + index + " (");
             for (int i=0; i<apiPaths.size(); i++) {
                 ApiPath apiPath = apiPaths.get(i);
-                if (i == apiPaths.size() -1) {
+                if (i == apiPaths.size() -1 && apiRequests.isEmpty()) {
                     methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey());
                 }
                 else {
                     methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey() + ",");
                 }
+            }
+            if (!apiRequests.isEmpty()) {
+                methodLines.add(
+                    "        @RequestBody RequestDtoNo" + index + " request");
             }
             methodLines.add("    ) {");
         }
