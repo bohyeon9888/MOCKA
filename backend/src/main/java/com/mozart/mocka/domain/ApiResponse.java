@@ -18,7 +18,7 @@ public class ApiResponse {
     private Long id;
 
     @Column
-    private Boolean isArray;
+    private Boolean arrayList;
 
     @Column
     private int arraySize;
@@ -54,7 +54,7 @@ public class ApiResponse {
         this.fakerLocale = fakerLocale;
         this.fakerMajor = fakerMajor;
         this.fakerSub = fakerSub;
-        this.isArray = array;
+        this.arrayList = array;
         this.arraySize = arraySize;
     }
 }
