@@ -23,6 +23,7 @@ public class ApiService {
     private final ApiPathRepository apiPathRepository;
     private final ApiRequestRepository apiRequestRepository;
     private final ApiResponseRepository apiResponseRepository;
+
     public void createApi(Long projectId, ApiCreateRequestDto dto) throws JsonProcessingException {
         //api create
         ApiProjects apiProject = insertApiProject(projectId,dto.getApiMethod(),dto.getApiUri(), dto.isApiResponseIsArray(), dto.getApiResponseSize());
@@ -46,7 +47,7 @@ public class ApiService {
 
     public ApiProjects insertApiProject(Long projectId, String apiMethod, String apiUri, boolean apiResponseIsArray, int apiResponseSize) {
         String apiUriStr = apiUri;
-        apiUri = apiUri.replace('/','.').split("\\{")[0];
+        apiUri = replacePathUri(apiUri).replace('/','.');
 
         if('.' == apiUri.charAt(0) )
             apiUri = apiUri.substring(1);
@@ -63,5 +64,26 @@ public class ApiService {
         apiRequestRepository.deleteByApiProject_ApiId(apiId);
         apiResponseRepository.deleteByApiProject_ApiId(apiId);
         apiProjectRepository.deleteByApiId(apiId);
+    }
+
+    public String replacePathUri(String uri){
+        if(!uri.contains("{"))
+            return uri;
+
+        for (int i = 0; i < uri.length(); i++) {
+            if(uri.charAt(i) != '{')
+                continue;
+
+            for (int j = 0; i + j < uri.length(); j++) {
+                if(uri.charAt(i+j) != '}')
+                    continue;
+
+                String hash = "34e1c029fab";
+                uri = uri.substring(0,i) + hash + uri.substring(i+j+1);
+                break;
+            }
+        }
+        System.out.println("uri : "+uri);
+        return uri;
     }
 }
