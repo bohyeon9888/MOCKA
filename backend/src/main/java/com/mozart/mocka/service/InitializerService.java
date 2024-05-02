@@ -42,6 +42,7 @@ public class InitializerService {
         } else if ("Gradle".equalsIgnoreCase(request.getSpringType())) {
             genInit.createGradleBuildFile(projectRoot, request);
             genInit.createGradleSettings(projectRoot, request);
+            genInit.updateSettingsGradleFile(projectRoot, request.getSpringName());
         }
 
         genController.createController(projectRoot, apis, request);

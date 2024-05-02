@@ -3,9 +3,12 @@ package com.mozart.mocka.service.generator;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -176,5 +179,14 @@ public class GenInit {
                 System.out.println("File does not exist: " + sourceFile);
             }
         }
+    }
+
+    public void updateSettingsGradleFile(Path projectRoot, String projectName) throws IOException {
+        Path settingsFile = projectRoot.resolve("settings.gradle");
+        List<String> lines = Files.readAllLines(settingsFile, StandardCharsets.UTF_8);
+        List<String> modifiedLines = lines.stream()
+            .map(line -> line.startsWith("rootProject.name") ? "rootProject.name = '" + projectName + "'" : line)
+            .collect(Collectors.toList());
+        Files.write(settingsFile, modifiedLines, StandardCharsets.UTF_8);
     }
 }
