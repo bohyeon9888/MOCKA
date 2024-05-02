@@ -7,5 +7,8 @@ public class RequestApiDto {
     String key;
     String type;
     boolean arrayList;
+    String fakerLocale;
+    String fakerMajor;
+    String fakerSub;
     Object value;
 }

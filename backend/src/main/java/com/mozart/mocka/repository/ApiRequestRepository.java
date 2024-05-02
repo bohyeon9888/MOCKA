@@ -10,9 +10,10 @@ public interface ApiRequestRepository extends JpaRepository<ApiRequest, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO api_request (api_id, key,type,is_array, data) " +
-            " VALUES (:id, :key,:type, :array, CAST(:value AS jsonb))", nativeQuery = true)
-    int create(Long id, String key, String type,boolean array, String value);
+    @Query(value = "INSERT INTO api_request (api_id, key, type, data, faker_locale, faker_major, faker_sub, is_array) " +
+            " VALUES (:id, :key, :type, CAST(:value AS jsonb), :locale, :major, :sub, :array)", nativeQuery = true)
+    void create(Long id, String key, String type, String value, String locale, String major, String sub, boolean array);
+
 
     void deleteByApiProject_ApiId(Long apiId);
 }

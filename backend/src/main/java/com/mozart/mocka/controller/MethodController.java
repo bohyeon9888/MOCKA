@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class MethodController {
    private final ApiService apiService;
 
-    @Cacheable(value = "api-project", key = "#projectId")
+//    @Cacheable(value = "api-project", key = "#projectId")
     @PostMapping("{projectId}")
     public ResponseEntity<?> createApi(@PathVariable("projectId") Long projectId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
         //edit 인증 체크
@@ -29,7 +29,7 @@ public class MethodController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Cacheable(value = "api-project", key = "#projectId")
+//    @Cacheable(value = "api-project", key = "#projectId")
     @DeleteMapping("{projectId}/{apiId}")
     public ResponseEntity<?> deleteApi(@PathVariable("projectId") Long projectId, @PathVariable("apiId") Long apiId){
         //delete 삭제 인증 체크

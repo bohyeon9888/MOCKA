@@ -42,7 +42,7 @@ public class ProjectController {
         projectService.create(memberId, request.getProjectName(),request.getCommonUri(),request.getVisibility());
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @CacheEvict(value = "api-project", key = "#projectId")
+//    @CacheEvict(value = "api-project", key = "#projectId")
     @PutMapping("{projectId}")
     public ResponseEntity<?> updateProject(@RequestBody ProjectRequestDto request, @PathVariable("projectId") Long projectId){
         Long memberId = 1L;
@@ -58,7 +58,7 @@ public class ProjectController {
     }
 
     @LogExecutionTime
-    @CacheEvict(value = "api-project", key = "#projectId")
+//    @CacheEvict(value = "api-project", key = "#projectId")
     @DeleteMapping("{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable("projectId") Long projectId){
         Long memberId = 1L;

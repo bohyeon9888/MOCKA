@@ -20,7 +20,7 @@ public class ApiRequest {
     private Long id;
 
     @Column(columnDefinition = "boolean default false")
-    private Boolean isArray;
+    private Boolean arrayList;
 
     @Column
     private String key;
