@@ -1,6 +1,8 @@
 package com.mozart.mockserver.Service;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozart.mockserver.domain.ApiPath;
 import com.mozart.mockserver.domain.ApiProjects;
@@ -16,10 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class MockService {
     private final ApiProjectRepository apiProjectRepository;
     private final ApiRequestRepository apiRequestRepository;
     public Long getProjectId(String hashStr){
-        return 7L;
+        return 16L;
     }
     public String getHostName(URL url){
         String[] parts = url.getHost().split("\\.");
@@ -108,70 +107,52 @@ public class MockService {
                     if(subnet.charAt(i) == '1')
                         return 0L;
                     // type이 맞는지
-                    switch (apiPath.getData()){
-                        case "String":
-                            break;
-                        case "short":
-                            try {
-                                short s = Short.parseShort(inputPath[i]);
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
-                        case "int":
-                            try {
-                                int num = Integer.parseInt(inputPath[i]);
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
-                        case "long":
-                            try {
-                                long l = Long.parseLong(inputPath[i]);
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
-                        case "float":
-                            try {
-                                float f = Float.parseFloat(inputPath[i]);
-                                if (!inputPath[i].contains("."))
-                                    throw new NumberFormatException();
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
-                        case "double":
-                            try {
-                                double d = Double.parseDouble(inputPath[i]);
-                                if (!inputPath[i].contains("."))
-                                    throw new NumberFormatException();
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
-                        case "boolean":
-                            if (!inputPath[i].equalsIgnoreCase("true") && !inputPath[i].equalsIgnoreCase("false")) {
-                                return 0L;
-                            }
-                            break;
-                        case "char":
-                            if (inputPath[i].length() != 1)
-                                return 0L;
-                            break;
-                        case "byte":
-                            try {
-                                byte b = Byte.parseByte(inputPath[i]);
-                            } catch (NumberFormatException ignored) {
-                                return 0L;
-                            }
-                            break;
+                    try {
+                        typeCheck(apiPath.getData(),inputPath[i]);
+                    }catch (NumberFormatException ignored) {
+                        return 0L;
                     }
                 }
             }
-
         }
         return apiProject.getApiId();
+    }
+    public void typeCheck(String type, String str) throws NumberFormatException{
+        switch (type){
+            case "String":
+                break;
+            case "short":
+                short s = Short.parseShort(str);
+                break;
+            case "int":
+                int num = Integer.parseInt(str);
+                break;
+            case "long":
+                long l = Long.parseLong(str);
+                break;
+            case "float":
+                float f = Float.parseFloat(str);
+                if (!str.contains("."))
+                    throw new NumberFormatException();
+                break;
+            case "double":
+                double d = Double.parseDouble(str);
+                if (!str.contains("."))
+                    throw new NumberFormatException();
+                break;
+            case "boolean":
+                if (!str.equalsIgnoreCase("true") && !str.equalsIgnoreCase("false"))
+                    throw new NumberFormatException();
+                break;
+            case "char":
+                if (str.length() != 1)
+                    throw new NumberFormatException();
+                break;
+            case "byte":
+                byte b = Byte.parseByte(str);
+                break;
+        }
+
     }
 
     public boolean requestCheck(Long projectId, Long apiId, HttpServletRequest request) throws IOException {
@@ -199,17 +180,74 @@ public class MockService {
                 return false;
             if(!requestParamCheck(apiRequest,obj))
                 return false;
-
         }
         return true;
     }
 
-    private boolean requestParamCheck(ApiRequest apiRequest, Object obj) {
-        if(apiRequest.getType().equals("Object")){
-//            Map<String, Object> map = obj.
-        }
-        else{
+    private boolean requestParamCheck(ApiRequest apiRequest, Object obj) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(apiRequest.getKey() + " ///" + apiRequest.getData() +"----"+ obj.toString());
 
+        //object type
+        if(apiRequest.getType().equals("Object")){
+            System.out.println("------OBJECT-----");
+            List<ApiRequest> apiRequestList;
+            try {
+                //object의 request 형식 저장
+                apiRequestList = mapper.readValue(apiRequest.getData(), new TypeReference<List<ApiRequest>>() {});
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            // 입력받은 데이터 리스트 저장
+            List<Object> objectList = new ArrayList<>();
+            if(apiRequest.getArrayList()){
+                objectList = (List<Object>) obj;
+            }
+            else {
+                objectList.add(obj);
+            }
+//            Map<String, Object> map = (Map<String, Object>) obj;
+            for (Object list : objectList){
+                Map<String, Object> map = (Map<String, Object>) list;
+                for (ApiRequest request :apiRequestList) {
+                    Object innerObj = map.get(request.getKey());
+                    System.out.println("****" + request.toString() + "***" + innerObj.toString());
+
+                    if(!requestParamCheck(request,innerObj))
+                        return false;
+                }
+            }
+
+        }
+        else{ // int, long ,, 등
+            System.out.println("------not OBJECT-----" + obj.toString()+ "/" +apiRequest.getArrayList());
+            List<Object> objectList = new ArrayList<>();
+            if(apiRequest.getArrayList()){
+                try {
+                    objectList = (List<Object>) obj; ;
+                }catch (ClassCastException e){
+                    return false;
+                }
+
+            }else {
+                System.out.println("====");
+                objectList.add(obj);
+            }
+            System.out.println("==");
+
+            for (Object object : objectList){
+                String str = object.toString();
+//                String str = mapper.readTree((JsonParser) object).get(apiRequest.getKey()).toString();
+                try{
+                    System.out.println("Str" +str + " //// type : " + apiRequest.getType());
+                    typeCheck(apiRequest.getType(), str);
+
+                }catch (NumberFormatException ignored) {
+                    System.out.println("//");
+                    return false;
+                }
+            }
         }
         return true;
     }
