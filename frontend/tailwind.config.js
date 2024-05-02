@@ -3,6 +3,15 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {
+      width: {
+        input: "144px",
+      },
+      maxHeight: {
+        modal: "80%",
+      },
+      maxWidth: {
+        modal: "80%",
+      },
       fontSize: {
         6: "8px",
         5: "12px",
