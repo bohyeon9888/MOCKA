@@ -1,4 +1,8 @@
 import React from "react";
+import Method from "../components/Method.jsx";
+import NewController from "../components/button/NewController.jsx";
+import Button from "../components/button/Button.jsx";
+import Tab from "../components/Tab.jsx";
 
 function Home() {
   return (
@@ -37,7 +41,20 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className="ml-[60px] mr-[60px] mt-[137px] w-1/2 p-4">미치겠네</div>
+      <div className="ml-[60px] mr-[60px] mt-[10px] w-1/2 p-4">
+        <img
+          src="/public/asset/home/home-introduce.svg"
+          className="w-[430px]"
+          alt="home-introduce"
+        />
+      </div>
+      {/* <Method type="PA"></Method> */}
+      {/* <NewController></NewController> */}
+      {/* <Button type="Generate"></Button> */}
+
+      {/* <Tab type="GET" isSelected="true" />
+      <Tab type="PATCH" isSelected="false" />
+      <Tab type="DELETE" /> */}
     </div>
   );
 }
