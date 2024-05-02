@@ -3,6 +3,14 @@ export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
     extend: {
+      fontSize: {
+        6: "8px",
+        5: "12px",
+        4: "15px",
+        3: "20px",
+        2: "24px",
+        1: "40px",
+      },
       fontFamily: {
         Pretendard: [
           "Pretendard",
