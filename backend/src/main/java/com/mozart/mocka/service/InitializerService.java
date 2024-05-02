@@ -68,7 +68,8 @@ public class InitializerService {
 
                 lines.add("import org.springframework.web.bind.annotation.RequestMapping;");
                 lines.add("import org.springframework.web.bind.annotation.RestController;");
-                lines.add("import org.springframework.http.ResponseEntity;\n");
+                lines.add("import org.springframework.http.ResponseEntity;");
+                lines.add("import " + request.getSpringPackageName() + ".dto.*;\n");
 
                 lines.add("@RestController");
                 lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
