@@ -43,8 +43,7 @@ public class GenController {
                 lines = new ArrayList<>();
                 lines.add("package " + request.getSpringPackageName() + ".controller;\n");
 
-                lines.add("import org.springframework.web.bind.annotation.RequestMapping;");
-                lines.add("import org.springframework.web.bind.annotation.RestController;");
+                lines.add("import org.springframework.web.bind.annotation.*;");
                 lines.add("import org.springframework.http.ResponseEntity;");
                 lines.add("import " + request.getSpringPackageName() + ".dto.*;\n");
 

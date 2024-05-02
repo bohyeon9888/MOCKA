@@ -46,7 +46,7 @@ public class GenInit {
             "@SpringBootApplication\n" +
             "public class Application {\n\n" +
             "    public static void main(String[] args) {\n" +
-            "        SpringApplication.run(ApplicationApplication.class, args);\n" +
+            "        SpringApplication.run(Application.class, args);\n" +
             "    }\n" +
             "}\n";
     }
