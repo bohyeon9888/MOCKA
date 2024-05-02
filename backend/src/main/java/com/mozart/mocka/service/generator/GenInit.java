@@ -3,11 +3,17 @@ package com.mozart.mocka.service.generator;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class GenInit {
 
     public void createDirectories(Path projectRoot, InitializerRequestDto request) throws IOException {
@@ -15,6 +21,10 @@ public class GenInit {
         Files.createDirectories(projectRoot.resolve("src/main/resources"));
         Files.createDirectories(projectRoot.resolve("src/test/java/" + request.getSpringPackageName().replace('.', '/')));
         Files.createDirectories(projectRoot.resolve("src/test/resources"));
+        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/controller")); // 컨트롤러 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto")); // DTO 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto/response")); // Response 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto/request")); // Request 디렉토리 생성
     }
 
     public void createApplicationProperties(Path projectRoot) throws IOException {
@@ -36,7 +46,7 @@ public class GenInit {
             "@SpringBootApplication\n" +
             "public class Application {\n\n" +
             "    public static void main(String[] args) {\n" +
-            "        SpringApplication.run(ApplicationApplication.class, args);\n" +
+            "        SpringApplication.run(Application.class, args);\n" +
             "    }\n" +
             "}\n";
     }
@@ -106,4 +116,77 @@ public class GenInit {
             "}";
     }
 
+    public void createMavenSettings(Path projectRoot, InitializerRequestDto request) throws IOException{
+        Path sourceDirectory = Paths.get("src/main/templates/maven" + request.getSpringPlatformVersion());
+
+        // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
+        String[] requiredFiles = {
+            "mvnw",
+            "mvnw.cmd",
+            ".mvn/wrapper/maven-wrapper.jar",
+            ".mvn/wrapper/maven-wrapper.properties",
+            "HELP.md",
+            ".gitignore"
+        };
+
+        // 각 파일을 복사
+        for (String fileName : requiredFiles) {
+            Path sourceFile = sourceDirectory.resolve(fileName);
+            Path targetFile = projectRoot.resolve(fileName);
+
+            // 상위 디렉토리가 필요한 경우 생성
+            if (targetFile.getParent() != null) {
+                Files.createDirectories(targetFile.getParent());
+            }
+
+            if (Files.exists(sourceFile)) {
+                Files.copy(sourceFile, targetFile);
+                System.out.println("Copied: " + sourceFile + " to " + targetFile);
+            } else {
+                System.out.println("File does not exist: " + sourceFile);
+            }
+        }
+    }
+
+    public void createGradleSettings(Path projectRoot, InitializerRequestDto request) throws IOException{
+        Path sourceDirectory = Paths.get("src/main/templates/gradle" + request.getSpringPlatformVersion());
+
+        // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
+        String[] requiredFiles = {
+            "gradlew",
+            "gradlew.bat",
+            "gradle.wrapper/gradle-wrapper.jar",
+            "gradle.wrapper/gradle-wrapper.properties",
+            "HELP.md",
+            ".gitignore",
+            "settings.gradle"
+        };
+
+        // 각 파일을 복사
+        for (String fileName : requiredFiles) {
+            Path sourceFile = sourceDirectory.resolve(fileName);
+            Path targetFile = projectRoot.resolve(fileName);
+
+            // 상위 디렉토리가 필요한 경우 생성
+            if (targetFile.getParent() != null) {
+                Files.createDirectories(targetFile.getParent());
+            }
+
+            if (Files.exists(sourceFile)) {
+                Files.copy(sourceFile, targetFile);
+                System.out.println("Copied: " + sourceFile + " to " + targetFile);
+            } else {
+                System.out.println("File does not exist: " + sourceFile);
+            }
+        }
+    }
+
+    public void updateSettingsGradleFile(Path projectRoot, String projectName) throws IOException {
+        Path settingsFile = projectRoot.resolve("settings.gradle");
+        List<String> lines = Files.readAllLines(settingsFile, StandardCharsets.UTF_8);
+        List<String> modifiedLines = lines.stream()
+            .map(line -> line.startsWith("rootProject.name") ? "rootProject.name = '" + projectName + "'" : line)
+            .collect(Collectors.toList());
+        Files.write(settingsFile, modifiedLines, StandardCharsets.UTF_8);
+    }
 }

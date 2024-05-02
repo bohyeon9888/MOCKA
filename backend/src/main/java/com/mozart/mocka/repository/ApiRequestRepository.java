@@ -2,6 +2,7 @@ package com.mozart.mocka.repository;
 
 import com.mozart.mocka.domain.ApiRequest;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface ApiRequestRepository extends JpaRepository<ApiRequest, Long> {
     int create(Long id, String key, String type,boolean array, String value);
 
     void deleteByApiProject_ApiId(Long apiId);
+
+    List<ApiRequest> findByApiProject_ApiId(Long apiId);
 }
