@@ -45,7 +45,8 @@ public class InitializerService {
             genInit.updateSettingsGradleFile(projectRoot, request.getSpringName());
         }
 
-        genController.createController(projectRoot, apis, request);
+        int apiNo = 1;
+        genController.createController(projectRoot, apis, request, apiNo);
 
         return projectRoot;
     }
