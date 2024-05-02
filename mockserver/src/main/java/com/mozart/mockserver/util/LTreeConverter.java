@@ -1,4 +1,4 @@
-package com.mozart.mocka.util;
+package com.mozart.mockserver.util;
 
 
 import jakarta.persistence.AttributeConverter;

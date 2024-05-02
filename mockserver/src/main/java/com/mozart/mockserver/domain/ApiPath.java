@@ -1,6 +1,5 @@
-package com.mozart.mocka.domain;
+package com.mozart.mockserver.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

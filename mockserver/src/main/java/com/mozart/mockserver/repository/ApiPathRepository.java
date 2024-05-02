@@ -1,16 +1,10 @@
-package com.mozart.mocka.repository;
+package com.mozart.mockserver.repository;
 
-import com.mozart.mocka.domain.ApiPath;
-import jakarta.transaction.Transactional;
+import com.mozart.mockserver.domain.ApiPath;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ApiPathRepository extends JpaRepository<ApiPath, Long> {
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO api_path (api_id, key, data) VALUES (:id, :key, :value)", nativeQuery = true)
-    void create(Long id, String key, String value);
-
-    void deleteByApiProject_ApiId(Long apiId);
+    List<ApiPath> findByApiProject_ApiId(Long apiId);
 }

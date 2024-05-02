@@ -1,4 +1,4 @@
-package com.mozart.mocka.domain;
+package com.mozart.mockserver.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,6 +1,6 @@
-package com.mozart.mocka.domain;
+package com.mozart.mockserver.domain;
 
-import com.mozart.mocka.domain.base.BaseEntity;
+import com.mozart.mockserver.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;

@@ -1,6 +1,6 @@
-package com.mozart.mocka.domain;
+package com.mozart.mockserver.domain;
 
-import com.mozart.mocka.util.LTreeConverter;
+import com.mozart.mockserver.util.LTreeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
