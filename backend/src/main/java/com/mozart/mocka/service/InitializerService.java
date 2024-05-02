@@ -48,6 +48,7 @@ public class InitializerService {
         Path controllerDir = projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/controller");
         Files.createDirectories(controllerDir); // 컨트롤러 디렉토리 생성
 
+        int index = 1;
         for (ApiProjects api : apis) {
             String controllerName = api.getApiUriStr().split("/")[1];
             String className = controllerName + "Controller";
@@ -59,20 +60,20 @@ public class InitializerService {
                 lines = Files.readAllLines(controllerFile, StandardCharsets.UTF_8);
                 int lastIndex = lines.size() - 1; // 마지막 중괄호의 인덱스 찾기
                 // 새로운 메소드를 마지막 중괄호 바로 전에 추가
-                lines.addAll(lastIndex, generateMethodLines(api));
+                lines.addAll(lastIndex, generateMethodLines(api, index++));
             } else {
                 // 새 컨트롤러 파일 생성
                 lines = new ArrayList<>();
                 lines.add("package " + request.getSpringPackageName() + ".controller;\n");
-                lines.add("import lombok.extern.slf4j.Slf4j;");
+
                 lines.add("import org.springframework.web.bind.annotation.RequestMapping;");
                 lines.add("import org.springframework.web.bind.annotation.RestController;");
                 lines.add("import org.springframework.http.ResponseEntity;\n");
-                lines.add("@Slf4j");
+
                 lines.add("@RestController");
                 lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
                 lines.add("public class " + className + " {");
-                lines.addAll(generateMethodLines(api));
+                lines.addAll(generateMethodLines(api, index++));
                 lines.add("}");
             }
 
@@ -82,27 +83,27 @@ public class InitializerService {
         }
     }
 
-    private List<String> generateMethodLines(ApiProjects api) {
+    private List<String> generateMethodLines(ApiProjects api, int index) {
         List<String> methodLines = new ArrayList<>();
         String requestUri = setUri(api.getApiUriStr());
-        String methodName = "autoCreatedAPI" + api.getApiId();
         methodLines.add("\n    @" + api.getApiMethod() + "Mapping(\"" + requestUri + "\")");
 
         Long apiId = api.getApiId();
         List<ApiPath> apiPaths = apiPathRepository.findByApiProject_ApiId(apiId);
         if (apiPaths.isEmpty()) {
-            methodLines.add("    public ResponseEntity<?> " + methodName + "() {");
+            methodLines.add("    public ResponseEntity<?> autoCreatedApiNo" + index + " () {");
         }
         else {
-            methodLines.add("    public ResponseEntity<?> " + methodName + "(");
+            methodLines.add("    public ResponseEntity<?> autoCreatedApiNo" + index + " (");
             for (int i=0; i<apiPaths.size(); i++) {
                 ApiPath apiPath = apiPaths.get(i);
-                methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey());
-                if(i == apiPaths.size()-1) {
-
+                if (i == apiPaths.size() -1) {
+                    methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey());
+                }
+                else {
+                    methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey() + ",");
                 }
             }
-            methodLines.add("        public ResponseEntity<?> " + methodName + "(");
             methodLines.add("    ) {");
         }
 
