@@ -38,8 +38,10 @@ public class InitializerService {
 
         if ("Maven".equalsIgnoreCase(request.getSpringType())) {
             genInit.createPomFile(projectRoot, request);
+            genInit.createMavenSettings(projectRoot, request);
         } else if ("Gradle".equalsIgnoreCase(request.getSpringType())) {
             genInit.createGradleBuildFile(projectRoot, request);
+            genInit.createGradleSettings(projectRoot, request);
         }
 
         genController.createController(projectRoot, apis, request);
