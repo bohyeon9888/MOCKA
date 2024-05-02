@@ -7,7 +7,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <main className="container flex h-full flex-row">
+      <main className="flex h-full w-full flex-row">
         <Sidebar />
         <Routes>
           <Route path="/" element={<Home />} />

@@ -12,24 +12,6 @@ function Sidebar() {
     setIsTeamsOpen(!isTeamsOpen);
   };
 
-  /*
-              <li onClick={toggleMode} className="cursor-pointer">
-              {isEditMode ? (
-                <img
-                  src="/public/asset/header/header-edit-mode.svg"
-                  className="h-5 cursor-pointer"
-                  alt="header-edit-mode"
-                />
-              ) : (
-                <img
-                  src="/public/asset/header/header-viewer-mode.svg"
-                  className="h-5 cursor-pointer"
-                  alt="header-edit-mode"
-                />
-              )}
-            </li>
-  */
-
   return (
     <aside className="sidebar relative bottom-0 top-0 h-full w-[216px] overflow-y-auto bg-gray-100 p-2 text-center lg:left-0">
       <div className="text-xl text-gray-700">
@@ -63,10 +45,10 @@ function Sidebar() {
         {isRecentsOpen && (
           <div className="pl-12">
             <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-3 font-bold text-gray-700">Recent Item 1</h5>
+              <h5 className="ml-2 font-bold text-gray-700">Recent Item 1</h5>
             </div>
             <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-3 font-bold text-gray-700">Recent Item 2</h5>
+              <h5 className="ml-2 font-bold text-gray-700">Recent Item 2</h5>
             </div>
           </div>
         )}
@@ -94,10 +76,10 @@ function Sidebar() {
         {isTeamsOpen && (
           <div className="pl-12">
             <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-3 font-bold text-gray-700">Team Item 1</h5>
+              <h5 className="ml-2 font-bold text-gray-700">Team Item 1</h5>
             </div>
             <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-3 font-bold text-gray-700">Team Item 2</h5>
+              <h5 className="ml-2 font-bold text-gray-700">Team Item 2</h5>
             </div>
           </div>
         )}
