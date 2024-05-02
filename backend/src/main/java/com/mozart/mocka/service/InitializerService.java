@@ -1,7 +1,9 @@
 package com.mozart.mocka.service;
 
+import com.mozart.mocka.domain.ApiPath;
 import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.repository.ApiPathRepository;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,15 +13,19 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class InitializerService {
 
+    private final ApiPathRepository apiPathRepository;
     // 파일 생성
     public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis) throws IOException {
 
@@ -29,9 +35,9 @@ public class InitializerService {
         createApplicationClass(projectRoot, request);
         createController(projectRoot, apis, request);
 
-        if ("maven".equalsIgnoreCase(request.getSpringType())) {
+        if ("Maven".equalsIgnoreCase(request.getSpringType())) {
             createPomFile(projectRoot, request);
-        } else if ("gradle".equalsIgnoreCase(request.getSpringType())) {
+        } else if ("Gradle".equalsIgnoreCase(request.getSpringType())) {
             createGradleBuildFile(projectRoot, request);
         }
 
@@ -80,8 +86,26 @@ public class InitializerService {
         List<String> methodLines = new ArrayList<>();
         String requestUri = setUri(api.getApiUriStr());
         String methodName = "autoCreatedAPI" + api.getApiId();
-        methodLines.add("\n    @" + api.getApiMethod().toUpperCase() + "Mapping(\"" + requestUri + "\")");
-        methodLines.add("    public ResponseEntity<?> " + methodName + "() {");
+        methodLines.add("\n    @" + api.getApiMethod() + "Mapping(\"" + requestUri + "\")");
+
+        Long apiId = api.getApiId();
+        List<ApiPath> apiPaths = apiPathRepository.findByApiProject_ApiId(apiId);
+        if (apiPaths.isEmpty()) {
+            methodLines.add("    public ResponseEntity<?> " + methodName + "() {");
+        }
+        else {
+            methodLines.add("    public ResponseEntity<?> " + methodName + "(");
+            for (int i=0; i<apiPaths.size(); i++) {
+                ApiPath apiPath = apiPaths.get(i);
+                methodLines.add("        @PathVariable(\"" + apiPath.getKey() + "\") " + apiPath.getData() + " " + apiPath.getKey());
+                if(i == apiPaths.size()-1) {
+
+                }
+            }
+            methodLines.add("        public ResponseEntity<?> " + methodName + "(");
+            methodLines.add("    ) {");
+        }
+
         methodLines.add("        return ResponseEntity.ok().body(\"This is a response from " + api.getApiMethod().toUpperCase() + " endpoint.\");");
         methodLines.add("    }");
         return methodLines;
