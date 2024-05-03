@@ -29,6 +29,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	// spring oauth2
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	// mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
