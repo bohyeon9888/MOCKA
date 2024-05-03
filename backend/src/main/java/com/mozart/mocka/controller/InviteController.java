@@ -1,6 +1,6 @@
 package com.mozart.mocka.controller;
 
-import com.mozart.mocka.dto.request.InviteDto;
+import com.mozart.mocka.dto.request.InviteRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,8 @@ public class InviteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> inviteMember(@RequestBody InviteDto inviteDto) {
+    public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return null;
     }
