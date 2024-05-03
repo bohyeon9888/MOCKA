@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/invite")
 public class InviteController {
 
+
     @GetMapping("/test")
     public void testApi() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

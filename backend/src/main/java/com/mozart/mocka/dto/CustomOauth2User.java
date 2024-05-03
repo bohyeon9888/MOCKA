@@ -52,7 +52,7 @@ public class CustomOauth2User implements OAuth2User {
         return oAuth2Response.getEmail();
     }
 
-    public String getMemberProfile() {
+    public String getProfile() {
         return oAuth2Response.getProfileImg();
     }
 }
