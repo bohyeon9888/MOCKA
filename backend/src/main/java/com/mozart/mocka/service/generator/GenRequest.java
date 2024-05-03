@@ -19,7 +19,7 @@ public class GenRequest {
     private final ApiRequestRepository apiRequestRepository;
     private static final String whiteSpace = "    ";
 
-    public String makeStrObject(String dtoClassName, String springPackageName, Long apiId) throws Exception{
+    public String makeStrObject(String dtoClassName, String springPackageName, Long apiId,String dir) throws Exception{
         List<ApiRequest> apiRequests=apiRequestRepository.findByApiProject_ApiId(apiId);
 
         HashMap<String, String> appendedClassList = new HashMap<String,String>();
@@ -77,11 +77,9 @@ public class GenRequest {
         }
         appendedClassList.put(dtoClassName,appendedClassList.get(dtoClassName)+importList+classOuterString+getDeepWhiteSpace(classInnerString,1)+"}"+"\n");
 
-        String uploadDirectory = "C://projects/reqeustDtos/";
-
         String result="";
         for( Map.Entry<String, String> elem : appendedClassList.entrySet() ){
-            BufferedWriter writer = new BufferedWriter(new FileWriter(uploadDirectory+elem.getKey()+".java"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dir+"/"+elem.getKey()+".java"));
             System.out.println(elem.getValue());
             writer.write(elem.getValue());
             writer.close();
