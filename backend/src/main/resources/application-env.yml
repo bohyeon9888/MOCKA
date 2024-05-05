@@ -1,6 +1,6 @@
 spring:
   security:
-    banned-path: "api/invite/*"
+    banned-path: "api/invite/*, /api/history/*"
 
 logging:
   level:
