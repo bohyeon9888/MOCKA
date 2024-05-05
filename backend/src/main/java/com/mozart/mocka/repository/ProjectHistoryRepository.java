@@ -17,4 +17,6 @@ public interface ProjectHistoryRepository extends JpaRepository<ProjectHistories
 
     @Query("SELECT ph FROM ProjectHistories ph WHERE ph.projectHistoryPK.memberId = :memberId AND ph.projectHistoryPK.projectId = :projectId AND ph.projectRole = 'OWNER'")
     Optional<ProjectHistories> findOwnerByMemberIdAndProjectId(@Param("memberId") Long memberId, @Param("projectId") Long projectId);
+
+    Optional<ProjectHistories> findByProjectHistoryPK_MemberIdAndProjectHistoryPK_ProjectId(Long memberId, Long projectId);
 }
