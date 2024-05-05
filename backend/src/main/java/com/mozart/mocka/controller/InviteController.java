@@ -1,6 +1,8 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.dto.request.InviteRequestDto;
+import com.mozart.mocka.service.InviteService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/invite")
 public class InviteController {
 
+    private final InviteService inviteService;
 
     @GetMapping("/test")
     public void testApi() {
@@ -22,9 +25,10 @@ public class InviteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) {
+    public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) throws MessagingException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        inviteService.createInvitation(auth.getName(), inviteRequestDto.getProjectId(), inviteRequestDto.getTeamMember());
         return null;
     }
 }
