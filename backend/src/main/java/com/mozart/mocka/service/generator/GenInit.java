@@ -141,9 +141,9 @@ public class GenInit {
 
             if (Files.exists(sourceFile)) {
                 Files.copy(sourceFile, targetFile);
-                System.out.println("Copied: " + sourceFile + " to " + targetFile);
+                log.info("Copied: " + sourceFile + " to " + targetFile);
             } else {
-                System.out.println("File does not exist: " + sourceFile);
+                log.info("File does not exist: " + sourceFile);
             }
         }
     }
@@ -174,9 +174,9 @@ public class GenInit {
 
             if (Files.exists(sourceFile)) {
                 Files.copy(sourceFile, targetFile);
-                System.out.println("Copied: " + sourceFile + " to " + targetFile);
+                log.info("Copied: " + sourceFile + " to " + targetFile);
             } else {
-                System.out.println("File does not exist: " + sourceFile);
+                log.info("File does not exist: " + sourceFile);
             }
         }
     }

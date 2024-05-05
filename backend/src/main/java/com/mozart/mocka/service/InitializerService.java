@@ -64,7 +64,7 @@ public class InitializerService {
                         Files.copy(path, zos);
                         zos.closeEntry();
                     } catch (IOException e) {
-                        System.err.println("Error while zipping: " + e.getMessage());
+                        log.error("Error while zipping: " + e.getMessage());
                     }
                 });
         }
@@ -82,7 +82,7 @@ public class InitializerService {
                 .map(Path::toFile)
                 .forEach(File::delete);
         } catch (IOException e) {
-            System.err.println("Error cleaning up project files: " + e.getMessage());
+            log.error("Error cleaning up project files: " + e.getMessage());
         }
     }
 }
