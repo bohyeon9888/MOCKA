@@ -1,6 +1,7 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.dto.request.InviteRequestDto;
+import com.mozart.mocka.dto.response.InvitationResponseDto;
 import com.mozart.mocka.service.InviteService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +34,9 @@ public class InviteController {
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<?> readInvitation(@PathVariable int projectId) {
+    public ResponseEntity<InvitationResponseDto> readInvitation(@PathVariable Long projectId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return null;
+        return ResponseEntity.ok(inviteService.checkInvitation(auth.getName(), projectId));
     }
 }

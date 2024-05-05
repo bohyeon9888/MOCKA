@@ -4,6 +4,7 @@ import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.domain.ProjectInvitations;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.TeamMemberDto;
+import com.mozart.mocka.dto.response.InvitationResponseDto;
 import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
 import com.mozart.mocka.repository.ProjectInvitationRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -59,23 +61,28 @@ public class InviteService {
         emailService.sendEmail(emails);
     }
 
-    public void readInvitation(String name, Long projectId) {
+    public InvitationResponseDto checkInvitation(String name, Long projectId) {
         Members member = membersRepository.findByMemberNickname(name);
         Projects project = projectRepository.findByProjectId(projectId);
         Optional<ProjectInvitations> invitation = invitationRepository.findByMembersAndProjects(member, project);
+        int isResponse = 0;
 
-        invitation.ifPresent(invite -> {
-            if (invite.getAccepted() == null) {
+        if (invitation.isPresent()) {
+            if (invitation.get().getAccepted() != null) {
                 log.debug("Invitation is pending.");
-            } else if (invite.getAccepted()) {
-                log.debug("Invitation accepted.");
+                isResponse = 1;
             } else {
-                log.debug("Invitation declined.");
+                log.debug("Invitation accepted or declined.");
             }
-        });
-
-        if (invitation.isEmpty()) {
+        } else {
             log.debug("No invitation found for the given member and project.");
+            isResponse = 10;
         }
+
+        return InvitationResponseDto.builder()
+                .invite(isResponse)
+                .projectId(projectId)
+                .projectName(project.getProjectName())
+                .build();
     }
 }
