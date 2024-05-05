@@ -31,4 +31,11 @@ public class InviteController {
         inviteService.createInvitation(auth.getName(), inviteRequestDto.getProjectId(), inviteRequestDto.getTeamMember());
         return null;
     }
+
+    @GetMapping("/{projectId}")
+    public ResponseEntity<?> readInvitation(@PathVariable int projectId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return null;
+    }
 }
