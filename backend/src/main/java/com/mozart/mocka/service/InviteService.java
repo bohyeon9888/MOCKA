@@ -12,10 +12,11 @@ import com.mozart.mocka.repository.ProjectRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -29,6 +30,7 @@ public class InviteService {
     private final ProjectInvitationRepository invitationRepository;
     private final EmailService emailService;
 
+    @Transactional
     public void createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
         //프로젝트 소유주인지 확인
         Long ownerId = membersRepository.findByMemberNickname(ownerName).getMemberId();
@@ -61,22 +63,43 @@ public class InviteService {
         emailService.sendEmail(emails);
     }
 
+    @Transactional
     public InvitationResponseDto checkInvitation(String name, Long projectId) {
         Members member = membersRepository.findByMemberNickname(name);
+        if (member == null) {
+            log.warn("No member found with nickname: " + name);
+            return null; // 혹은 적절한 예외 처리
+        }
+        log.info("멤버 아이디 : " + member.getMemberId());
+
         Projects project = projectRepository.findByProjectId(projectId);
-        Optional<ProjectInvitations> invitation = invitationRepository.findByMembersAndProjects(member, project);
+        if (project == null) {
+            log.warn("No project found with ID: " + projectId);
+            return null; // 혹은 적절한 예외 처리
+        }
+        log.info("프로젝트 아이디 : " + projectId);
+
+        Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
         int isResponse = 0;
 
-        if (invitation.isPresent()) {
-            if (invitation.get().getAccepted() != null) {
-                log.debug("Invitation is pending.");
-                isResponse = 1;
-            } else {
-                log.debug("Invitation accepted or declined.");
-            }
-        } else {
-            log.debug("No invitation found for the given member and project.");
+        if (invitation.isEmpty()) {
+            log.debug("해당 초대가 없음");
             isResponse = 10;
+            return InvitationResponseDto.builder()
+                    .invite(isResponse)
+                    .projectId(projectId)
+                    .projectName(project.getProjectName())
+                    .build();
+        }
+
+        log.info("invitation is present!!!!!");
+        log.info("invitation project id : " + invitation.get().getProjects().getProjectId());
+        if (invitation.get().getAccepted() != null) {
+            log.info("invitation project id : " + invitation.get().getAccepted());
+            log.info("초대 받고 응답함");
+            isResponse = 1;
+        } else {
+            log.info("초대 받았는데 응답하지 않음");
         }
 
         return InvitationResponseDto.builder()
@@ -85,4 +108,6 @@ public class InviteService {
                 .projectName(project.getProjectName())
                 .build();
     }
+
+
 }

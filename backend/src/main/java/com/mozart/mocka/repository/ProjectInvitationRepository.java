@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ProjectInvitationRepository extends JpaRepository<ProjectInvitations, Long> {
 
-    Optional<ProjectInvitations> findByMembersAndProjects(Members member, Projects project);
+    Optional<ProjectInvitations> findByMembers_MemberIdAndProjects_ProjectId(Long memberId, Long projectId);
 
 }

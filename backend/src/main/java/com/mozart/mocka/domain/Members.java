@@ -17,7 +17,7 @@ import org.hibernate.annotations.Where;
 public class Members extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column
