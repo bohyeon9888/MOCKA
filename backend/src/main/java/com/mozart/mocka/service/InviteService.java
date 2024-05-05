@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
@@ -54,5 +56,24 @@ public class InviteService {
 
         // 메일 수신
         emailService.sendEmail(emails);
+    }
+
+    public void readInvitation(String name, Long projectId) {
+        Members member = membersRepository.findByMemberNickname(name);
+        Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
+
+        invitation.ifPresent(invite -> {
+            if (invite.getAccepted() == null) {
+                log.debug("Invitation is pending.");
+            } else if (invite.getAccepted()) {
+                log.debug("Invitation accepted.");
+            } else {
+                log.debug("Invitation declined.");
+            }
+        });
+
+        if (invitation.isEmpty()) {
+            log.debug("No invitation found for the given member and project.");
+        }
     }
 }
