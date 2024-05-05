@@ -29,6 +29,7 @@ public class InviteService {
     private final MembersRepository membersRepository;
     private final ProjectInvitationRepository invitationRepository;
     private final EmailService emailService;
+    private final ProjectHistoryService historyService;
 
     @Transactional
     public void createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
@@ -52,6 +53,7 @@ public class InviteService {
                     .members(newMem)
                     .projects(projectRepository.findByProjectId(projectId))
                     .accepted(null)
+                    .projectRole(mem.getProjectRole())
                     .build();
 
             log.info(invitations);
@@ -109,5 +111,30 @@ public class InviteService {
                 .build();
     }
 
+    @Transactional
+    public void answerInvitation(String name, Long projectId, String answer) {
+        Members member = membersRepository.findByMemberNickname(name);
 
+        Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
+        if (invitation.isEmpty()) {
+            log.error("초대장이 없습니다.");
+            return;
+        }
+
+        ProjectInvitations invite = invitation.get();
+        if (invite.getAccepted() != null) {
+            log.error("이미 답변이 완료된 초대장입니다.");
+            return;
+        }
+
+        if (answer.equals("yes")) {
+            invite.setAccepted(true);
+            // project history에도 설정
+            historyService.createProjectMember(invite);
+            log.info("초대를 승낙했습니다.");
+        } else {
+            invite.setAccepted(false);
+            log.info("초대를 거절했습니다.");
+        }
+    }
 }

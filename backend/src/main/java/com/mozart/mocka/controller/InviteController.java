@@ -44,7 +44,7 @@ public class InviteController {
     @PostMapping("/{projectId}")
     public void readInvitation(@PathVariable Long projectId, @RequestBody InvitationAnswerRequestDto answerDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
+        inviteService.answerInvitation(auth.getName(), projectId, answerDto.getAnswer());
         // 이후 프론트 쪽으로 redirect view
     }
 }

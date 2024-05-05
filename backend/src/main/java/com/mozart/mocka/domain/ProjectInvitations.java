@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,4 +31,7 @@ public class ProjectInvitations extends BaseEntity {
 
     @Column
     private Boolean accepted;
+
+    @Column(name = "project_role")
+    private String projectRole;
 }
