@@ -2,6 +2,7 @@ package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.domain.ProjectInvitations;
+import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.TeamMemberDto;
 import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
@@ -60,7 +61,8 @@ public class InviteService {
 
     public void readInvitation(String name, Long projectId) {
         Members member = membersRepository.findByMemberNickname(name);
-        Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
+        Projects project = projectRepository.findByProjectId(projectId);
+        Optional<ProjectInvitations> invitation = invitationRepository.findByMembersAndProjects(member, project);
 
         invitation.ifPresent(invite -> {
             if (invite.getAccepted() == null) {
