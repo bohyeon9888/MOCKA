@@ -1,13 +1,17 @@
 const javaPrimitiveTypes = [
-  "Byte",
-  "Short",
-  "Int",
-  "Long",
-  "Float",
-  "Double",
-  "Boolean",
-  "Char",
+  "boolean",
+  "byte",
+  "char",
+  "double",
+  "float",
+  "int",
+  "long",
+  "short",
   "String",
 ];
+
+export const filteredJavaPrimitiveTypes = (filters) => {
+  return javaPrimitiveTypes.filter((type) => !filters.includes(type));
+};
 
 export default javaPrimitiveTypes;

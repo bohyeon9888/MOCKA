@@ -8,11 +8,12 @@ import PathVariableEditor from "../editor/PathVariableEditor";
 import parseQueryParameters from "../../utils/parseQueryParameters";
 import parsePathVariables from "../../utils/parsePathVariables";
 import mergePathVariables from "../../utils/mergePathVariables";
+import RequestBodyEditor from "../editor/RequestBodyEditor";
 
 export default function ApiEditModal() {
   const [document, setDocument] = useState({
     apiMethod: "GET",
-    apiUri: "/user/{userId}?name=String&age=Int",
+    apiUri: "/user/{userId}?name=String&age=int",
     apiRequest: [],
     apiResponse: [],
     apiResponseIsArray: false,
@@ -105,7 +106,19 @@ export default function ApiEditModal() {
       <ContentBox
         title="Request Body"
         description="Define Resource template, it will be used to generate mock data."
-      />
+      >
+        <RequestBodyEditor
+          apiRequest={document.apiRequest}
+          setApiRequest={(apiRequest) => {
+            setDocument((document) => {
+              return {
+                ...document,
+                apiRequest,
+              };
+            });
+          }}
+        />
+      </ContentBox>
       <ContentBox
         title="Response Body"
         description="Define Resource template, it will be used to generate mock data."
