@@ -29,11 +29,10 @@ public class OatuhController {
     }
 
     @GetMapping("/callback/{provider}")
-    public ResponseEntity<Map<String, Object>> callResp(@RequestParam String code, @PathVariable String provider) {
+    public ResponseEntity<?> callResp(@RequestParam String code, @PathVariable String provider) {
         log.info(provider + " " + code);
 
-        Map<String, Object> resp = oauthService.getAccessToken(code, provider);
-        return ResponseEntity.ok().body(resp);
+        return ResponseEntity.ok().body(oauthService.getAccessToken(code, provider));
 
     }
 }
