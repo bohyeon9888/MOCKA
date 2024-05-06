@@ -9,6 +9,7 @@ import parseQueryParameters from "../../utils/parseQueryParameters";
 import parsePathVariables from "../../utils/parsePathVariables";
 import mergePathVariables from "../../utils/mergePathVariables";
 import RequestBodyEditor from "../editor/RequestBodyEditor";
+import ResponseBodyEditor from "../editor/ResponseBodyEditor";
 
 export default function ApiEditModal() {
   const [document, setDocument] = useState({
@@ -122,7 +123,37 @@ export default function ApiEditModal() {
       <ContentBox
         title="Response Body"
         description="Define Resource template, it will be used to generate mock data."
-      />
+      >
+        <ResponseBodyEditor
+          apiResponse={document.apiResponse}
+          apiResponseIsArray={document.apiResponseIsArray}
+          apiResponseSize={document.apiResponseSize}
+          setApiResponse={(apiResponse) => {
+            setDocument((document) => {
+              return {
+                ...document,
+                apiResponse,
+              };
+            });
+          }}
+          setApiResponseIsArray={(apiResponseIsArray) => {
+            setDocument((document) => {
+              return {
+                ...document,
+                apiResponseIsArray,
+              };
+            });
+          }}
+          setApiResponseSize={(apiResponseSize) => {
+            setDocument((document) => {
+              return {
+                ...document,
+                apiResponseSize,
+              };
+            });
+          }}
+        />
+      </ContentBox>
     </div>
   );
 }
