@@ -1,7 +1,7 @@
-import { createStore } from "zustand";
-import { projectActions } from "./actions";
+import { create } from "zustand";
+import { projectActions } from "./action";
 
-const useProjectStore = createStore((set) => ({
+const useProjectStore = create((set) => ({
   project: null,
 }));
 
