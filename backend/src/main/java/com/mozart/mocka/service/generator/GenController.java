@@ -81,9 +81,23 @@ public class GenController {
 
             List<String> lines;
             if (Files.exists(controllerFile)) {
-                // 기존 컨트롤러 파일 수정
                 lines = Files.readAllLines(controllerFile, StandardCharsets.UTF_8);
-                int lastIndex = lines.size() - 1; // 마지막 중괄호의 인덱스 찾기
+
+                int importIndex = findLastImportIndex(lines); // 마지막 import 문의 인덱스 찾기
+
+                // 새로운 import 문 추가 (기존 import가 없을 경우, 패키지 선언 바로 다음에 추가)
+                if (importIndex != -1) {
+                    lines.add(importIndex + 1, "import " + request.getSpringPackageName() + ".dto.request.api" + (i + 1) + ".*;");
+                    lines.add(importIndex + 2, "import " + request.getSpringPackageName() + ".dto.response.api" + (i + 1) + ".*;");
+                } else {
+                    int packageIndex = findPackageIndex(lines); // 패키지 선언의 인덱스 찾기
+                    if (packageIndex != -1) {
+                        lines.add(packageIndex + 1, "import " + request.getSpringPackageName() + ".dto.request.api" + (i + 1) + ".*;");
+                        lines.add(packageIndex + 2, "import " + request.getSpringPackageName() + ".dto.response.api" + (i + 1) + ".*;");
+                    }
+                }
+
+                int lastIndex = findLastIndex(lines);
                 // 새로운 메소드를 마지막 중괄호 바로 전에 추가
                 lines.addAll(lastIndex, generateMethodLines(api, i + 1));
             } else {
@@ -93,9 +107,10 @@ public class GenController {
 
                 lines.add("import org.springframework.web.bind.annotation.*;");
                 lines.add("import org.springframework.http.ResponseEntity;");
-                lines.add("import " + request.getSpringPackageName() + ".dto.*;\n");
+                lines.add("import " + request.getSpringPackageName() + ".dto.request.api" + (i+1) + ".*;");
+                lines.add("import " + request.getSpringPackageName() + ".dto.response.api" + (i+1) + ".*;");
 
-                lines.add("@RestController");
+                lines.add("\n@RestController");
                 lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
                 lines.add("public class " + className + " {");
                 lines.addAll(generateMethodLines(api, i + 1));
@@ -169,5 +184,35 @@ public class GenController {
         }
 
         return result.toString();
+    }
+
+    private int findLastImportIndex(List<String> lines) {
+        int lastIndex = -1;
+        for (int j = 0; j < lines.size(); j++) {
+            if (lines.get(j).startsWith("import ")) {
+                lastIndex = j;
+            }
+        }
+        return lastIndex;
+    }
+
+    private int findPackageIndex(List<String> lines) {
+        for (int j = 0; j < lines.size(); j++) {
+            if (lines.get(j).startsWith("package ")) {
+                return j;
+            }
+        }
+        return -1;
+    }
+
+    private int findLastIndex(List<String> lines) {
+        log.info("lines : " + lines.size());
+        for (int j = lines.size() - 1; j >= 0; j--) {
+            if (lines.get(j).trim().equals("}")) {
+                log.info("lastidx : " + j);
+                return j;
+            }
+        }
+        return -1;
     }
 }

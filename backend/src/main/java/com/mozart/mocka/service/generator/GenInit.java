@@ -63,8 +63,7 @@ public class GenInit {
     private String generatePomContent(InitializerRequestDto request) {
         return "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
             "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
-            +
+            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
             "    <modelVersion>4.0.0</modelVersion>\n" +
             "    <groupId>" + request.getSpringGroupId() + "</groupId>\n" +
             "    <artifactId>" + request.getSpringArtifactId() + "</artifactId>\n" +
@@ -82,6 +81,12 @@ public class GenInit {
             "            <groupId>org.springframework.boot</groupId>\n" +
             "            <artifactId>spring-boot-starter</artifactId>\n" +
             "        </dependency>\n" +
+            "        <dependency>\n" +
+            "            <groupId>org.projectlombok</groupId>\n" +
+            "            <artifactId>lombok</artifactId>\n" +
+            "            <version>1.18.22</version>\n" +
+            "            <scope>provided</scope>\n" +
+            "        </dependency>\n" +
             "        <!-- Additional dependencies can be added here -->\n" +
             "    </dependencies>\n" +
             "    <properties>\n" +
@@ -89,6 +94,7 @@ public class GenInit {
             "    </properties>\n" +
             "</project>";
     }
+
 
     public void createGradleBuildFile(Path projectRoot, InitializerRequestDto request)
         throws IOException {
@@ -114,6 +120,8 @@ public class GenInit {
             "dependencies {\n" +
             "    implementation 'org.springframework.boot:spring-boot-starter-web'\n" +
             "    testImplementation('org.springframework.boot:spring-boot-starter-test')\n" +
+            "    compileOnly 'org.projectlombok:lombok'\n"+
+            "    annotationProcessor 'org.projectlombok:lombok'\n" +
             "    // Add additional dependencies here\n" +
             "}\n\n" +
             "test {\n" +
