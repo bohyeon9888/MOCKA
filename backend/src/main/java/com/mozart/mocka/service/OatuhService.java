@@ -2,6 +2,7 @@ package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.dto.CustomOauth2User;
+import com.mozart.mocka.dto.OauthDto;
 import com.mozart.mocka.dto.response.GoogleResponseDto;
 import com.mozart.mocka.dto.response.LoginResponseDto;
 import com.mozart.mocka.dto.response.Oauth2ResponseDto;
@@ -31,7 +32,7 @@ public class OatuhService {
     private final MembersRepository membersRepository;
     private final RefreshService refreshTokenService;
 
-    public LoginResponseDto getAccessToken(String code, String provider) {
+    public OauthDto getAccessToken(String code, String provider) {
         System.out.println("================get access token==================");
         RestTemplate restTemplate = new RestTemplate();
         String clientId = env.getProperty("spring.security.oauth2.client.registration." + provider + ".client-id");
@@ -64,7 +65,7 @@ public class OatuhService {
         return getMemberResource(accessToken, provider);
     }
 
-    public LoginResponseDto getMemberResource(String accessToken, String provider) {
+    public OauthDto getMemberResource(String accessToken, String provider) {
         System.out.println("================get user resource==================");
         String resourceUrl = env.getProperty("spring.security.oauth2.client.provider." + provider + ".user-info-uri");
         RestTemplate restTemplate = new RestTemplate();
@@ -84,7 +85,7 @@ public class OatuhService {
         return getMemberInfo(oAuth2Response);
     }
 
-    public LoginResponseDto getMemberInfo(Oauth2ResponseDto oAuth2Response) {
+    public OauthDto getMemberInfo(Oauth2ResponseDto oAuth2Response) {
 
         System.out.println("================get user info==================");
         String role = "ROLE_USER";
@@ -107,11 +108,15 @@ public class OatuhService {
         // refresh token 저장
         refreshTokenService.storeRefreshToken(name, refresh, 604800000L);
 
-        return LoginResponseDto.builder()
+        LoginResponseDto loginDto = LoginResponseDto.builder()
                 .nickname(oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4))
                 .profile(oAuth2Response.getProfileImg())
                 .accessToken(access)
-                .refreshToken(refresh)
+                .build();
+
+        return OauthDto.builder()
+                .refresh(refresh)
+                .loginResponseDto(loginDto)
                 .build();
     }
 
