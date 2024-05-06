@@ -2,8 +2,11 @@ package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.dto.response.LoginResponseDto;
+import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ public class RefreshService {
 
     private final StringRedisTemplate redisTemplate;
     private final MembersRepository membersRepository;
+    private final JWTUtil jwtUtil;
 
     @Transactional
     public void storeRefreshToken(String username, String refresh, long duration) {
@@ -25,6 +29,27 @@ public class RefreshService {
                 duration,
                 TimeUnit.MILLISECONDS
         );
+    }
+
+    public LoginResponseDto createAccessToken(String username) {
+        Members member = membersRepository.findByMemberNickname(username);
+
+        String newAccess = jwtUtil.createJwt("access", username, member.getMemberProfile(), member.getMemberRole(), 43200000L);
+
+        return LoginResponseDto.builder()
+                .nickname(username)
+                .profile(member.getMemberProfile())
+                .accessToken(newAccess)
+                .build();
+    }
+
+    public Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(7*24*60*60);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 
     public String getRefreshToken(String username) {

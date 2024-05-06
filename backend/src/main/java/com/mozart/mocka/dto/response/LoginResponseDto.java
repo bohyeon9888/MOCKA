@@ -9,5 +9,4 @@ public class LoginResponseDto {
     String nickname;
     String profile;
     String accessToken;
-    String refreshToken;
 }

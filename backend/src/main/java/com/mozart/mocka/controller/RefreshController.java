@@ -1,6 +1,7 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.jwt.JWTUtil;
+import com.mozart.mocka.service.RefreshService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,13 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class RefreshController {
 
     private final JWTUtil jwtUtil;
+    private final RefreshService refreshService;
 
     @PostMapping
     public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
+            if (cookie.getName().equals("refreshToken")) {
                 refresh = cookie.getValue();
             }
         }
@@ -52,16 +54,14 @@ public class RefreshController {
         }
 
         String username = jwtUtil.getUsername(refresh);
-        String profile = jwtUtil.getProfile(refresh);
-        String role = jwtUtil.getRole(refresh);
+        String newRefresh = jwtUtil.createJwt("refresh", username, jwtUtil.getProfile(refresh), jwtUtil.getRole(refresh), 604800000L);
 
-        //make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, profile, role, 43200000L);
+        refreshService.deleteRefreshToken(username);
 
         //response
-        response.setHeader("access", newAccess);
+        response.addCookie(refreshService.createCookie("refreshToken", newRefresh));
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(refreshService.createAccessToken(username), HttpStatus.OK);
     }
 
 }
