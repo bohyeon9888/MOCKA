@@ -1,9 +1,5 @@
-import createUserStore from "./user";
-import createProjectStore from "./project";
-import createModalStore from "./modal";
-
-const useUserStore = createUserStore();
-const useProjectStore = createProjectStore();
-const useModalStore = createModalStore();
+import useUserStore from "./user";
+import useProjectStore from "./project";
+import useModalStore from "./modal";
 
 export { useUserStore, useProjectStore, useModalStore };
