@@ -4,7 +4,7 @@ function UpdateHistory() {
   return (
     <div>
       <img
-        src="/public/asset/home/home-left-pointer.svg"
+        src="/asset/home/home-left-pointer.svg"
         className=""
         alt="home-left-pointer"
       />
