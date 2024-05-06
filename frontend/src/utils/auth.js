@@ -5,16 +5,19 @@ export function isAuthenticated() {
   return !!token;
 }
 
-export function login(token) {
-  Cookies.set("access_token", token, { expires: 1 });
+export function login(accessToken) {
+  const nextHalfDay = new Date();
+  nextHalfDay.setTime(nextHalfDay.getTime() + 12 * 60 * 60 * 1000);
+
+  Cookies.set("accessToken", accessToken, { expires: nextHalfDay });
 }
 
 export function logout() {
-  Cookies.remove("access_token");
+  Cookies.remove("accessToken");
 }
 
 export function getToken() {
-  return Cookies.get("access_token");
+  return Cookies.get("accessToken");
 }
 
 export function getValueFromToken(key) {

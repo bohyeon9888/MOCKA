@@ -1,6 +1,6 @@
 export default function LoginModal() {
   const googleLogin = () => {
-    location.href = `${import.meta.env.VITE_BASE_URL}/oauth/redirect/google`;
+    location.href = `${import.meta.env.VITE_BASE_URL}oauth/redirect/google`;
   };
 
   return (

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToken } from "../utils/auth";
+import { tokenRefresh } from "./social";
 
 const authAxios = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -15,6 +16,20 @@ authAxios.interceptors.request.use(
   },
   (e) => {
     return Promise.reject(e);
+  },
+);
+
+authAxios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    if (error.response?.status === 401) {
+      await tokenRefresh();
+      const accessToken = getToken();
+      error.config.headers.Authorization = `Bearer ${accessToken}`;
+      return authAxios(error.config);
+    }
   },
 );
 

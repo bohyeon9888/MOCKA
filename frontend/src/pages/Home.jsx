@@ -50,7 +50,7 @@ function Home() {
       <div className="ml-[60px] mr-[60px] mt-[40px] flex w-1/2  p-4">
         <div className="">
           <img
-            src="/public/asset/home/home-up-pointer.svg"
+            src="/asset/home/home-up-pointer.svg"
             className="mx-auto w-[30px] cursor-pointer"
             alt="home-down-pointer"
           />
@@ -61,7 +61,7 @@ function Home() {
             <Project title="PROJECT NAME" date="" />
           </div>
           <img
-            src="/public/asset/home/home-down-pointer.svg"
+            src="/asset/home/home-down-pointer.svg"
             className="mx-auto  w-[30px] cursor-pointer"
             alt="home-up-pointer"
           />

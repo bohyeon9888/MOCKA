@@ -22,20 +22,62 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class GenController {
+
     private final ApiPathRepository apiPathRepository;
     private final ApiRequestRepository apiRequestRepository;
     private final ApiResponseRepository apiResponseRepository;
+    private final GenRequest genRequest;
+    private final GenResponse genResponse;
 
     public void createController(
-        Path projectRoot, List<ApiProjects> apis, InitializerRequestDto request, int index) throws IOException {
-        Path controllerDir = projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/controller");
+
+        Path projectRoot, List<ApiProjects> apis, InitializerRequestDto request) throws Exception {
+        String basePath = "src/main/java/";
+        Path controllerDir = projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/") + "/controller");
         Files.createDirectories(controllerDir); // 컨트롤러 디렉토리 생성
 
-        for (ApiProjects api : apis) {
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/") + "/dto")); // DTO 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/")
+                + "/dto/response")); // Response 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/")
+                + "/dto/request")); // Request 디렉토리 생성
+
+        for (int i = 0; i < apis.size(); i++) {
+            ApiProjects api = apis.get(i); // 현재 API 프로젝트를 가져옴
+
+            log.info("create dto");
+
+            Path requestDirNo = projectRoot.resolve(
+                basePath + request.getSpringPackageName().replace(".", "/") + "/dto/request/api" + (
+                    i + 1));
+            Files.createDirectories(requestDirNo); // Request 디렉토리 생성
+            genRequest.makeStrObject("RequestDtoNo" + (i + 1),
+                request.getSpringPackageName() + ".dto.request.api" + (i + 1), api.getApiId(),
+                requestDirNo.toString());
+
+            Path responseDirNo = projectRoot.resolve(
+                basePath + request.getSpringPackageName().replace(".", "/") + "/dto/response/api"
+                    + (i + 1));
+            Files.createDirectories(responseDirNo); // Response 디렉토리 생성
+            genResponse.makeStrObject("ResponseDtoNo" + (i + 1),
+                request.getSpringPackageName() + ".dto.response.api" + (i + 1), api.getApiId(),
+                responseDirNo.toString());
+
+            log.info("create dto success");
+            log.info("create controller");
+
             String controllerName = api.getApiUriStr().split("/")[1];
-            controllerName = controllerName.substring(0, 1).toUpperCase() + controllerName.substring(1);
+            controllerName =
+                controllerName.substring(0, 1).toUpperCase() + controllerName.substring(1);
             String className = controllerName + "Controller";
             Path controllerFile = controllerDir.resolve(className + ".java");
+
+            log.info("create controller success");
+            log.info("update controller");
 
             List<String> lines;
             if (Files.exists(controllerFile)) {
@@ -43,7 +85,7 @@ public class GenController {
                 lines = Files.readAllLines(controllerFile, StandardCharsets.UTF_8);
                 int lastIndex = lines.size() - 1; // 마지막 중괄호의 인덱스 찾기
                 // 새로운 메소드를 마지막 중괄호 바로 전에 추가
-                lines.addAll(lastIndex, generateMethodLines(api, index++));
+                lines.addAll(lastIndex, generateMethodLines(api, i + 1));
             } else {
                 // 새 컨트롤러 파일 생성
                 lines = new ArrayList<>();
@@ -56,9 +98,11 @@ public class GenController {
                 lines.add("@RestController");
                 lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
                 lines.add("public class " + className + " {");
-                lines.addAll(generateMethodLines(api, index++));
+                lines.addAll(generateMethodLines(api, i + 1));
                 lines.add("}");
             }
+
+            log.info("update controller success");
 
             // 파일 쓰기
             Files.write(controllerFile, lines, StandardCharsets.UTF_8);
@@ -77,14 +121,14 @@ public class GenController {
         List<ApiResponse> apiResponses = apiResponseRepository.findByApiProject_ApiId(apiId);
 
         String methodName = "autoCreatedApiNo" + index;
-        String responseType = apiResponses.isEmpty() ? "?" : "ResponseDtoNo" + index; // DTO 클래스 이름 또는 Void
+        String responseType =
+            apiResponses.isEmpty() ? "?" : "ResponseDtoNo" + index; // DTO 클래스 이름 또는 Void
         String requestType = "RequestDtoNo" + index; // DTO 클래스 이름
 
         String methodSignature = "ResponseEntity<" + responseType + ">";
         if (apiPaths.isEmpty() && apiRequests.isEmpty()) {
             methodLines.add("    public " + methodSignature + " " + methodName + "() {");
-        }
-        else {
+        } else {
             methodLines.add("    public " + methodSignature + " " + methodName + "(");
 
             apiPaths.forEach(path -> {
