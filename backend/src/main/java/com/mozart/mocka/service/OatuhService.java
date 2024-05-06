@@ -8,9 +8,7 @@ import com.mozart.mocka.dto.response.Oauth2ResponseDto;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,13 +18,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 

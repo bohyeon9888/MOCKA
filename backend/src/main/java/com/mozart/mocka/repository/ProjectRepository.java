@@ -15,4 +15,6 @@ public interface ProjectRepository extends JpaRepository<Projects, Long> {
             " from ProjectHistories ph left join Projects p on ph.projectHistoryPK.projectId = p.projectId " +
             " where ph.projectHistoryPK.memberId =:memberId ")
     List<ProjectsListResponseDto> findMyList(Long memberId);
+
+    Projects findByProjectId(Long projectId);
 }

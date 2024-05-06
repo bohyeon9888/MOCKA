@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import ModalContainer from "./components/ModalContainer";
+import useModalStore from "./store/modal";
+import Login from "./pages/Login";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { isAuthenticated } from "./utils/auth";
+import Main from "./pages/Main";
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function RequireAuthRoutes() {
+  const location = useLocation();
+  const loggedIn = isAuthenticated();
+
+  if (!loggedIn)
+    return <Navigate to="/main" replace state={{ from: location }} />;
+
+  return <Outlet />;
 }
 
-export default App
+function App() {
+  const { isOpen, title, children } = useModalStore();
+
+  return (
+    <BrowserRouter>
+      <Header />
+      <main className="flex h-full w-full flex-row">
+        <Sidebar />
+        <Routes>
+          <Route path="/login/google" element={<Login />} />
+          <Route path="/main" element={<Main />} />
+          <Route element={<RequireAuthRoutes />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+        </Routes>
+      </main>
+      {isOpen && <ModalContainer title={title}>{children}</ModalContainer>}
+    </BrowserRouter>
+  );
+}
+
+export default App;

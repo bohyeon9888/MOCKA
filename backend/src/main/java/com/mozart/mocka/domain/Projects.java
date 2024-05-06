@@ -16,7 +16,7 @@ import org.hibernate.annotations.Where;
 public class Projects extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "project_id")
     private Long projectId;
 
     @Column
@@ -33,4 +33,7 @@ public class Projects extends BaseEntity {
 
     @Column
     private Long hashId;
+
+    @Column
+    private String hash_value;
 }
