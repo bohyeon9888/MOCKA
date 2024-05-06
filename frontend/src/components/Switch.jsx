@@ -1,8 +1,7 @@
 import { useState } from "react";
 import combineClassName from "../utils/combineClassName";
 
-export default function Switch({ defaultValue, changeHandler }) {
-  const [state, setState] = useState(!!defaultValue);
+export default function Switch({ value, changeHandler }) {
   const commonTrackClassName =
     "w-[44px] h-6 rounded-full transition-all cursor-pointer relative";
   const commonThumbClassName =
@@ -18,22 +17,21 @@ export default function Switch({ defaultValue, changeHandler }) {
   };
 
   const onClickHandler = () => {
-    if (changeHandler) changeHandler(!state);
-    setState(!state);
+    if (changeHandler) changeHandler(!value);
   };
 
   return (
     <div
       className={combineClassName(
         commonTrackClassName,
-        state ? onClassName.track : offClassName.track,
+        value ? onClassName.track : offClassName.track,
       )}
       onClick={onClickHandler}
     >
       <div
         className={combineClassName(
           commonThumbClassName,
-          state ? onClassName.thumb : offClassName.thumb,
+          value ? onClassName.thumb : offClassName.thumb,
         )}
       />
     </div>
