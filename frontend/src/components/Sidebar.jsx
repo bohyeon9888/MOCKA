@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useModalStore } from "../store";
+import LoginModal from "./modal/LoginModal";
 
 function Sidebar() {
+  const { openModal } = useModalStore();
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
 
@@ -10,6 +13,10 @@ function Sidebar() {
 
   const toggleTeams = () => {
     setIsTeamsOpen(!isTeamsOpen);
+  };
+
+  const openLoginModal = () => {
+    openModal("Sign in", <LoginModal />);
   };
 
   return (
@@ -86,13 +93,16 @@ function Sidebar() {
       </div>
       <div className="absolute bottom-0 left-0 w-full text-xl text-gray-700">
         <div className="mx-auto my-1 h-[1px] w-[170px] items-center bg-sidebar-division-color" />
-        <div className="mt-1 flex justify-center p-5">
+        <div
+          className="mt-1 flex cursor-pointer justify-center p-5"
+          onClick={openLoginModal}
+        >
           <img
             src="/public/asset/sidebar/sidebar-profile.svg"
-            className="absolute left-6 h-10 cursor-pointer"
+            className="absolute left-6 h-10"
             alt="sidebar-profile"
           />
-          <h5 className="my-1 ml-2 text-center font-bold text-gray-700">
+          <h5 className="my-1 ml-2 text-center text-[13px] font-bold text-gray-700">
             Login
           </h5>
         </div>

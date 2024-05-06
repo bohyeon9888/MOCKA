@@ -2,7 +2,6 @@ export default function mergePathVariables(
   oldPathVariable,
   newPathVariableArr,
 ) {
-  console.log(oldPathVariable, newPathVariableArr);
   return newPathVariableArr.map((newKey, idx) => {
     const type =
       oldPathVariable.find(({ key }) => key === newKey)?.type ||

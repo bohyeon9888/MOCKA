@@ -8,6 +8,8 @@ import com.mozart.mocka.service.ProjectService;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+
+import com.mozart.mocka.service.generator.GenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -16,18 +18,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/initializer")
 public class InitializerController {
-
+    private final GenResponse genResponse;
     private final InitializerService initializerService;
     private final ApiProjectRepository apiProjectRepository;
 
@@ -67,4 +65,5 @@ public class InitializerController {
                 .body(errorResource);
         }
     }
+
 }

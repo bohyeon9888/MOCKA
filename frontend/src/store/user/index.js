@@ -1,7 +1,7 @@
-import { createStore } from "zustand";
-import { userActions } from "./actions";
+import { create } from "zustand";
+import { userActions } from "./action";
 
-const useUserStore = createStore((set) => ({
+const useUserStore = create((set) => ({
   user: null,
   login: async (username, password) =>
     userActions.login(set, username, password),
