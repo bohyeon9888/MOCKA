@@ -36,7 +36,7 @@ public class OatuhService {
     private final Environment env;
     private final JWTUtil jwtUtil;
     private final MembersRepository membersRepository;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshService refreshTokenService;
 
     public LoginResponseDto getAccessToken(String code, String provider) {
         System.out.println("================get access token==================");

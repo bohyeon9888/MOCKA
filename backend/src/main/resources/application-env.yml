@@ -1,8 +1,3 @@
 spring:
   security:
     banned-path: "api/invite/*"
-
-logging:
-  level:
-    org:
-      springframework: DEBUG

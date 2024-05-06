@@ -1,5 +1,8 @@
 package com.mozart.mocka.service;
 
+import com.mozart.mocka.domain.Members;
+import com.mozart.mocka.dto.response.LoginResponseDto;
+import com.mozart.mocka.repository.MembersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -9,8 +12,10 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenService {
+public class RefreshService {
+
     private final StringRedisTemplate redisTemplate;
+    private final MembersRepository membersRepository;
 
     @Transactional
     public void storeRefreshToken(String username, String refresh, long duration) {
