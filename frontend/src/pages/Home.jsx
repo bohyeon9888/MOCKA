@@ -1,43 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
+import DropDown from "../components/DropDown";
+import Button from "../components/button/Button.jsx";
+import Project from "../components/button/Project";
 
 function Home() {
+  const [selectedValue, setSelectedValue] = useState("Select"); //초기 선택값
+
+  const options = ["Private", "Public", "Teams"];
+
+  function handleSelect(value) {
+    setSelectedValue(value);
+  }
+
   return (
     <div className="flex w-full ">
       <div className="ml-[60px] mr-[60px] mt-[60px] w-1/2 items-center justify-center p-4">
         <div className="">
-          <h1 className="tracking-[-0.08em]">Mocka</h1>
-          <h3 className="mt-3">
-            Easily Create API Mockups and Servers from Documents.
-          </h3>
+          <h2 className="tracking-[0.08em]">NEW PROJECT</h2>
 
-          <div className="ml-3 mt-[50px] tracking-[-0.08em]">
-            <h2>API Specification Writing</h2>
-            <h3 className="ml-3 mt-3">
-              Seamlessly draft API specifications within the platform.
-            </h3>
-            <h2 className="mt-10">Document-Based Mockup</h2>
-            <h3 className="ml-3 mt-3">
-              Automatically generate API mockups based on provided documents.
-            </h3>
-            <h2 className="mt-10">Basic Server Skeleton Generation</h2>
-            <h3 className="ml-3 mt-3">
-              Create a foundational structure for the server, including DTOs and
-              controllers, tailored to the specified API.
-            </h3>
-            <h2 className="mt-10">Integrated Team Collaboration</h2>
-            <h3 className="ml-3 mt-3">
-              Provides team members collaboration between statements.
-            </h3>
+          <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[27px]">
+            <div className="absolute ml-[295px] mt-[150px]">
+              <Button type="Create" />
+            </div>
+            <h5 className="tracking-[0.2em]">PROJECT NAME</h5>
+            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px]  border-[1px] border-gray-500 bg-white" />
+            <h5 className="mt-[15px] tracking-[0.2em]">COMMON URL</h5>
+            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px]  border-[1px] border-gray-500 bg-white" />
+            <h5 className="mb-[4px] mt-[15px] tracking-[0.2em]">VISIBILITY</h5>
+            <DropDown
+              value={selectedValue}
+              options={options}
+              changeHandler={handleSelect}
+            ></DropDown>
           </div>
 
-          <div className="mt-7 flex justify-center">
-            <button className="rounded-md bg-gray-500 px-6 py-3 font-bold text-white hover:bg-gray-600">
-              Get Started
-            </button>
+          <div className="mt-7">
+            <h2 className="tracking-[-0.08em]">UPDATE HISTORY</h2>
+
+            <div className="mt-[9px] h-[220px] w-[460px] rounded-[20px] border-[2.5px] border-black bg-black">
+              <img
+                src="public/asset/etc/friend.jpg"
+                className="h-full w-full rounded-[20px]"
+                alt="spcae"
+              />
+            </div>
           </div>
         </div>
       </div>
-      <div className="ml-[60px] mr-[60px] mt-[137px] w-1/2 p-4">미치겠네</div>
+      <div className="ml-[60px] mr-[60px] mt-[40px] flex w-1/2  p-4">
+        <div className="">
+          <img
+            src="/public/asset/home/home-up-pointer.svg"
+            className="mx-auto w-[30px] cursor-pointer"
+            alt="home-down-pointer"
+          />
+          <div className="mb-[30px] mt-[30px] h-[505px] w-[476px]">
+            <Project title="PROJECT NAME" date="" />
+            <Project title="PROJECT NAME" date="" />
+            <Project title="PROJECT NAME" date="" />
+            <Project title="PROJECT NAME" date="" />
+          </div>
+          <img
+            src="/public/asset/home/home-down-pointer.svg"
+            className="mx-auto  w-[30px] cursor-pointer"
+            alt="home-up-pointer"
+          />
+        </div>
+      </div>
     </div>
   );
 }
