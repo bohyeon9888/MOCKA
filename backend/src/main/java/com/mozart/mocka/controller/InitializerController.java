@@ -66,9 +66,4 @@ public class InitializerController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> createTestResponseDto() throws Exception{
-        genResponse.makeStrObject("testClass","example.test",61L);
-        return new ResponseEntity<>("good",HttpStatus.OK);
-    }
 }
