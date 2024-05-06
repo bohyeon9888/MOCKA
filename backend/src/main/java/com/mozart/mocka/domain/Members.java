@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,7 +17,7 @@ import org.hibernate.annotations.Where;
 public class Members extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column
@@ -27,4 +28,10 @@ public class Members extends BaseEntity {
 
     @Column
     private String memberProfile;
+
+    @Column
+    private String memberRole;
+
+    @Column(name = "member_providerid")
+    private String memberProviderId;
 }
