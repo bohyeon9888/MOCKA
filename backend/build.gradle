@@ -41,6 +41,9 @@ dependencies {
 	// configuration
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'io.lettuce.core:lettuce-core'
 //	implementation 'org.hibernate:hibernate-core:6.1.5.Final'  // 최신 버전 확인 필요
 //	implementation 'com.vladmihalcea:hibernate-types-60:2.16.3'
 }

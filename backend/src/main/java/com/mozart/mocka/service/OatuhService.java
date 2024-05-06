@@ -7,7 +7,9 @@ import com.mozart.mocka.dto.response.Oauth2ResponseDto;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,8 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -31,6 +35,7 @@ public class OatuhService {
     private final Environment env;
     private final JWTUtil jwtUtil;
     private final MembersRepository membersRepository;
+    private final RefreshTokenService refreshTokenService;
 
     public Map<String, Object> getAccessToken(String code, String provider) {
         System.out.println("================get access token==================");
@@ -104,6 +109,9 @@ public class OatuhService {
 
         // SecurityContext에 Authentication 객체 저장
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+        // refresh token 저장
+        refreshTokenService.storeRefreshToken(name, refresh, 604800000L);
 
         Map<String, Object> resp = new HashMap<>();
         resp.put("nickname", oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4));
