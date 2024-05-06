@@ -25,11 +25,10 @@ public class InitializerService {
 
     private final GenInit genInit;
     private final GenController genController;
-    private final GenRequest genRequest;
-    private final GenResponse genResponse;
 
     // 파일 생성
-    public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis) throws IOException {
+    public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis)
+        throws Exception {
 
         Path projectRoot = Paths.get(request.getSpringArtifactId());
         genInit.createDirectories(projectRoot, request);
@@ -45,8 +44,7 @@ public class InitializerService {
             genInit.updateSettingsGradleFile(projectRoot, request.getSpringName());
         }
 
-        int apiNo = 1;
-        genController.createController(projectRoot, apis, request, apiNo);
+        genController.createController(projectRoot, apis, request);
 
         return projectRoot;
     }

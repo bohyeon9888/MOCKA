@@ -16,15 +16,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GenInit {
 
-    public void createDirectories(Path projectRoot, InitializerRequestDto request) throws IOException {
-        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace('.', '/')));
+    public void createDirectories(Path projectRoot, InitializerRequestDto request)
+        throws IOException {
+        Files.createDirectories(projectRoot.resolve(
+            "src/main/java/" + request.getSpringPackageName().replace('.', '/')));
         Files.createDirectories(projectRoot.resolve("src/main/resources"));
-        Files.createDirectories(projectRoot.resolve("src/test/java/" + request.getSpringPackageName().replace('.', '/')));
+        Files.createDirectories(projectRoot.resolve(
+            "src/test/java/" + request.getSpringPackageName().replace('.', '/')));
         Files.createDirectories(projectRoot.resolve("src/test/resources"));
-        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/controller")); // 컨트롤러 디렉토리 생성
-        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto")); // DTO 디렉토리 생성
-        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto/response")); // Response 디렉토리 생성
-        Files.createDirectories(projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace(".", "/") + "/dto/request")); // Request 디렉토리 생성
     }
 
     public void createApplicationProperties(Path projectRoot) throws IOException {
@@ -32,8 +31,11 @@ public class GenInit {
         Files.createFile(propertiesPath);
     }
 
-    public void createApplicationClass(Path projectRoot, InitializerRequestDto request) throws IOException {
-        Path mainClassPath = projectRoot.resolve("src/main/java/" + request.getSpringPackageName().replace('.', '/') + "/Application.java");
+    public void createApplicationClass(Path projectRoot, InitializerRequestDto request)
+        throws IOException {
+        Path mainClassPath = projectRoot.resolve(
+            "src/main/java/" + request.getSpringPackageName().replace('.', '/')
+                + "/Application.java");
         try (BufferedWriter writer = Files.newBufferedWriter(mainClassPath)) {
             writer.write(generateMainClassContent(request));
         }
@@ -61,7 +63,8 @@ public class GenInit {
     private String generatePomContent(InitializerRequestDto request) {
         return "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
             "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
+            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
+            +
             "    <modelVersion>4.0.0</modelVersion>\n" +
             "    <groupId>" + request.getSpringGroupId() + "</groupId>\n" +
             "    <artifactId>" + request.getSpringArtifactId() + "</artifactId>\n" +
@@ -87,7 +90,8 @@ public class GenInit {
             "</project>";
     }
 
-    public void createGradleBuildFile(Path projectRoot, InitializerRequestDto request) throws IOException {
+    public void createGradleBuildFile(Path projectRoot, InitializerRequestDto request)
+        throws IOException {
         Path buildFilePath = projectRoot.resolve("build.gradle");
         try (BufferedWriter writer = Files.newBufferedWriter(buildFilePath)) {
             writer.write(generateGradleBuildContent(request));
@@ -96,7 +100,8 @@ public class GenInit {
 
     private String generateGradleBuildContent(InitializerRequestDto request) {
         return "plugins {\n" +
-            "    id 'org.springframework.boot' version '" + request.getSpringPlatformVersion() + "'\n" +
+            "    id 'org.springframework.boot' version '" + request.getSpringPlatformVersion()
+            + "'\n" +
             "    id 'io.spring.dependency-management' version '1.0.11.RELEASE'\n" +
             "    id 'java'\n" +
             "}\n\n" +
@@ -116,8 +121,10 @@ public class GenInit {
             "}";
     }
 
-    public void createMavenSettings(Path projectRoot, InitializerRequestDto request) throws IOException{
-        Path sourceDirectory = Paths.get("src/main/templates/maven" + request.getSpringPlatformVersion());
+    public void createMavenSettings(Path projectRoot, InitializerRequestDto request)
+        throws IOException {
+        Path sourceDirectory = Paths.get(
+            "src/main/templates/maven" + request.getSpringPlatformVersion());
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
         String[] requiredFiles = {
@@ -148,8 +155,10 @@ public class GenInit {
         }
     }
 
-    public void createGradleSettings(Path projectRoot, InitializerRequestDto request) throws IOException{
-        Path sourceDirectory = Paths.get("src/main/templates/gradle" + request.getSpringPlatformVersion());
+    public void createGradleSettings(Path projectRoot, InitializerRequestDto request)
+        throws IOException {
+        Path sourceDirectory = Paths.get(
+            "src/main/templates/gradle" + request.getSpringPlatformVersion());
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
         String[] requiredFiles = {
@@ -185,7 +194,8 @@ public class GenInit {
         Path settingsFile = projectRoot.resolve("settings.gradle");
         List<String> lines = Files.readAllLines(settingsFile, StandardCharsets.UTF_8);
         List<String> modifiedLines = lines.stream()
-            .map(line -> line.startsWith("rootProject.name") ? "rootProject.name = '" + projectName + "'" : line)
+            .map(line -> line.startsWith("rootProject.name") ? "rootProject.name = '" + projectName
+                + "'" : line)
             .collect(Collectors.toList());
         Files.write(settingsFile, modifiedLines, StandardCharsets.UTF_8);
     }

@@ -38,6 +38,7 @@ public class InitializerController {
         // 프로젝트 가져오기
 
         try {
+
             Path projectRoot = initializerService.createInitializerFiles(request, apis);
             Path zipPath = initializerService.packageProject(projectRoot);
 

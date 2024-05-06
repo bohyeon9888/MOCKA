@@ -13,12 +13,15 @@ import com.mozart.mocka.repository.ApiRequestRepository;
 import com.mozart.mocka.repository.ApiResponseRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ApiService {
+
     private final ApiProjectRepository apiProjectRepository;
     private final ApiPathRepository apiPathRepository;
     private final ApiRequestRepository apiRequestRepository;
@@ -26,36 +29,46 @@ public class ApiService {
 
     public void createApi(Long projectId, ApiCreateRequestDto dto) throws JsonProcessingException {
         //api create
-        ApiProjects apiProject = insertApiProject(projectId,dto.getApiMethod(),dto.getApiUri(), dto.isApiResponseIsArray(), dto.getApiResponseSize());
+        ApiProjects apiProject = insertApiProject(projectId, dto.getApiMethod(), dto.getApiUri(),
+            dto.isApiResponseIsArray(), dto.getApiResponseSize());
         for (PathVariableDto path : dto.getApiPathVariable()) {
             //uri contain check
-            if(!dto.getApiUri().contains(path.getKey()))
+            if (!dto.getApiUri().contains(path.getKey())) {
                 return;
+            }
             apiPathRepository.create(apiProject.getApiId(), path.getKey(), path.getType());
         }
 
         ObjectMapper mapper = new ObjectMapper();
         for (RequestApiDto path : dto.getApiRequest()) {
-            System.out.println("request///" + path.isArrayList());
-            apiRequestRepository.create(apiProject.getApiId(), path.getKey(),path.getType(),mapper.writeValueAsString(path.getValue()), path.getFakerLocale(), path.getFakerMajor(), path.getFakerSub(),path.isArrayList());
+            log.info("request : " + path.isArrayList());
+            apiRequestRepository.create(apiProject.getApiId(), path.getKey(), path.getType(),
+                mapper.writeValueAsString(path.getValue()), path.getFakerLocale(),
+                path.getFakerMajor(), path.getFakerSub(), path.isArrayList());
         }
         for (ApiDto path : dto.getApiResponse()) {
-            System.out.println("response///" + path.isArrayList());
-            apiResponseRepository.create(apiProject.getApiId(), path.getKey(), path.getType(), mapper.writeValueAsString(path.getValue()), path.getFakerLocale(), path.getFakerMajor(), path.getFakerSub(),path.isArrayList(), path.getArraySize());
+            log.info("response : " + path.isArrayList());
+            apiResponseRepository.create(apiProject.getApiId(), path.getKey(), path.getType(),
+                mapper.writeValueAsString(path.getValue()), path.getFakerLocale(),
+                path.getFakerMajor(), path.getFakerSub(), path.isArrayList(), path.getArraySize());
         }
     }
 
-    public ApiProjects insertApiProject(Long projectId, String apiMethod, String apiUri, boolean apiResponseIsArray, int apiResponseSize) {
+    public ApiProjects insertApiProject(Long projectId, String apiMethod, String apiUri,
+        boolean apiResponseIsArray, int apiResponseSize) {
         String apiUriStr = apiUri;
-        apiUri = replacePathUri(apiUri).replace('/','.');
+        apiUri = replacePathUri(apiUri).replace('/', '.');
 
-        if('.' == apiUri.charAt(0) )
+        if ('.' == apiUri.charAt(0)) {
             apiUri = apiUri.substring(1);
+        }
 
-        if('.' == apiUri.charAt(apiUri.length()-1) )
-            apiUri = apiUri.substring(0,apiUri.length()-1);
-        System.out.println(apiUri);
-        int id = apiProjectRepository.createApi(projectId, apiMethod, apiUri, apiUriStr, apiResponseIsArray, apiResponseSize);
+        if ('.' == apiUri.charAt(apiUri.length() - 1)) {
+            apiUri = apiUri.substring(0, apiUri.length() - 1);
+        }
+        log.info(apiUri);
+        int id = apiProjectRepository.createApi(projectId, apiMethod, apiUri, apiUriStr,
+            apiResponseIsArray, apiResponseSize);
         return apiProjectRepository.findById((long) id).orElse(null);
     }
 
@@ -66,24 +79,27 @@ public class ApiService {
         apiProjectRepository.deleteByApiId(apiId);
     }
 
-    public String replacePathUri(String uri){
-        if(!uri.contains("{"))
+    public String replacePathUri(String uri) {
+        if (!uri.contains("{")) {
             return uri;
+        }
 
         for (int i = 0; i < uri.length(); i++) {
-            if(uri.charAt(i) != '{')
+            if (uri.charAt(i) != '{') {
                 continue;
+            }
 
             for (int j = 0; i + j < uri.length(); j++) {
-                if(uri.charAt(i+j) != '}')
+                if (uri.charAt(i + j) != '}') {
                     continue;
+                }
 
                 String hash = "34e1c029fab";
-                uri = uri.substring(0,i) + hash + uri.substring(i+j+1);
+                uri = uri.substring(0, i) + hash + uri.substring(i + j + 1);
                 break;
             }
         }
-        System.out.println("uri : "+uri);
+        log.info("uri : " + uri);
         return uri;
     }
 }
