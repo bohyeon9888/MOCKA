@@ -11,3 +11,8 @@ export const googleLogin = async (code) => {
     JSON.stringify({ nickname: data.nickname, profile: data.profile }),
   );
 };
+
+export const tokenRefresh = async () => {
+  const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}refresh`);
+  login(data.accessToken);
+};
