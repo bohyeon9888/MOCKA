@@ -17,4 +17,6 @@ public interface ProjectRepository extends JpaRepository<Projects, Long> {
     List<ProjectsListResponseDto> findMyList(Long memberId);
 
     Projects findByProjectId(Long projectId);
+
+    boolean existsByProjectId(Long projectId);
 }

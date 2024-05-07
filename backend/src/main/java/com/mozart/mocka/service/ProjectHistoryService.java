@@ -4,12 +4,16 @@ import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.domain.ProjectHistories;
 import com.mozart.mocka.domain.ProjectHistoryPK;
 import com.mozart.mocka.domain.ProjectInvitations;
+import com.mozart.mocka.dto.response.ProjectMemberDto;
 import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -59,6 +63,26 @@ public class ProjectHistoryService {
         historyRepository.save(data);
         log.info("================= patch 완료 ===============");
         return true;
+    }
+
+    public List<ProjectMemberDto> getMemberList(Long projectId) {
+        List<ProjectHistories> list = historyRepository.findAllByProjectHistoryPK_ProjectId(projectId);
+        log.info("data size : " + list.size());
+        List<ProjectMemberDto> resp = new ArrayList<>();
+
+        for (ProjectHistories hist : list) {
+            Members mem = membersRepository.findByMemberId(hist.getProjectHistoryPK().getMemberId());
+            ProjectMemberDto dto = ProjectMemberDto.builder()
+                    .memberId(mem.getMemberId())
+                    .email(mem.getMemberEmail())
+                    .profile(mem.getMemberProfile())
+                    .role(hist.getProjectRole())
+                    .build();
+
+            resp.add(dto);
+        }
+
+        return resp;
     }
 
 }
