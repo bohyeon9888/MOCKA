@@ -58,6 +58,10 @@ public class ApiService {
         boolean apiResponseIsArray, int apiResponseSize) {
         String apiUriStr = apiUri;
         apiUri = replacePathUri(apiUri).replace('/', '.');
+        int queryIndex = apiUri.indexOf('?');
+        if (queryIndex != -1) {
+            apiUri = apiUri.substring(0, queryIndex);
+        }
 
         if ('.' == apiUri.charAt(0)) {
             apiUri = apiUri.substring(1);
