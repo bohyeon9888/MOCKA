@@ -90,17 +90,17 @@ public class ProjectController {
        return new ResponseEntity<>(jsonNode, HttpStatus.OK);
     }
 
-    @GetMapping("/recent/{memberId}")
-    public ResponseEntity<?> getRecentProject(@PathVariable("memberId") Long memberId) {
+    @GetMapping("/recent")
+    public ResponseEntity<?> getRecentProject() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Members member = membersRepository.findByMemberNickname(auth.getName());
 
-        if (member == null || !Objects.equals(member.getMemberId(), memberId)) {
+        if (member == null) {
             log.debug("일치하는 멤버가 없습니다.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        List<ProjectsListResponseDto> data = projectService.getRecentList(memberId);
+        List<ProjectsListResponseDto> data = projectService.getRecentList(member.getMemberId());
         if (data.isEmpty()) {
             log.debug("데이터가 없습니다.");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
