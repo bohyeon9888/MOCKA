@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useModalStore } from "../store";
+import { useModalStore, useProjectStore } from "../store";
 import LoginModal from "./modal/LoginModal";
 
 function Sidebar() {
   const { openModal } = useModalStore();
+  const { recentProjectList } = useProjectStore;
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
 
@@ -20,7 +21,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className="bg-secondary-color flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 py-5">
+    <aside className="flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
       <div className="flex h-10 justify-center">
         <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
           PROJECT LIST
@@ -49,20 +50,19 @@ function Sidebar() {
           </div>
           <h5 className="font-bold text-gray-700">RECENTS</h5>
         </div>
-        {isRecentsOpen && (
-          <div className="pl-6">
-            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">
-                Item name long 123456789
-              </h5>
-            </div>
-            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">
-                Recent Item 2
-              </h5>
-            </div>
-          </div>
-        )}
+        <div className="pl-6">
+          {isRecentsOpen &&
+            recentProjectList.map(({ projectId, projectName }) => (
+              <div
+                key={projectId}
+                className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300"
+              >
+                <h5 className="truncate font-bold text-gray-700">
+                  {projectName}
+                </h5>
+              </div>
+            ))}
+        </div>
         <div
           className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleTeams}

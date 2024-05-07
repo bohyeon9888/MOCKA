@@ -23,7 +23,7 @@ export default function RequestBox({
 
   const changeKeyHandler = (e) => {
     // if (e.target.value === "") removeItem();
-    changeHandler({ key: e.target.value, type, value, arrayList });
+    changeHandler({ key: e.target.value, type, value, arrayList, arraySize });
   };
 
   const changeValueHandler = (value) => {
@@ -35,7 +35,7 @@ export default function RequestBox({
         arrayList: false,
         arraySize: -1,
       });
-    } else changeHandler({ key: _key, type, value, arrayList });
+    } else changeHandler({ key: _key, type, value, arrayList, arraySize });
   };
 
   const changeTypeHandler = (newType, isSecond) => {
