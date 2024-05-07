@@ -16,32 +16,32 @@ function Sidebar() {
   };
 
   const openLoginModal = () => {
-    openModal("Sign in", <LoginModal />);
+    openModal("", <LoginModal />);
   };
 
   return (
-    <aside className="sidebar relative bottom-0 top-0 h-full w-[216px] overflow-y-auto bg-gray-100 p-2 text-center lg:left-0">
-      <div className="text-xl text-gray-700">
-        <div className="mt-1 flex justify-center p-5">
-          <h5 className="text-center font-bold text-gray-700">PROJECT LIST</h5>
-        </div>
-        <div className="mx-auto my-1 h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
+    <aside className="bg-secondary-color flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 py-5">
+      <div className="flex h-10 justify-center">
+        <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
+          PROJECT LIST
+        </h5>
       </div>
-      <div className="mt-5">
+      <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
+      <div className="h-full w-full px-3">
         <div
-          className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
+          className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleRecents}
         >
           <div className="mr-7 w-3">
             {isRecentsOpen ? (
               <img
-                src="/public/asset/sidebar/sidebar-down-pointer.svg"
+                src="/asset/sidebar/sidebar-down-pointer.svg"
                 className="h-1.5 w-full"
                 alt="sidebar-down-pointer"
               />
             ) : (
               <img
-                src="/public/asset/sidebar/sidebar-right-pointer.svg"
+                src="/asset/sidebar/sidebar-right-pointer.svg"
                 className="h-2.5 w-full"
                 alt="sidebar-right-pointer"
               />
@@ -50,12 +50,16 @@ function Sidebar() {
           <h5 className="font-bold text-gray-700">RECENTS</h5>
         </div>
         {isRecentsOpen && (
-          <div className="pl-12">
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-2 font-bold text-gray-700">Recent Item 1</h5>
+          <div className="pl-6">
+            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
+              <h5 className="truncate font-bold text-gray-700">
+                Item name long 123456789
+              </h5>
             </div>
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-2 font-bold text-gray-700">Recent Item 2</h5>
+            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
+              <h5 className="truncate font-bold text-gray-700">
+                Recent Item 2
+              </h5>
             </div>
           </div>
         )}
@@ -66,13 +70,13 @@ function Sidebar() {
           <div className="mr-7 w-3">
             {isTeamsOpen ? (
               <img
-                src="/public/asset/sidebar/sidebar-down-pointer.svg"
+                src="/asset/sidebar/sidebar-down-pointer.svg"
                 className="h-1.5 w-full"
                 alt="sidebar-down-pointer"
               />
             ) : (
               <img
-                src="/public/asset/sidebar/sidebar-right-pointer.svg"
+                src="/asset/sidebar/sidebar-right-pointer.svg"
                 className="h-2.5 w-full"
                 alt="sidebar-right-pointer"
               />
@@ -81,31 +85,29 @@ function Sidebar() {
           <h5 className="font-bold text-gray-700">TEAMS</h5>
         </div>
         {isTeamsOpen && (
-          <div className="pl-12">
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-2 font-bold text-gray-700">Team Item 1</h5>
+          <div className="pl-6">
+            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
+              <h5 className="truncate font-bold text-gray-700">Team Item 1</h5>
             </div>
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300">
-              <h5 className="ml-2 font-bold text-gray-700">Team Item 2</h5>
+            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
+              <h5 className="truncate font-bold text-gray-700">Team Item 2</h5>
             </div>
           </div>
         )}
       </div>
-      <div className="absolute bottom-0 left-0 w-full text-xl text-gray-700">
-        <div className="mx-auto my-1 h-[1px] w-[170px] items-center bg-sidebar-division-color" />
-        <div
-          className="mt-1 flex cursor-pointer justify-center p-5"
-          onClick={openLoginModal}
-        >
-          <img
-            src="/public/asset/sidebar/sidebar-profile.svg"
-            className="absolute left-6 h-10"
-            alt="sidebar-profile"
-          />
-          <h5 className="my-1 ml-2 text-center text-[13px] font-bold text-gray-700">
-            Login
-          </h5>
-        </div>
+      <div className="h-[1px] w-[170px] items-center bg-sidebar-division-color" />
+      <div
+        className="flex w-[155px] cursor-pointer items-center"
+        onClick={openLoginModal}
+      >
+        <img
+          src="/asset/sidebar/sidebar-profile.svg"
+          className="h-10"
+          alt="sidebar-profile"
+        />
+        <h5 className="my-1 ml-2 w-full text-center text-[13px] font-bold text-gray-700">
+          Sign in
+        </h5>
       </div>
     </aside>
   );

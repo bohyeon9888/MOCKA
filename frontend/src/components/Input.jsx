@@ -8,6 +8,7 @@ export default function Input({
   changeHandler,
   useBorder,
   isValid,
+  onKeyDownHandler,
 }) {
   const commonClassName = isFull
     ? "bg-gray-100 px-3 py-2 text-4 w-full rounded-[10px] h-10 outline-none"
@@ -27,6 +28,7 @@ export default function Input({
       value={value}
       onChange={changeHandler}
       readOnly={readOnly}
+      onKeyDown={onKeyDownHandler}
     />
   );
 }
