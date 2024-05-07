@@ -30,10 +30,14 @@ public class GenInit {
         Files.createDirectories(projectRoot.resolve("src/test/resources"));
     }
 
-    public void createApplicationProperties(Path projectRoot) throws IOException {
+    public void createApplicationProperties(Path projectRoot, String uri) throws IOException {
         Path propertiesPath = projectRoot.resolve("src/main/resources/application.properties");
-        Files.createFile(propertiesPath);
+        try (BufferedWriter writer = Files.newBufferedWriter(propertiesPath, StandardCharsets.UTF_8)) {
+            String commonUri = "server.servlet.context-path=" + uri;
+            writer.write(commonUri);
+        }
     }
+
 
     public void createApplicationClass(Path projectRoot, InitializerRequestDto request)
         throws IOException {

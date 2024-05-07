@@ -111,7 +111,7 @@ public class GenController {
                 lines.add("import " + request.getSpringPackageName() + ".dto.response.api" + (i+1) + ".*;");
 
                 lines.add("\n@RestController");
-                lines.add("@RequestMapping(\"/api/" + controllerName + "\")");
+                lines.add("@RequestMapping(\"/" + controllerName + "\")");
                 lines.add("public class " + className + " {");
                 lines.addAll(generateMethodLines(api, i + 1));
                 lines.add("}");
