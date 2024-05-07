@@ -1,6 +1,7 @@
 package com.mozart.mocka.service.generator;
 
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.util.DependencyManager;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,13 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class GenInit {
 
+    private final DependencyManager dependencyManager;
     public void createDirectories(Path projectRoot, InitializerRequestDto request)
         throws IOException {
         Files.createDirectories(projectRoot.resolve(
