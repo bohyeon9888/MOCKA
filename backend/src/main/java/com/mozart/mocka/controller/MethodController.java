@@ -37,7 +37,7 @@ public class MethodController {
         //delete 삭제 인증 체크
         authService.deleteCheck(projectId,apiId);
 
-//        apiService.deleteApi(projectId, apiId);
+        apiService.deleteApi(projectId, apiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
