@@ -27,12 +27,12 @@ public class InitializerService {
     private final GenController genController;
 
     // 파일 생성
-    public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis)
+    public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis, String uri)
         throws Exception {
 
         Path projectRoot = Paths.get(request.getSpringArtifactId());
         genInit.createDirectories(projectRoot, request);
-        genInit.createApplicationProperties(projectRoot);
+        genInit.createApplicationProperties(projectRoot, uri);
         genInit.createApplicationClass(projectRoot, request);
 
         if ("Maven".equalsIgnoreCase(request.getSpringType())) {
