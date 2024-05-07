@@ -98,7 +98,7 @@ public class GenInit {
             .append("        </dependency>\n");
 
         // 추가 의존성이 필요하다면 여기에 추가
-        for (String dependencyId : request.getSpringDependencyName()) {
+        for (String dependencyId : request.getSpringDependencyId()) {
             String dependency = dependencyManager.getPomDependency(request.getSpringPlatformVersion(), dependencyId);
             if (dependency != null) {
                 sb.append(dependency).append("\n");
@@ -147,7 +147,7 @@ public class GenInit {
             .append("    compileOnly 'org.projectlombok:lombok'\n")
             .append("    annotationProcessor 'org.projectlombok:lombok'\n");
         // 추가 의존성이 필요하다면 여기에 추가
-        for (String dependencyId : request.getSpringDependencyName()) {
+        for (String dependencyId : request.getSpringDependencyId()) {
             String dependency = dependencyManager.getGradleDependency(request.getSpringPlatformVersion(), dependencyId);
             if (dependency != null) {
                 sb.append(dependency).append("\n");
