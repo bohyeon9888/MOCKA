@@ -22,6 +22,7 @@ public class ProjectService {
     private final ProjectHistoryRepository projectHistoryRepository;
     private final BaseUriRepository baseUriRepository;
     private final ApiProjectRepository apiProjectRepository;
+    private final HashKeyService hashKeyService;
     private final ObjectMapper mapper;
     @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
@@ -31,7 +32,13 @@ public class ProjectService {
                 .commonUri(commonUri)
                 .build();
 
-        projectRepository.save(projects);
+        projects = projectRepository.save(projects);
+        try {
+            projects.setProjectHashKey(hashKeyService.encryptLong(projects.getProjectId()));
+            projectRepository.save(projects);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         ProjectHistoryPK projectHistoryPK = makePK(projects.getProjectId(), memberId);
         ProjectHistories projectHistories = ProjectHistories.builder()
