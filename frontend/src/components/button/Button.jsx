@@ -19,7 +19,7 @@ function Button({ type }) {
       className={`flex h-[30px]  shrink-0 grow-0
         cursor-pointer items-center justify-center rounded-[10px] bg-gray-700 text-white ${getBoxSize(type)}`}
     >
-      <h4 className="font-semibold tracking-[-0.08em]">{type}</h4>
+      <h4 className="font-semibold ">{type}</h4>
     </div>
   );
 }

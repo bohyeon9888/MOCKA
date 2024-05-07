@@ -43,7 +43,7 @@ export default {
       colors: {
         // Common Colors
         "primary-color": "#000000BF",
-        "scondary-color": "#69AA6D",
+        "secondary-color": "#F2F1F1",
         "gray-100": "#ECECED",
         "gray-300": "#D9D9D9",
         "gray-500": "#9D9D9D",

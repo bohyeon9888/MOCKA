@@ -34,13 +34,15 @@ function App() {
       <Header />
       <main className="flex h-full w-full flex-row">
         <Sidebar />
-        <Routes>
-          <Route path="/login/google" element={<Login />} />
-          <Route path="/main" element={<Main />} />
-          <Route element={<RequireAuthRoutes />}>
-            <Route path="/" element={<Home />} />
-          </Route>
-        </Routes>
+        <div className="h-full w-full overflow-hidden">
+          <Routes>
+            <Route path="/login/google" element={<Login />} />
+            <Route path="/main" element={<Main />} />
+            <Route element={<RequireAuthRoutes />}>
+              <Route path="/" element={<Home />} />
+            </Route>
+          </Routes>
+        </div>
       </main>
       {isOpen && <ModalContainer title={title}>{children}</ModalContainer>}
     </BrowserRouter>
