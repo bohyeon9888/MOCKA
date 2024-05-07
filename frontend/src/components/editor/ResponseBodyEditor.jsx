@@ -22,6 +22,7 @@ export default function ResponseBodyEditor({
         type: "String",
         value: null,
         arrayList: false,
+        arraySize: -1,
         id: Math.random(),
         fakerLocale: "KO",
         fakerMajor: "name",
@@ -60,6 +61,7 @@ export default function ResponseBodyEditor({
                 type,
                 value,
                 arrayList,
+                arraySize,
                 id,
                 fakerLocale,
                 fakerMajor,
@@ -73,6 +75,7 @@ export default function ResponseBodyEditor({
                 type={type}
                 value={value}
                 arrayList={arrayList}
+                arraySize={arraySize}
                 fakerLocale={fakerLocale}
                 fakerMajor={fakerMajor}
                 fakerSub={fakerSub}
@@ -81,6 +84,7 @@ export default function ResponseBodyEditor({
                   type,
                   value,
                   arrayList,
+                  arraySize,
                   fakerLocale,
                   fakerMajor,
                   fakerSub,
@@ -91,6 +95,7 @@ export default function ResponseBodyEditor({
                     type,
                     value,
                     arrayList,
+                    arraySize,
                     id,
                     fakerLocale,
                     fakerMajor,
@@ -125,11 +130,6 @@ export default function ResponseBodyEditor({
         </div>
         <DropDown value={200} options={responseCode} />
       </div>
-      <div className="h-10 w-full" />
-      <button className="h-[30px] w-[71px] self-end rounded-[10px] bg-gray-700 text-4 text-white">
-        Apply
-      </button>
-      <div className="h-2 w-full" />
     </div>
   );
 }

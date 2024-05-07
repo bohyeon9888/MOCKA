@@ -1,3 +1,4 @@
+import ApiEditModal from "../components/modal/ApiEditModal";
 import LoginModal from "../components/modal/LoginModal";
 import { useModalStore } from "../store";
 
@@ -12,7 +13,6 @@ function Home() {
           <h3 className="mt-3">
             Easily Create API Mockups and Servers from Documents.
           </h3>
-
           <div className="ml-3 mt-[50px] tracking-[-0.08em]">
             <h2>API Specification Writing</h2>
             <div className="ml-3 mt-3 tracking-tight">
@@ -37,7 +37,7 @@ function Home() {
             <button
               className="rounded-md bg-gray-500 px-6 py-3 font-bold text-white hover:bg-gray-600"
               onClick={() => {
-                openModal("", <LoginModal />);
+                openModal("API Edit", <ApiEditModal />);
               }}
             >
               Get Started
@@ -47,7 +47,7 @@ function Home() {
       </div>
       <div className="ml-[60px] mr-[60px] mt-[10px] w-1/2 p-4">
         <img
-          src="/public/asset/home/home-introduce.svg"
+          src="/asset/home/home-introduce.svg"
           className="w-[430px]"
           alt="home-introduce"
         />

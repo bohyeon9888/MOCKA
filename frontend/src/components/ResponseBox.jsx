@@ -13,6 +13,7 @@ export default function RequestBox({
   value,
   changeHandler,
   arrayList,
+  arraySize,
   removeItem,
   fakerLocale,
   fakerMajor,
@@ -25,8 +26,17 @@ export default function RequestBox({
   const iconHoverClassName = isHover ? "opacity-1" : "opacity-0";
 
   const changeKeyHandler = (e) => {
-    if (e.target.value == "") removeItem();
-    else changeHandler({ key: e.target.value, type, value, arrayList });
+    // if (e.target.value == "") removeItem();
+    changeHandler({
+      key: e.target.value,
+      type,
+      value,
+      arrayList,
+      arraySize,
+      fakerLocale,
+      fakerMajor,
+      fakerSub,
+    });
   };
 
   const changeValueHandler = (value) => {
@@ -36,6 +46,7 @@ export default function RequestBox({
         type: "String",
         value: null,
         arrayList: false,
+        arraySize,
         fakerLocale,
         fakerMajor,
         fakerSub,
@@ -51,6 +62,7 @@ export default function RequestBox({
         key: _key,
         type: newType,
         arrayList: !!isSecond,
+        arraySize: isSecond ? 5 : -1,
         fakerLocale,
         fakerMajor,
         fakerSub,
@@ -60,6 +72,7 @@ export default function RequestBox({
             type: "String",
             value: null,
             arrayList: false,
+            arraySize: -1,
             id: Math.random(),
             fakerLocale,
             fakerMajor: "name",
@@ -73,6 +86,7 @@ export default function RequestBox({
         key: _key,
         type: "String",
         arrayList: true,
+        arraySize: 5,
         value: null,
         fakerLocale,
         fakerMajor: "name",
@@ -83,6 +97,7 @@ export default function RequestBox({
         key: _key,
         type: newType,
         arrayList: !!isSecond,
+        arraySize: isSecond ? 5 : -1,
         value: null,
         fakerLocale,
         fakerMajor: javafakerMap[newType].major[0],
@@ -96,6 +111,7 @@ export default function RequestBox({
       key: _key,
       type,
       arrayList,
+      arraySize,
       value,
       fakerLocale,
       fakerMajor: major,
@@ -108,6 +124,7 @@ export default function RequestBox({
       key: _key,
       type,
       arrayList,
+      arraySize,
       value,
       fakerLocale,
       fakerMajor,
@@ -123,6 +140,7 @@ export default function RequestBox({
           type: "String",
           value: null,
           arrayList: false,
+          arraySize: -1,
           id: Math.random(),
           fakerLocale,
           fakerMajor: "name",
@@ -140,6 +158,7 @@ export default function RequestBox({
         type: "String",
         value: null,
         arrayList: false,
+        arraySize: -1,
         id: Math.random(),
         fakerLocale,
         fakerMajor: "name",
@@ -221,6 +240,7 @@ export default function RequestBox({
                 type,
                 value: childValue,
                 arrayList,
+                arraySize,
                 fakerLocale,
                 fakerMajor,
                 fakerSub,
@@ -234,6 +254,7 @@ export default function RequestBox({
                 type={type}
                 value={childValue}
                 arrayList={arrayList}
+                arraySize={arraySize}
                 fakerLocale={fakerLocale}
                 fakerMajor={fakerMajor}
                 fakerSub={fakerSub}
@@ -242,6 +263,7 @@ export default function RequestBox({
                   type,
                   value: newValue,
                   arrayList,
+                  arraySize,
                   fakerLocale,
                   fakerMajor,
                   fakerSub,
@@ -252,6 +274,7 @@ export default function RequestBox({
                     type,
                     value: newValue,
                     arrayList,
+                    arraySize,
                     fakerLocale,
                     fakerMajor,
                     fakerSub,

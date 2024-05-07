@@ -10,16 +10,18 @@ import parsePathVariables from "../../utils/parsePathVariables";
 import mergePathVariables from "../../utils/mergePathVariables";
 import RequestBodyEditor from "../editor/RequestBodyEditor";
 import ResponseBodyEditor from "../editor/ResponseBodyEditor";
+import { createApi } from "../../apis/api";
+import Button from "../button/Button";
 
 export default function ApiEditModal() {
   const [document, setDocument] = useState({
     apiMethod: "GET",
-    apiUri: "/user/{userId}?name=String&age=int",
+    apiUri: "/user/{userId}?name=String&age=Int",
     apiRequest: [],
     apiResponse: [],
     apiResponseIsArray: false,
     apiResponseSize: 0,
-    apiPathVariable: [],
+    apiPathVariable: initPathVariables("/user/{userId}?name=String&age=Int"),
   });
   const [parameters, setParameters] = useState([]);
 
@@ -40,19 +42,39 @@ export default function ApiEditModal() {
     });
   };
 
+  const onClickButton = () => {
+    createApi(document).then((data) => {
+      console.log(data);
+    });
+  };
+
+  function initPathVariables(apiUri) {
+    const newPathVariableArr = parsePathVariables(apiUri);
+    const mergedPathVariable = mergePathVariables([], newPathVariableArr);
+
+    return mergedPathVariable;
+  }
+
   useEffect(() => {
     if (!isValidURI(document.apiUri)) return;
 
     setParameters(parseQueryParameters(document.apiUri));
-    setDocument((document) => {
-      const newPathVariableArr = parsePathVariables(document.apiUri);
-      const mergedPathVariable = mergePathVariables(
-        document.apiPathVariable,
-        newPathVariableArr,
-      );
-      return { ...document, apiPathVariable: mergedPathVariable };
+    const newPathVariableArr = parsePathVariables(document.apiUri);
+    const mergedPathVariable = mergePathVariables(
+      document.apiPathVariable,
+      newPathVariableArr,
+    );
+    setDocument((prev) => {
+      return { ...prev, apiPathVariable: mergedPathVariable };
     });
   }, [document.apiUri]);
+
+  useEffect(() => {
+    setDocument({
+      ...document,
+      apiResponseSize: document.apiResponseIsArray ? 5 : -1,
+    });
+  }, [document.apiResponseIsArray]);
 
   return (
     <div className="flex flex-col space-y-[27px] overflow-y-scroll px-5">
@@ -154,6 +176,11 @@ export default function ApiEditModal() {
           }}
         />
       </ContentBox>
+      <div className="h-10 w-full" />
+      <div className="flex w-full justify-end">
+        <Button type="Apply" onClick={onClickButton} />
+      </div>
+      <div className="h-2 w-full" />
     </div>
   );
 }
