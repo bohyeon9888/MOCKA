@@ -1,5 +1,6 @@
 package com.mozart.mockserver.controller;
 
+import com.mozart.mockserver.Service.HashKeyService;
 import com.mozart.mockserver.Service.MockService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.net.URL;
 @RequestMapping("/**")
 public class MockController {
     private final MockService mockService;
+    private final HashKeyService hashKeyService;
 
     @GetMapping
     public ResponseEntity<?> getController(HttpServletRequest request) throws MalformedURLException, IOException {
@@ -50,6 +52,15 @@ public class MockController {
 
         // response faker.js 반환
         return new ResponseEntity<>(mockService.createMock(apiId), HttpStatus.OK);
+    }
+
+    @GetMapping("/hash/encode/{id}")
+    public String encode(@PathVariable("id") Long id) throws Exception {
+        return hashKeyService.encryptLong(id);
+    }
+    @GetMapping("/hash/decode/{id}")
+    public Long decode(@PathVariable("id") String id) throws Exception {
+        return hashKeyService.decryptLong(id);
     }
 
     @PostMapping
