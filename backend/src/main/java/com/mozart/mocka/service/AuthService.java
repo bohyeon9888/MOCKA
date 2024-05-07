@@ -1,19 +1,17 @@
 package com.mozart.mocka.service;
 
-import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.BaseUris;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
+import com.mozart.mocka.dto.request.BaseUriRequestDto;
 import com.mozart.mocka.exception.CustomException;
+import com.mozart.mocka.exception.errorcode.BaseUriErrorCode;
 import com.mozart.mocka.exception.errorcode.MethodErrorCode;
 import com.mozart.mocka.exception.errorcode.ProjectErrorCode;
 import com.mozart.mocka.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static com.mozart.mocka.service.ApiService.replacePathUri;
 
@@ -23,7 +21,8 @@ import static com.mozart.mocka.service.ApiService.replacePathUri;
 public class AuthService {
     private final ApiProjectRepository apiProjectRepository;
     private final ProjectRepository projectRepository;
-    public void createCheck(Long projectId,ApiCreateRequestDto dto){
+    private final BaseUriRepository baseUriRepository;
+    public void methodCreateCheck(Long projectId,ApiCreateRequestDto dto){
         //존재하는 것이 하나라도 찾아지면 throw
         String apiUri = dto.getApiUri();
         apiUri = replacePathUri(apiUri).replace('/', '.');
@@ -41,7 +40,7 @@ public class AuthService {
         }
     }
 
-    public void deleteCheck(Long projectId,Long apiId){
+    public void methodDeleteCheck(Long projectId,Long apiId){
         Projects project=projectRepository.findByProjectId(projectId);
         if (project==null){
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
@@ -50,6 +49,58 @@ public class AuthService {
         System.out.println(apiProjectsCount);
         if (apiProjectsCount==0){
             throw new CustomException(MethodErrorCode.NotExist.getCode(), MethodErrorCode.NotExist.getDescription());
+        }
+    }
+    public void baseUriCreateCheck(Long projectId, BaseUriRequestDto baseUriRequestDto){
+        Projects project=projectRepository.findByProjectId(projectId);
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        int baseUriCount=baseUriRepository.selectCountMatchUri(projectId,baseUriRequestDto.getBaseUri());
+//        System.out.println(baseUriCount);
+        if (baseUriCount>=1){
+            throw new CustomException(BaseUriErrorCode.AlreadyExist.getCode(), BaseUriErrorCode.AlreadyExist.getDescription());
+        }
+
+    }
+
+    public void baseUriUpdateCheck(Long projectId,Long baseUriId, BaseUriRequestDto baseUriRequestDto){
+        Projects project=projectRepository.findByProjectId(projectId);
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        BaseUris deletedBaseUri=baseUriRepository.findByIdDeleted(projectId);
+
+        if (deletedBaseUri != null){
+            throw new CustomException(BaseUriErrorCode.AlreadyDeleted.getCode(), BaseUriErrorCode.AlreadyDeleted.getDescription());
+        }
+
+        BaseUris baseUri=baseUriRepository.findByBaseId(baseUriId);
+        if(baseUri==null){
+            throw new CustomException(BaseUriErrorCode.NotExist.getCode(), BaseUriErrorCode.NotExist.getDescription());
+        }
+
+        int baseUriCount=baseUriRepository.selectCountMatchUri(projectId,baseUriRequestDto.getBaseUri());
+        if (baseUriCount>=1){
+            throw new CustomException(BaseUriErrorCode.AlreadyExist.getCode(), BaseUriErrorCode.AlreadyExist.getDescription());
+        }
+    }
+
+    public void baseUriDeleteCheck(Long projectId,Long baseUriId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+
+        BaseUris deletedBaseUri=baseUriRepository.findByIdDeleted(projectId);
+
+        if (deletedBaseUri != null){
+            throw new CustomException(BaseUriErrorCode.AlreadyDeleted.getCode(), BaseUriErrorCode.AlreadyDeleted.getDescription());
+        }
+
+        BaseUris baseUri=baseUriRepository.findByBaseId(baseUriId);
+        if(baseUri==null){
+            throw new CustomException(BaseUriErrorCode.NotExist.getCode(), BaseUriErrorCode.NotExist.getDescription());
         }
     }
 }
