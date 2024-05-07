@@ -22,36 +22,17 @@ public class MockController {
     private final HashKeyService hashKeyService;
 
     @GetMapping
-    public ResponseEntity<?> getController(HttpServletRequest request) throws MalformedURLException, IOException {
-        URL url = new URL(request.getRequestURL().toString());
-        String hashValue = mockService.getHostName(url);
-
-        //해시값 검증
-        Long projectId = mockService.getProjectId(hashValue);
+    public ResponseEntity<?> getController(HttpServletRequest request){
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString());
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Long projectId = findProjectId(url);
         if(projectId < 0)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        /*
-        *
-        *  400 BAD_REQUEST : url 의 path variable type이 맞지 않은 경우
-        *  404 NOT_FOUND   : 없는 url의 요청
-        *
-        * */
-        // 요청된 URL 검증
-        Long apiId = mockService.findApi(projectId, url, "Get");
-        System.out.println("---------------------------------");
-        System.out.println(apiId);
-        if(apiId < 0)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if(apiId == 0L)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        // request body 검증
-        if(!mockService.requestCheck(projectId, apiId, request))
-            return new ResponseEntity<>("request body 의 값이 잘못되었습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
-
-        // response faker.js 반환
-        return new ResponseEntity<>(mockService.createMock(apiId), HttpStatus.OK);
+        return mockServe(request, projectId, url, "Get");
     }
 
     @GetMapping("/hash/encode/{id}")
@@ -64,22 +45,93 @@ public class MockController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postController(){
-        return null;
+    public ResponseEntity<?> postController(HttpServletRequest request){
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString());
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Long projectId = findProjectId(url);
+        if(projectId < 0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mockServe(request, projectId, url, "Post");
     }
 
     @PutMapping
-    public ResponseEntity<?> putController(){
-        return null;
+    public ResponseEntity<?> putController(HttpServletRequest request){
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString());
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Long projectId = findProjectId(url);
+        if(projectId < 0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mockServe(request, projectId, url, "Put");
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteController(){
-        return null;
+    public ResponseEntity<?> deleteController(HttpServletRequest request){
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString());
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Long projectId = findProjectId(url);
+        if(projectId < 0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mockServe(request, projectId, url, "Delete");
     }
 
     @PatchMapping
-    public ResponseEntity<?> patchController(){
-        return null;
+    public ResponseEntity<?> patchController(HttpServletRequest request){
+        URL url = null;
+        try {
+            url = new URL(request.getRequestURL().toString());
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Long projectId = findProjectId(url);
+        if(projectId < 0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return mockServe(request, projectId, url, "Patch");
+    }
+
+    /*
+     *  400 BAD_REQUEST : url 의 path variable type이 맞지 않은 경우
+     *  404 NOT_FOUND   : 없는 url의 요청
+     * */
+    private ResponseEntity<?> mockServe(HttpServletRequest request, Long projectId, URL url, String method) {
+        // 요청된 URL 검증
+        Long apiId = mockService.findApi(projectId, url, method);
+        if(apiId < 0)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else if(apiId == 0L)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        // request body 검증
+        try {
+            if(!mockService.requestCheck(projectId, apiId, request))
+                return new ResponseEntity<>("request body 의 값이 잘못되었습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // response faker.js 반환
+        return new ResponseEntity<>(mockService.createMock(apiId), HttpStatus.OK);
+
+    }
+    /*
+    * hash value decode
+    * */
+    private Long findProjectId(URL url){
+        try{
+            return hashKeyService.decryptLong(mockService.getHostName(url));
+        }catch (Exception e){
+            return -1L;
+        }
     }
 }
