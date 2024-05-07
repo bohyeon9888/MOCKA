@@ -2,6 +2,7 @@ package com.mozart.mocka.controller;
 
 import com.mozart.mocka.dto.request.ProjectAuthRequestDto;
 import com.mozart.mocka.dto.response.ProjectMemberDto;
+import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.ProjectHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,17 +21,21 @@ import java.util.List;
 public class ProjectHistoryController {
 
     private final ProjectHistoryService historyService;
+    private final ProjectRepository projectRepository;
 
-    @GetMapping("/member/{projectId}")
+    @GetMapping("/{projectId}")
     public ResponseEntity<?> getProjectMembers(@PathVariable("projectId") Long projectId) {
         // auth 는 이후에
+        if (!projectRepository.existsByProjectId(projectId)) {
+            log.debug("there is no project");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         List<ProjectMemberDto> data = historyService.getMemberList(projectId);
         if (data.isEmpty()) {
             log.debug("there is no data");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-//        log.info("data size : " + data.size());
 
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
