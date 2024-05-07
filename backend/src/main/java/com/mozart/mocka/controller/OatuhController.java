@@ -26,7 +26,8 @@ public class OatuhController {
     @GetMapping("/redirect/{provider}")
     public RedirectView redirectUser(@PathVariable String provider) {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("https://mock-a.com/oauth2/authorization/"+provider);
+//        redirectView.setUrl("https://mock-a.com/oauth2/authorization/"+provider);
+        redirectView.setUrl("http://localhost:8081/oauth2/authorization/"+provider);
         return redirectView;
     }
 

@@ -36,8 +36,8 @@ public class RefreshService {
     public OauthDto createAccessToken(String username) {
         Members member = membersRepository.findByMemberNickname(username);
 
-        String newAccess = jwtUtil.createJwt("access", username, member.getMemberProfile(), member.getMemberRole(), 43200000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, member.getMemberProfile(), member.getMemberRole(), 604800000L);
+        String newAccess = jwtUtil.createJwt("access", member.getMemberId(), username, member.getMemberProfile(), member.getMemberRole(), 43200000L);
+        String newRefresh = jwtUtil.createJwt("refresh", member.getMemberId(), username, member.getMemberProfile(), member.getMemberRole(), 604800000L);
 
         LoginResponseDto loginDto =  LoginResponseDto.builder()
                 .nickname(username)
