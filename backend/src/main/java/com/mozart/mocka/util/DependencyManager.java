@@ -1,5 +1,6 @@
 package com.mozart.mocka.util;
 
+import com.mozart.mocka.domain.Dependency;
 import com.mozart.mocka.dto.response.DependencyResponse;
 import jakarta.annotation.PostConstruct;
 import org.springframework.web.client.RestTemplate;
@@ -29,9 +30,7 @@ public class DependencyManager {
         if (response != null && response.getDependencies() != null) {
             response.getDependencies().forEach((id, dependency) -> {
                 // Gradle dependency line with conditional version and scope
-                String gradleLine = mapGradleScope(dependency.getScope()) +
-                    " '" + dependency.getGroupId() + ":" + dependency.getArtifactId() +
-                    (dependency.getVersion() != null ? ":" + dependency.getVersion() : "") + "'";
+                String gradleLine = genGradleDependency(dependency);
 
                 StringBuilder pomBuilder = new StringBuilder();
                 pomBuilder.append("\t\t<dependency>\n")
@@ -88,21 +87,23 @@ public class DependencyManager {
         return new HashMap<>(); // 해당 버전이 없는 경우 빈 맵 반환
     }
 
-    private String mapGradleScope(String mavenScope) {
-        if (mavenScope == null) {
-            return "implementation"; // 기본 값
+    private String genGradleDependency(Dependency dependency) {
+        String base = dependency.getGroupId() + ":" + dependency.getArtifactId();
+        if (dependency.getVersion() != null) {
+            base += ":" + dependency.getVersion();
         }
-        switch (mavenScope) {
+
+        switch (dependency.getScope()) {
             case "compile":
-                return "\tcompileOnly";
+                return "\timplementation '" + base + "'";
             case "runtime":
-                return "\truntimeOnly";
+                return "\truntimeOnly '" + base + "'";
             case "test":
-                return "\ttestImplementation";
+                return "\ttestImplementation '" + base + "'";
             case "annotationProcessor":
-                return "\tannotationProcessor";
+                return "\tcompileOnly '" + base + "'\n\tannotationProcessor '" + base + "'";
             default:
-                return "\timplementation"; // Maven과 Gradle 간에 정확한 매핑이 없는 경우
+                return "\tcompileOnly '" + base + "'";
         }
     }
 }
