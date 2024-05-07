@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectsListResponseDto {
-    long projectId;
+    Long projectId;
     String projectName;
     String projectRole;
     String projectHashKey;

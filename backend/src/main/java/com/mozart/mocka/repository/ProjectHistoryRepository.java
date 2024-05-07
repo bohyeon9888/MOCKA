@@ -19,4 +19,6 @@ public interface ProjectHistoryRepository extends JpaRepository<ProjectHistories
     Optional<ProjectHistories> findOwnerByMemberIdAndProjectId(@Param("memberId") Long memberId, @Param("projectId") Long projectId);
 
     Optional<ProjectHistories> findByProjectHistoryPK_MemberIdAndProjectHistoryPK_ProjectId(Long memberId, Long projectId);
+
+    void deleteByProjectHistoryPK_ProjectId(Long projectId);
 }

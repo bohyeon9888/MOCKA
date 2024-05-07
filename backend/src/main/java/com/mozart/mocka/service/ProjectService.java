@@ -54,8 +54,9 @@ public class ProjectService {
             return false;
 
         projectRepository.deleteById(projectId);
-        projectHistoryRepository.softDeleteByProjectId(projectId);
+        projectHistoryRepository.deleteByProjectHistoryPK_ProjectId(projectId);
         baseUriRepository.deleteByProjectId(projectId);
+        apiProjectRepository.deleteByProjectId(projectId);
         return true;
     }
 

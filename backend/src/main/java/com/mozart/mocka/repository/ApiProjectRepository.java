@@ -34,4 +34,6 @@ public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
 
 
     void deleteByApiId(Long apiId);
+
+    void deleteByProjectId(Long projectId);
 }
