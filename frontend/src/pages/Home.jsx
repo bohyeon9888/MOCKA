@@ -1,20 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DropDown from "../components/DropDown";
 import Button from "../components/button/Button.jsx";
 import Project from "../components/button/Project";
 
-import { useModalStore } from "../store";
+import { useModalStore, useProjectStore } from "../store";
 import ApiEditModal from "../components/modal/ApiEditModal.jsx";
+import { getProjectList, getRecentProjectList } from "../apis/project.js";
 
 function Home() {
   const [selectedValue, setSelectedValue] = useState("Select"); //초기 선택값
   const { openModal } = useModalStore();
+  const { projectList, setProjectList, setRecentProjectList } =
+    useProjectStore();
 
   const options = ["Private", "Public", "Teams"];
 
   function handleSelect(value) {
     setSelectedValue(value);
   }
+
+  useEffect(() => {
+    if (projectList && projectList.length > 0) return;
+    getProjectList().then((data) => {
+      setProjectList(data);
+    });
+    getRecentProjectList().then((data) => {
+      setRecentProjectList(data);
+    });
+  }, []);
 
   return (
     <div className="flex w-full ">
@@ -63,11 +76,15 @@ function Home() {
             className="mx-auto w-[30px] cursor-pointer"
             alt="home-down-pointer"
           />
-          <div className="mb-[30px] mt-[30px] h-[505px] w-[476px]">
-            <Project title="PROJECT NAME" date="" />
-            <Project title="PROJECT NAME" date="" />
-            <Project title="PROJECT NAME" date="" />
-            <Project title="PROJECT NAME" date="" />
+          <div className="mb-[30px] mt-[32px] flex h-[535px] flex-col space-y-4 overflow-y-scroll py-4 pr-3">
+            {projectList.map(({ projectId, projectName }) => (
+              <Project
+                key={projectId}
+                projectId={projectId}
+                title={projectName}
+                date=""
+              />
+            ))}
           </div>
           <img
             src="/asset/home/home-down-pointer.svg"

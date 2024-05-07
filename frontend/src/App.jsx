@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import { isAuthenticated } from "./utils/auth";
 import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
+import Viewer from "./pages/Viewer";
 
 function RequireAuthRoutes() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
             <Route element={<RequireAuthRoutes />}>
               <Route path="/" element={<Home />} />
               <Route path="/intializer" element={<Initializer />} />
+              <Route path="/viewer" element={<Viewer />} />
             </Route>
           </Routes>
         </div>
