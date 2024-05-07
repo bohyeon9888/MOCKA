@@ -1,5 +1,6 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.dto.request.InvitationAnswerRequestDto;
 import com.mozart.mocka.dto.request.InviteRequestDto;
 import com.mozart.mocka.dto.response.InvitationResponseDto;
@@ -25,7 +26,9 @@ public class InviteController {
     public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) throws MessagingException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        inviteService.createInvitation(auth.getName(), inviteRequestDto.getProjectId(), inviteRequestDto.getTeamMember());
+        if (!inviteService.createInvitation(auth.getName(), inviteRequestDto.getProjectId(), inviteRequestDto.getTeamMember())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -33,13 +36,21 @@ public class InviteController {
     public ResponseEntity<InvitationResponseDto> readInvitation(@PathVariable Long projectId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        InvitationResponseDto data = inviteService.checkInvitation(auth.getName(), projectId);
+        if (data == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         return ResponseEntity.ok(inviteService.checkInvitation(auth.getName(), projectId));
     }
 
     @PostMapping("/{projectId}")
-    public void readInvitation(@PathVariable Long projectId, @RequestBody InvitationAnswerRequestDto answerDto) {
+    public ResponseEntity<?> answerInvitation(@PathVariable Long projectId, @RequestBody InvitationAnswerRequestDto answerDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        inviteService.answerInvitation(auth.getName(), projectId, answerDto.getAnswer());
-        // 이후 프론트 쪽으로 redirect view
+        if (!inviteService.answerInvitation(auth.getName(), projectId, answerDto.getAnswer())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

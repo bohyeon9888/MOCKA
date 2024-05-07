@@ -31,12 +31,17 @@ public class InviteService {
     private final ProjectHistoryService historyService;
 
     @Transactional
-    public void createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
+    public boolean createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
         //프로젝트 소유주인지 확인
         Long ownerId = membersRepository.findByMemberNickname(ownerName).getMemberId();
         if (historyRepository.findOwnerByMemberIdAndProjectId(ownerId, projectId).isEmpty()) {
             log.info("프로젝트의 소유주와 일치하지 않습니다.");
-            return;
+            return false;
+        }
+
+        if (!projectRepository.existsByProjectId(projectId)) {
+            log.debug("해당 프로젝트가 존재하지 않습니다.");
+            return false;
         }
 
         String[] emails = new String[members.size()];
@@ -62,6 +67,7 @@ public class InviteService {
 
         // 메일 수신
         emailService.sendEmail(emails);
+        return true;
     }
 
     @Transactional
@@ -111,19 +117,19 @@ public class InviteService {
     }
 
     @Transactional
-    public void answerInvitation(String name, Long projectId, String answer) {
+    public boolean answerInvitation(String name, Long projectId, String answer) {
         Members member = membersRepository.findByMemberNickname(name);
 
         Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
         if (invitation.isEmpty()) {
             log.error("초대장이 없습니다.");
-            return;
+            return false;
         }
 
         ProjectInvitations invite = invitation.get();
         if (invite.getAccepted() != null) {
             log.error("이미 답변이 완료된 초대장입니다.");
-            return;
+            return false;
         }
 
         if (answer.equals("yes")) {
@@ -135,5 +141,7 @@ public class InviteService {
             invite.setAccepted(false);
             log.info("초대를 거절했습니다.");
         }
+
+        return true;
     }
 }
