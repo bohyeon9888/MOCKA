@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,4 +15,5 @@ public class ProjectsListResponseDto {
     String projectRole;
     String projectHashKey;
     String commonUri;
+    LocalDateTime createdAt;
 }
