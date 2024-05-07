@@ -1,13 +1,12 @@
 package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
 import com.mozart.mocka.exception.CustomException;
 import com.mozart.mocka.exception.errorcode.MethodErrorCode;
-import com.mozart.mocka.repository.ApiPathRepository;
-import com.mozart.mocka.repository.ApiProjectRepository;
-import com.mozart.mocka.repository.ApiRequestRepository;
-import com.mozart.mocka.repository.ApiResponseRepository;
+import com.mozart.mocka.exception.errorcode.ProjectErrorCode;
+import com.mozart.mocka.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,8 @@ import static com.mozart.mocka.service.ApiService.replacePathUri;
 @RequiredArgsConstructor
 public class AuthService {
     private final ApiProjectRepository apiProjectRepository;
-    public void methodDuplicationCheck(Long projectId,ApiCreateRequestDto dto){
+    private final ProjectRepository projectRepository;
+    public void createCheck(Long projectId,ApiCreateRequestDto dto){
         //존재하는 것이 하나라도 찾아지면 throw
         String apiUri = dto.getApiUri();
         apiUri = replacePathUri(apiUri).replace('/', '.');
@@ -38,6 +38,18 @@ public class AuthService {
         System.out.println(apiProjectRepository.selectCountMatchApiUriAndMethod(apiUri,dto.getApiMethod(),projectId));
         if (apiProjectRepository.selectCountMatchApiUriAndMethod(apiUri,dto.getApiMethod(),projectId)>=1){
             throw new CustomException(MethodErrorCode.AlreadyExist.getCode(),MethodErrorCode.AlreadyExist.getDescription());
+        }
+    }
+
+    public void deleteCheck(Long projectId,Long apiId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        int apiProjectsCount=apiProjectRepository.selectCountMatchApiId(apiId,projectId);
+        System.out.println(apiProjectsCount);
+        if (apiProjectsCount==0){
+            throw new CustomException(MethodErrorCode.NotExist.getCode(), MethodErrorCode.NotExist.getDescription());
         }
     }
 }

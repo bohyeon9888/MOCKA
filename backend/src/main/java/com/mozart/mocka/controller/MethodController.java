@@ -25,7 +25,7 @@ public class MethodController {
         //edit 인증 체크
 
         //method 중복 체크
-        authService.methodDuplicationCheck(projectId,requestDto);
+        authService.createCheck(projectId,requestDto);
 
         apiService.createApi(projectId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -35,8 +35,9 @@ public class MethodController {
     @DeleteMapping("{projectId}/{apiId}")
     public ResponseEntity<?> deleteApi(@PathVariable("projectId") Long projectId, @PathVariable("apiId") Long apiId){
         //delete 삭제 인증 체크
+        authService.deleteCheck(projectId,apiId);
 
-        apiService.deleteApi(projectId, apiId);
+//        apiService.deleteApi(projectId, apiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
