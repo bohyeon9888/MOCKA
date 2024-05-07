@@ -71,7 +71,7 @@ public class ProjectController {
     }
 
     @LogExecutionTime
-    @Cacheable(value = "api-project", key = "#projectId")
+//    @Cacheable(value = "api-project", key = "#projectId")
     @GetMapping("{projectId}")
     public ResponseEntity<?> receiveProjectDetail(@PathVariable("projectId") Long projectId) throws JsonProcessingException {
         Long memberId = 1L;
