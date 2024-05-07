@@ -3,8 +3,12 @@ import DropDown from "../components/DropDown";
 import Button from "../components/button/Button.jsx";
 import Project from "../components/button/Project";
 
+import { useModalStore } from "../store";
+import ApiEditModal from "../components/modal/ApiEditModal.jsx";
+
 function Home() {
   const [selectedValue, setSelectedValue] = useState("Select"); //초기 선택값
+  const { openModal } = useModalStore();
 
   const options = ["Private", "Public", "Teams"];
 
@@ -20,7 +24,12 @@ function Home() {
 
           <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[27px]">
             <div className="absolute ml-[295px] mt-[150px]">
-              <Button type="Create" />
+              <Button
+                type="Create"
+                onClick={() => {
+                  openModal("API Edit", <ApiEditModal />);
+                }}
+              />
             </div>
             <h5 className="tracking-[0.2em]">PROJECT NAME</h5>
             <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px]  border-[1px] border-gray-500 bg-white" />
@@ -39,7 +48,7 @@ function Home() {
 
             <div className="mt-[9px] h-[220px] w-[460px] rounded-[20px] border-[2.5px] border-black bg-black">
               <img
-                src="public/asset/etc/friend.jpg"
+                src="/asset/etc/friend.jpg"
                 className="h-full w-full rounded-[20px]"
                 alt="spcae"
               />
