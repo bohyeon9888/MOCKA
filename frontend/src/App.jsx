@@ -15,10 +15,12 @@ import Login from "./pages/Login";
 
 import { isAuthenticated } from "./utils/auth";
 import Main from "./pages/Main";
+import Initializer from "./pages/Initializer";
 
 function RequireAuthRoutes() {
   const location = useLocation();
-  const loggedIn = isAuthenticated();
+  // const loggedIn = isAuthenticated();
+  const loggedIn = true;
 
   if (!loggedIn)
     return <Navigate to="/main" replace state={{ from: location }} />;
@@ -32,7 +34,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <main className="flex h-full w-full flex-row">
+      <main className="flex w-full grow flex-row">
         <Sidebar />
         <div className="h-full w-full overflow-hidden">
           <Routes>
@@ -40,6 +42,7 @@ function App() {
             <Route path="/main" element={<Main />} />
             <Route element={<RequireAuthRoutes />}>
               <Route path="/" element={<Home />} />
+              <Route path="/intializer" element={<Initializer />} />
             </Route>
           </Routes>
         </div>
