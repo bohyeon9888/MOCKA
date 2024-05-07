@@ -2,6 +2,8 @@ package com.mozart.mockserver.controller;
 
 import com.mozart.mockserver.Service.HashKeyService;
 import com.mozart.mockserver.Service.MockService;
+import com.mozart.mockserver.Service.ProjectService;
+import com.mozart.mockserver.domain.Projects;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
+
+import static javax.xml.crypto.dsig.Transform.BASE64;
 
 @Slf4j
 @RestController
@@ -20,6 +25,7 @@ import java.net.URL;
 public class MockController {
     private final MockService mockService;
     private final HashKeyService hashKeyService;
+    private final ProjectService projectService;
 
     @GetMapping
     public ResponseEntity<?> getController(HttpServletRequest request){
@@ -128,10 +134,10 @@ public class MockController {
     * hash value decode
     * */
     private Long findProjectId(URL url){
-        try{
-            return hashKeyService.decryptLong(mockService.getHostName(url));
-        }catch (Exception e){
+        Optional<Projects> project = projectService.getProject(mockService.getHostName(url));
+        if (project.isPresent())
+            return project.get().getProjectId();
+        else
             return -1L;
-        }
     }
 }
