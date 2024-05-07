@@ -6,6 +6,7 @@ import com.mozart.mocka.service.RefreshService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -22,13 +23,16 @@ public class OatuhController {
     private final OatuhService oauthService;
     private final RefreshService refreshService;
 
+    @Value("${spring.security.oauth2.client.provider.google.authorization-uri}")
+    private String authorization_uri;
+
     @GetMapping("/redirect/{provider}")
     public RedirectView redirectUser(@PathVariable String provider) {
 //        System.out.println(provider);
 //        System.out.println("code " + code);
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("https://mock-a.com/oauth2/authorization/" + provider);
-
+//        log.info("redirect url : " + authorization_uri);
+        redirectView.setUrl(authorization_uri);
         return redirectView;
     }
 
