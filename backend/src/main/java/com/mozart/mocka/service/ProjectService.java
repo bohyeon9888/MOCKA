@@ -128,4 +128,30 @@ public class ProjectService {
 
 //        return apiProjectsList;
     }
+
+    public List<ProjectsListResponseDto> getRecentList(Long memberId) {
+        List<ProjectHistories> list = projectHistoryRepository.findByMemberIdOrderedByRecentReadDesc(memberId);
+
+        if (list.isEmpty()) {
+            return null;
+        }
+
+        List<ProjectsListResponseDto> data = new ArrayList<>();
+
+        for (ProjectHistories ph : list) {
+            Projects project = projectRepository.findByProjectId(ph.getProjectHistoryPK().getProjectId());
+            ProjectsListResponseDto dto = ProjectsListResponseDto.builder()
+                    .projectId(project.getProjectId())
+                    .projectHashKey(project.getProjectHashKey())
+                    .projectName(project.getProjectName())
+                    .projectRole(ph.getProjectRole())
+                    .commonUri(project.getCommonUri())
+                    .createdAt(project.getCreatedAt())
+                    .build();
+
+            data.add(dto);
+        }
+
+        return data;
+    }
 }
