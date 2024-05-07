@@ -1,5 +1,6 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.dto.OauthDto;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.service.RefreshService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -53,15 +54,22 @@ public class RefreshController {
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
+        // db에 저장된 refresh 와 같은 토큰인지 확인
         String username = jwtUtil.getUsername(refresh);
-        String newRefresh = jwtUtil.createJwt("refresh", username, jwtUtil.getProfile(refresh), jwtUtil.getRole(refresh), 604800000L);
+        if (!refresh.equals(refreshService.getRefreshToken(username))) {
+            //response status code
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+
+        OauthDto oauthDto = refreshService.createAccessToken(username);
 
         refreshService.deleteRefreshToken(username);
 
         //response
-        response.addCookie(refreshService.createCookie("refreshToken", newRefresh));
+        response.addCookie(refreshService.createCookie("refreshToken", oauthDto.getRefresh()));
+        refreshService.storeRefreshToken(username, oauthDto.getRefresh(), 604800000L);
 
-        return new ResponseEntity<>(refreshService.createAccessToken(username), HttpStatus.OK);
+        return new ResponseEntity<>(oauthDto.getLoginResponseDto(), HttpStatus.OK);
     }
 
 }

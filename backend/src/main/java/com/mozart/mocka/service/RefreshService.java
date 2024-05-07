@@ -1,6 +1,7 @@
 package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.Members;
+import com.mozart.mocka.dto.OauthDto;
 import com.mozart.mocka.dto.response.LoginResponseDto;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
@@ -31,15 +32,22 @@ public class RefreshService {
         );
     }
 
-    public LoginResponseDto createAccessToken(String username) {
+    // 리팩토링!!!
+    public OauthDto createAccessToken(String username) {
         Members member = membersRepository.findByMemberNickname(username);
 
         String newAccess = jwtUtil.createJwt("access", username, member.getMemberProfile(), member.getMemberRole(), 43200000L);
+        String newRefresh = jwtUtil.createJwt("refresh", username, member.getMemberProfile(), member.getMemberRole(), 604800000L);
 
-        return LoginResponseDto.builder()
+        LoginResponseDto loginDto =  LoginResponseDto.builder()
                 .nickname(username)
                 .profile(member.getMemberProfile())
                 .accessToken(newAccess)
+                .build();
+
+        return OauthDto.builder()
+                .refresh(newRefresh)
+                .loginResponseDto(loginDto)
                 .build();
     }
 

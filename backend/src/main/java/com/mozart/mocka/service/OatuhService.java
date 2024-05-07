@@ -106,6 +106,7 @@ public class OatuhService {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         // refresh token 저장
+        log.info(refresh);
         refreshTokenService.storeRefreshToken(name, refresh, 604800000L);
 
         LoginResponseDto loginDto = LoginResponseDto.builder()
