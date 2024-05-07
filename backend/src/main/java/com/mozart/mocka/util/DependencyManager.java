@@ -11,10 +11,10 @@ import java.util.Map;
 @Component
 public class DependencyManager {
     private static final String BASE_URL = "https://start.spring.io/dependencies";
-    private Map<String, String> pom3111 = new HashMap<>();
-    private Map<String, String> gradle3111 = new HashMap<>();
-    private Map<String, String> pom325 = new HashMap<>();
-    private Map<String, String> gradle325 = new HashMap<>();
+    private final Map<String, String> pom3111 = new HashMap<>();
+    private final Map<String, String> gradle3111 = new HashMap<>();
+    private final Map<String, String> pom325 = new HashMap<>();
+    private final Map<String, String> gradle325 = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -29,7 +29,7 @@ public class DependencyManager {
 
         if (response != null && response.getDependencies() != null) {
             response.getDependencies().forEach((id, dependency) -> {
-                // Gradle dependency line with conditional version and scope
+
                 String gradleLine = genGradleDependency(dependency);
 
                 StringBuilder pomBuilder = new StringBuilder();
@@ -71,20 +71,20 @@ public class DependencyManager {
 
     public Map<String, String> getAllGradleDependencies(String version) {
         if (version.equals("3.1.11")) {
-            return new HashMap<>(gradle3111); // 복사본을 반환하여 외부에서 원본 데이터 수정 방지
+            return new HashMap<>(gradle3111);
         } else if (version.equals("3.2.5")) {
-            return new HashMap<>(gradle325); // 복사본을 반환
+            return new HashMap<>(gradle325);
         }
-        return new HashMap<>(); // 해당 버전이 없는 경우 빈 맵 반환
+        return new HashMap<>();
     }
 
     public Map<String, String> getAllPomDependencies(String version) {
         if (version.equals("3.1.11")) {
-            return new HashMap<>(pom3111); // 복사본을 반환
+            return new HashMap<>(pom3111);
         } else if (version.equals("3.2.5")) {
-            return new HashMap<>(pom325); // 복사본을 반환
+            return new HashMap<>(pom325);
         }
-        return new HashMap<>(); // 해당 버전이 없는 경우 빈 맵 반환
+        return new HashMap<>();
     }
 
     private String genGradleDependency(Dependency dependency) {
