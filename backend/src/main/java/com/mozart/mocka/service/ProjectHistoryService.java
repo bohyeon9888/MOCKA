@@ -76,7 +76,7 @@ public class ProjectHistoryService {
                     .memberId(mem.getMemberId())
                     .email(mem.getMemberEmail())
                     .profile(mem.getMemberProfile())
-                    .role(mem.getMemberRole())
+                    .role(hist.getProjectRole())
                     .build();
 
             resp.add(dto);

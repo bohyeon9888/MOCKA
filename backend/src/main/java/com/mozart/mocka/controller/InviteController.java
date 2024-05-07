@@ -7,6 +7,7 @@ import com.mozart.mocka.service.InviteService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +26,7 @@ public class InviteController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         inviteService.createInvitation(auth.getName(), inviteRequestDto.getProjectId(), inviteRequestDto.getTeamMember());
-        return null;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{projectId}")
