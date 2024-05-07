@@ -24,6 +24,8 @@ public class ProjectService {
     private final ApiProjectRepository apiProjectRepository;
     private final HashKeyService hashKeyService;
     private final ObjectMapper mapper;
+    private final ProjectHistoryService historyService;
+
     @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
         Projects projects = Projects.builder()
@@ -108,7 +110,12 @@ public class ProjectService {
         return projectsList;
     }
     @LogExecutionTime
-    public List<ApiProjects> getProjectAPIList(Long projectId) {
+    public List<ApiProjects> getProjectAPIList(Long projectId, Long memberId) {
+        boolean check = historyService.updateRecentTime(projectId, memberId);
+        if (!check) {
+            return null;
+        }
+
         return apiProjectRepository.findByProjectId(projectId);
 //        List<ApiListResponseDto> resultDto = new ArrayList<>();
 
@@ -127,5 +134,31 @@ public class ProjectService {
 //        }
 
 //        return apiProjectsList;
+    }
+
+    public List<ProjectsListResponseDto> getRecentList(Long memberId) {
+        List<ProjectHistories> list = projectHistoryRepository.findByMemberIdOrderedByRecentRead(memberId);
+
+        if (list.isEmpty()) {
+            return null;
+        }
+
+        List<ProjectsListResponseDto> data = new ArrayList<>();
+
+        for (ProjectHistories ph : list) {
+            Projects project = projectRepository.findByProjectId(ph.getProjectHistoryPK().getProjectId());
+            ProjectsListResponseDto dto = ProjectsListResponseDto.builder()
+                    .projectId(project.getProjectId())
+                    .projectHashKey(project.getProjectHashKey())
+                    .projectName(project.getProjectName())
+                    .projectRole(ph.getProjectRole())
+                    .commonUri(project.getCommonUri())
+                    .createdAt(project.getCreatedAt())
+                    .build();
+
+            data.add(dto);
+        }
+
+        return data;
     }
 }
