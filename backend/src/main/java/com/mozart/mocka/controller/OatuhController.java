@@ -23,9 +23,6 @@ public class OatuhController {
     private final OatuhService oauthService;
     private final RefreshService refreshService;
 
-    @Value("${spring.security.oauth2.client.provider.google.authorization-uri}")
-    private String authorization_uri;
-
     @GetMapping("/redirect/{provider}")
     public RedirectView redirectUser(@PathVariable String provider) {
         RedirectView redirectView = new RedirectView();
