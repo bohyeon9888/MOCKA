@@ -15,17 +15,23 @@ public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
 
 //    @Modifying
 //@Modifying
-@Query(value = "INSERT INTO api_projects " +
-        "(project_id, api_method, api_uri, api_uri_str, api_response_is_array, api_response_size) " +
-        "VALUES (:id, :method, CAST(:uri AS ltree), :str, :array, :size) RETURNING api_id", nativeQuery = true)
-int createApi(@Param("id") Long projectId,
-               @Param("method") String apiMethod,
-               @Param("uri") String apiUri,
-               @Param("str") String str,
-               @Param("array") boolean apiResponseIsArray,
-               @Param("size") int apiResponseSize);
+    @Query(value = "INSERT INTO api_projects " +
+            "(project_id, api_method, api_uri, api_uri_str, api_response_is_array, api_response_size) " +
+            "VALUES (:id, :method, CAST(:uri AS ltree), :str, :array, :size) RETURNING api_id", nativeQuery = true)
+    int createApi(@Param("id") Long projectId,
+                   @Param("method") String apiMethod,
+                   @Param("uri") String apiUri,
+                   @Param("str") String str,
+                   @Param("array") boolean apiResponseIsArray,
+                   @Param("size") int apiResponseSize);
 
     List<ApiProjects> findByProjectId(Long projectId);
+
+    @Query(value = "SELECT  COUNT(api_uri) FROM api_projects WHERE api_uri = CAST(:api_uri AS ltree) and api_method = :api_method and project_id = :project_id",nativeQuery = true)
+    int selectCountMatchApiUriAndMethod(@Param("api_uri") String apiUri,
+                                        @Param("api_method") String apiMethod,
+                                        @Param("project_id") Long projectId);
+
 
     void deleteByApiId(Long apiId);
 }
