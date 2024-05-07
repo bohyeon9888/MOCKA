@@ -79,7 +79,7 @@ public class ApiService {
         apiProjectRepository.deleteByApiId(apiId);
     }
 
-    public String replacePathUri(String uri) {
+    public static String replacePathUri(String uri) {
         if (!uri.contains("{")) {
             return uri;
         }

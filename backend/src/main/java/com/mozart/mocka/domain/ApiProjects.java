@@ -53,4 +53,7 @@ public class ApiProjects {
         this.apiResponseIsArray = isArray;
         this.apiResponseSize = arraySize;
     }
+    public String toString(){
+        return apiUri+" "+apiUriStr+" "+apiMethod+" "+apiResponseIsArray+" "+apiResponseSize;
+    }
 }

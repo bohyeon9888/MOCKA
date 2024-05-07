@@ -22,6 +22,7 @@ public class Projects extends BaseEntity {
     @Column
     private String projectName;
 
+    @Setter
     @Column
     private String projectHashKey;
 
