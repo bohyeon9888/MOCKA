@@ -1,16 +1,16 @@
 package com.mozart.mockserver.Service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.github.javafaker.Faker;
 import com.mozart.mockserver.domain.ApiPath;
 import com.mozart.mockserver.domain.ApiProjects;
 import com.mozart.mockserver.domain.ApiRequest;
-import com.mozart.mockserver.repository.ApiPathRepository;
-import com.mozart.mockserver.repository.ApiProjectRepository;
-import com.mozart.mockserver.repository.ApiRequestRepository;
-import com.mozart.mockserver.repository.ProjectRepository;
+import com.mozart.mockserver.domain.ApiResponse;
+import com.mozart.mockserver.dto.ResponseApiDto;
+import com.mozart.mockserver.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,9 @@ public class MockService {
     private final ApiPathRepository apiPathRepository;
     private final ApiProjectRepository apiProjectRepository;
     private final ApiRequestRepository apiRequestRepository;
+    private final ApiResponseRepository apiResponseRepository;
     public Long getProjectId(String hashStr){
-        return 16L;
+        return Long.parseLong(hashStr);
     }
     public String getHostName(URL url){
         String[] parts = url.getHost().split("\\.");
@@ -48,7 +49,6 @@ public class MockService {
     public Long findApi(Long projectId, URL url, String method) {
         String hash = "34e1c029fab";
         String path = getPath(url);
-        System.out.println("path : " + path);
         String[] pathArray = path.split("/");
 
         int number = pathArray.length;
@@ -60,7 +60,6 @@ public class MockService {
             if(number > numString.length())
                 for (;numString.length() < number;)
                     numString = "0" + numString;
-            System.out.println("/" + numString + "/");
             for (int j = 0; j < number; j++) {
                 if(numString.charAt(j) == '1')
                     pathUrl.append(pathArray[j]);
@@ -68,14 +67,12 @@ public class MockService {
                     pathUrl.append(hash);
                 pathUrl.append(".");
             }
-            System.out.println(pathUrl.substring(0, pathUrl.length()-1));
 
             Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(projectId, method, pathUrl.substring(0, pathUrl.length()-1));
 
 
             if(apiProjects.isPresent()){
                 ApiProjects apiProject = apiProjects.get();
-                System.out.println("123456789: "+apiProject.getApiUri());
                 return pathVariableCheck(apiProject, path, numString);
             }
         }
@@ -121,38 +118,37 @@ public class MockService {
         switch (type){
             case "String":
                 break;
-            case "short":
+            case "short", "Short":
                 short s = Short.parseShort(str);
                 break;
-            case "int":
+            case "int", "Integer":
                 int num = Integer.parseInt(str);
                 break;
-            case "long":
+            case "long","Long":
                 long l = Long.parseLong(str);
                 break;
-            case "float":
+            case "float", "Float":
                 float f = Float.parseFloat(str);
                 if (!str.contains("."))
                     throw new NumberFormatException();
                 break;
-            case "double":
+            case "double", "Double":
                 double d = Double.parseDouble(str);
                 if (!str.contains("."))
                     throw new NumberFormatException();
                 break;
-            case "boolean":
+            case "boolean", "Boolean":
                 if (!str.equalsIgnoreCase("true") && !str.equalsIgnoreCase("false"))
                     throw new NumberFormatException();
                 break;
-            case "char":
+            case "char","Character":
                 if (str.length() != 1)
                     throw new NumberFormatException();
                 break;
-            case "byte":
+            case "byte","Byte":
                 byte b = Byte.parseByte(str);
                 break;
         }
-
     }
 
     public boolean requestCheck(Long projectId, Long apiId, HttpServletRequest request) throws IOException {
@@ -169,7 +165,6 @@ public class MockService {
         Map<String, Object> map;
         try {
             map = mapper.readValue(stringBuilder.toString(), Map.class);
-            System.out.println(map);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return false;
@@ -186,11 +181,9 @@ public class MockService {
 
     private boolean requestParamCheck(ApiRequest apiRequest, Object obj) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        System.out.println(apiRequest.getKey() + " ///" + apiRequest.getData() +"----"+ obj.toString());
 
         //object type
         if(apiRequest.getType().equals("Object")){
-            System.out.println("------OBJECT-----");
             List<ApiRequest> apiRequestList;
             try {
                 //object의 request 형식 저장
@@ -212,7 +205,6 @@ public class MockService {
                 Map<String, Object> map = (Map<String, Object>) list;
                 for (ApiRequest request :apiRequestList) {
                     Object innerObj = map.get(request.getKey());
-                    System.out.println("****" + request.toString() + "***" + innerObj.toString());
 
                     if(!requestParamCheck(request,innerObj))
                         return false;
@@ -221,9 +213,8 @@ public class MockService {
 
         }
         else{ // int, long ,, 등
-            System.out.println("------not OBJECT-----" + obj.toString()+ "/" +apiRequest.getArrayList());
             List<Object> objectList = new ArrayList<>();
-            if(apiRequest.getArrayList()){
+            if(apiRequest.getArrayList()!=null && apiRequest.getArrayList()){
                 try {
                     objectList = (List<Object>) obj; ;
                 }catch (ClassCastException e){
@@ -231,20 +222,16 @@ public class MockService {
                 }
 
             }else {
-                System.out.println("====");
                 objectList.add(obj);
             }
-            System.out.println("==");
 
             for (Object object : objectList){
                 String str = object.toString();
 //                String str = mapper.readTree((JsonParser) object).get(apiRequest.getKey()).toString();
                 try{
-                    System.out.println("Str" +str + " //// type : " + apiRequest.getType());
                     typeCheck(apiRequest.getType(), str);
 
                 }catch (NumberFormatException ignored) {
-                    System.out.println("//");
                     return false;
                 }
             }
@@ -253,6 +240,148 @@ public class MockService {
     }
 
     public Object createMock(Long apiId) {
-        return null;
+        Optional<ApiProjects> apiProjects = apiProjectRepository.findById(apiId);
+        if(apiProjects.isEmpty())
+            return null;
+        List<ApiResponse> apiResponseList = apiResponseRepository.findByApiProject_ApiId(apiId);
+        ObjectMapper mapper = new ObjectMapper();
+
+        if(apiProjects.get().isApiResponseIsArray()){
+            List<ObjectNode> resultList = new ArrayList<>();
+            for (int i = 0; i < apiProjects.get().getApiResponseSize(); i++) {
+                ObjectNode temp = mapper.createObjectNode();
+                for (ApiResponse response : apiResponseList) {
+                    if(!response.getType().equals("Object"))
+                        temp.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+                    else
+                        temp.put(response.getKey(),getObject(response));
+                }
+                resultList.add(temp);
+            }
+            return resultList;
+        }
+        else {
+            ObjectNode result = mapper.createObjectNode();
+            for (ApiResponse response : apiResponseList) {
+                if(response.getArrayList()){
+                    List<ObjectNode> list = new ArrayList<>();
+                    for (int i = 0; i < response.getArraySize(); i++) {
+                        list.add(getObject(response));
+                    }
+                    result.put(response.getKey(), list.toString());
+                }
+                else {
+                    result.put(response.getKey(),getObject(response));
+                }
+            }
+            return result;
+        }
+    }
+
+    public ObjectNode getObject(ApiResponse response){
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        if(!response.getType().equals("Object")){
+            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+            return result;
+        }
+        List<ResponseApiDto> apiResponseList;
+
+        try {apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
+        } catch (Exception e) {
+            try {
+                String jsonString = mapper.writeValueAsString(response.getData());
+                List<Map<String, String>> mapList = parseStringToMapList(jsonString);
+                jsonString = "[" + mapper.writeValueAsString(mapList).replace("[","").replace("]","") + "]";
+                apiResponseList = mapper.readValue(jsonString, new TypeReference<List<ResponseApiDto>>() {});
+            }catch (Exception exception){
+                System.out.println("is exception");
+                return null;
+            }
+        }
+
+        if(response.getArrayList()){ //list
+            List<ObjectNode> resultList = new ArrayList<>();
+            for (int i = 0; i < response.getArraySize(); i++) {
+                ObjectNode temp = mapper.createObjectNode();
+                for (ResponseApiDto responseNode : apiResponseList) {
+                    if(!responseNode.getType().equals("Object"))
+                        temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+                    else
+                        temp.put(responseNode.getKey(),getObject(new ApiResponse
+                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+                }
+                resultList.add(temp);
+            }
+            return result.put("adsafsdaf","safdsaf");
+        }
+        else { // not list
+            for (ResponseApiDto responseNode : apiResponseList) {
+                if(!responseNode.getType().equals("Object"))
+                    result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+                else
+                    result.put(responseNode.getKey(),getObject(new ApiResponse
+                            (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+                                    responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+
+            }
+            return result;
+        }
+    }
+
+    public String generateFakeData(String local, String category, String method, String type) {
+        Faker faker = findLocal(local);
+        try {
+            Object categoryObject = faker.getClass().getDeclaredMethod(category).invoke(faker);
+            return (String) categoryObject.getClass().getDeclaredMethod(method).invoke(categoryObject);
+        } catch (Exception e) {
+            return switch (type.toUpperCase()){
+                case "BOOLEAN" -> faker.bool().toString();
+                case "INT","INTEGER" -> Integer.toString(faker.hashCode());
+                case "FLOAT", "DOUBLE" -> Double.toString(faker.number().randomDouble(2, 1, 100)); // 소수점 두 자리, 1에서 100 사이
+                case "CHAR" -> Character.toString(faker.letterify("?").charAt(0));
+                case "SHORT" -> Short.toString((short) faker.number().randomNumber(4, false));
+                case "BYTE" -> Byte.toString((byte) faker.number().randomNumber(2, false));
+                case "LONG" -> Long.toString(faker.number().randomNumber(10, false));
+                default -> "null";
+            };
+        }
+    }
+
+    private Faker findLocal(String local) {
+        return switch (local) {
+            case "EN", "ENGLISH" -> new Faker(Locale.ENGLISH);
+            case "KO", "KOREAN" -> new Faker(Locale.KOREAN);
+            case "GERMAN" -> new Faker(Locale.GERMAN);
+            case "ITALIAN" -> new Faker(Locale.ITALIAN);
+            case "JAPANESE" -> new Faker(Locale.JAPANESE);
+            case "CHINESE" -> new Faker(Locale.CHINESE);
+            default -> new Faker(Locale.ENGLISH);
+        };
+    }
+
+    /*
+    * postgresql에 저장된 value 부분이 map으로 저장되어 있어, map --> json 변환하는 함수
+    * */
+    private static List<Map<String, String>> parseStringToMapList(String data) {
+        data = data.trim().substring(1, data.length() - 1);
+        String[] items = data.split("\\}, \\{");
+        List<Map<String, String>> mapList = new ArrayList<>();
+
+        for (String item : items) {
+            item = item.replace("{", "").replace("}", "");
+            String[] pairs = item.split(", ");
+            Map<String, String> map = new HashMap<>();
+            for (String pair : pairs) {
+                String[] keyValue = pair.split("=");
+                String key = keyValue[0].trim();
+                String value = keyValue.length > 1 ? keyValue[1].trim() : "";
+                map.put(key, value);
+            }
+            mapList.add(map);
+        }
+
+        return mapList;
     }
 }

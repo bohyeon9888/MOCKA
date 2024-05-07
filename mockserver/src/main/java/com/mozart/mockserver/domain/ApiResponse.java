@@ -3,13 +3,11 @@ package com.mozart.mockserver.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiResponse {
@@ -46,15 +44,21 @@ public class ApiResponse {
     @Column(columnDefinition = "jsonb")
     private String data; // JSONB 데이터를 저장
 
-    public ApiResponse(ApiProjects apiProject, String key, String type, Object value, String fakerLocale, String fakerMajor, String fakerSub, boolean array, int arraySize) {
+    public ApiResponse(ApiProjects apiProject, String key, String type, Object data, String fakerLocale, String fakerMajor, String fakerSub, boolean array, int arraySize) {
         this.apiProject = apiProject;
         this.key = key;
         this.type = type;
-        this.data = (String) value;
+
         this.fakerLocale = fakerLocale;
         this.fakerMajor = fakerMajor;
         this.fakerSub = fakerSub;
         this.arrayList = array;
         this.arraySize = arraySize;
+        if(data == null){
+            this.data = null;
+        }
+        else {
+            this.data = data.toString();
+        }
     }
 }
