@@ -8,6 +8,8 @@ import com.mozart.mocka.dto.response.ProjectMemberDto;
 import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +87,24 @@ public class ProjectHistoryService {
         }
 
         return resp;
+    }
+
+    @Transactional
+    public boolean updateRecentTime(Long projectId, Long memberId) {
+        Optional<ProjectHistories> data = historyRepository.findByProjectHistoryPK_MemberIdAndProjectHistoryPK_ProjectId(memberId, projectId);
+
+        if (data.isEmpty()) {
+            log.debug("해당하는 프로젝트가 없습니다.");
+            return false;
+        }
+
+        ProjectHistories ph = data.get();
+        ph.setRecentRead(LocalDateTime.now());
+
+        historyRepository.save(ph);
+        log.debug("========== 업데이트 완료 ==========");
+
+        return true;
     }
 
 }

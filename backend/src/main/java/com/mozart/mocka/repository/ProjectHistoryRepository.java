@@ -24,6 +24,6 @@ public interface ProjectHistoryRepository extends JpaRepository<ProjectHistories
 
     List<ProjectHistories> findAllByProjectHistoryPK_ProjectId(Long projectId);
 
-    @Query("SELECT ph FROM ProjectHistories ph WHERE ph.projectHistoryPK.memberId = :memberId AND ph.isDeleted = false ORDER BY ph.recentRead DESC")
-    List<ProjectHistories> findByMemberIdOrderedByRecentReadDesc(@Param("memberId") Long memberId);
+    @Query("SELECT ph FROM ProjectHistories ph WHERE ph.projectHistoryPK.memberId = :memberId AND ph.isDeleted = false ORDER BY ph.recentRead")
+    List<ProjectHistories> findByMemberIdOrderedByRecentRead(@Param("memberId") Long memberId);
 }

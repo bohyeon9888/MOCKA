@@ -85,7 +85,7 @@ public class ProjectController {
        int authority = projectService.checkAuthority(projectId,memberId);
        if(authority > 2)
            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-       JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId));
+       JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId, memberId));
 
        return new ResponseEntity<>(jsonNode, HttpStatus.OK);
     }
