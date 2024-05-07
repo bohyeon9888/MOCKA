@@ -27,7 +27,7 @@ public class OatuhController {
 //        System.out.println(provider);
 //        System.out.println("code " + code);
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:8081/oauth2/authorization/" + provider);
+        redirectView.setUrl("https://mock-a.com/oauth2/authorization/" + provider);
 
         return redirectView;
     }
