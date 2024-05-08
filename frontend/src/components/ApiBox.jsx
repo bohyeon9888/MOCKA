@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Method from "./Method";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게
@@ -7,7 +7,9 @@ import Method from "./Method";
 function ApiBox() {
   const [isDetailVisible, setIsDetailVisible] = useState(false); //자세히 보기 버튼
   const [methodType] = useState("Get".toUpperCase()); //method타입과 placeholder내용
-  const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //api uri
+  const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //api uri 링크로
+  const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
+  const [CopySuccess, setCopySuccess] = useState(false);
   const [apiRequest] = [
     [
       {
@@ -159,13 +161,12 @@ function ApiBox() {
       break;
   }
 
-  //RequestBody 예쁘게 만들기 (재귀사용, 가로스크롤 추가)
-  // 중괄호로 시작, 마지막 중괄호로 닫기 | 기호처리 : "", :, , , [], {}
+  //RequestBody 예쁘게 만들기 (재귀사용, 가로스크롤 추가), 중괄호로 시작, 마지막 중괄호로 닫기 | 기호처리 : "", :, , , [], {}
   const formatRequestBody = (items) => {
     // items가 배열인지 확인
     if (!Array.isArray(items)) {
       console.error("Expected an array but received:", items);
-      return <div>데이터 형식 오류</div>; // 또는 다른 적절한 처리
+      return <div>데이터 형식 오류</div>;
     }
 
     return items.map((item, index, array) => {
@@ -207,6 +208,22 @@ function ApiBox() {
     });
   };
 
+  //apiUri 복사 - apiUri가 변경될 때마다 apiUriCopy를 업데이트
+  useEffect(() => {
+    setApiUriCopy(apiUri);
+  }, [apiUri]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(apiUriCopy);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 4000); // 4초 후 메시지 숨김
+    } catch (err) {
+      console.error("Copy fail. ´。＿。｀ : ", err);
+      setCopySuccess(false);
+    }
+  };
+
   return (
     <div
       className=" rounded-[15px] border-[3px] border-gray-200 bg-white "
@@ -222,17 +239,30 @@ function ApiBox() {
         <div className="flex-grow"></div>
         <div className="flex items-center">
           {/* 링크복사 */}
+          {CopySuccess && (
+            <h6 className="mr-[10px] text-green-400 opacity-100 transition-opacity">
+              copied
+            </h6>
+          )}
+          {!CopySuccess && (
+            <h6 className="mr-[10px] text-green-400 opacity-0 transition-opacity ">
+              copied
+            </h6>
+          )}
           <img
             src="/asset/project/project-copy.svg"
             className="mr-[17px] h-4 cursor-pointer"
             alt="project-copy"
+            onClick={copy}
           />
+
           {/* 수정모달 */}
           <img
             src="/asset/project/project-edit.svg"
-            className="mr-[17px] h-4 cursor-pointer"
+            className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
           />
+          {/* 자세히 보기 (위/아래화살표 아이콘) */}
           {isDetailVisible ? (
             <>
               <img
@@ -254,7 +284,8 @@ function ApiBox() {
           )}
         </div>
       </div>
-      {/* 자세히 보기 */}
+
+      {/* 자세히 보기*/}
       {isDetailVisible && (
         <div className="transition-all-[0.9s ease]">
           <div className="ml-[28px] mt-[20px]  h-[239px] w-[890px] border-[2px] border-gray-200 bg-white">
