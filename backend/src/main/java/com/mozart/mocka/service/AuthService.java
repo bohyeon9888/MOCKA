@@ -130,4 +130,27 @@ public class AuthService {
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
     }
+
+    public void methodUpdateCheck(Long projectId, Long apiId, ApiCreateRequestDto dto) {
+        //존재하는 것이 하나라도 찾아지면 throw
+        String apiUri = dto.getApiUri();
+        int questionMarkIndex = apiUri.indexOf('?');
+        if (questionMarkIndex != -1) {
+            apiUri = apiUri.substring(0, questionMarkIndex);
+        }
+        apiUri = replacePathUri(apiUri).replace('/', '.');
+
+        if ('.' == apiUri.charAt(0)) {
+            apiUri = apiUri.substring(1);
+        }
+
+        if ('.' == apiUri.charAt(apiUri.length() - 1)) {
+            apiUri = apiUri.substring(0, apiUri.length() - 1);
+        }
+//        System.out.println(apiProjectRepository.selectCountMatchApiUriAndMethod(apiUri,dto.getApiMethod(),projectId));
+        if (apiProjectRepository.selectCountMatchApiUriAndMethodExceptSelf(apiUri,dto.getApiMethod(),projectId, apiId)>=1){
+            throw new CustomException(MethodErrorCode.AlreadyExist.getCode(),MethodErrorCode.AlreadyExist.getDescription());
+        }
+
+    }
 }
