@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface ApiResponseRepository extends JpaRepository<ApiResponse, Long> {
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO api_response (api_id, key, type, data, faker_locale, faker_major, faker_sub, is_array, array_size) " +
+    @Query(value = "INSERT INTO api_response (api_id, key, type, data, faker_locale, faker_major, faker_sub, array_list, array_size) " +
             " VALUES (:id, :key, :type, CAST(:value AS jsonb), :locale, :major, :sub, :array, :size)", nativeQuery = true)
     void create(Long id, String key, String type, String value, String locale, String major, String sub, boolean array, int size);
 
