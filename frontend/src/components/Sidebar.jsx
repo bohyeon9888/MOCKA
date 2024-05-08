@@ -22,14 +22,14 @@ function Sidebar() {
   };
 
   return (
-    <aside className="bg-secondary-color flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 py-5">
+    <aside className="flex w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
       <div className="flex h-10 justify-center">
         <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
           PROJECT LIST
         </h5>
       </div>
       <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
-      <div className="h-full w-full px-3">
+      <div className="w-full grow px-3">
         <div
           className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleRecents}
@@ -106,7 +106,7 @@ function Sidebar() {
           className="h-10"
           alt="sidebar-profile"
         />
-        <h5 className="my-1 ml-2 w-full text-center text-[13px] font-bold text-gray-700">
+        <h5 className="my-1 ml-2 w-full shrink text-center text-[13px] font-bold text-gray-700">
           {user ? user.nickname : "Sign in"}
         </h5>
       </div>

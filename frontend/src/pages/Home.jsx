@@ -30,9 +30,9 @@ function Home() {
   }, []);
 
   return (
-    <div className="flex w-full ">
-      <div className="ml-[60px] mr-[60px] mt-[60px] w-1/2 items-center justify-center p-4">
-        <div className="">
+    <div className="flex h-full w-full items-center">
+      <div className="mb-10 flex w-1/2 flex-col items-center justify-center">
+        <div>
           <h2 className="tracking-[0.02em]">NEW PROJECT</h2>
 
           <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[27px]">
@@ -56,48 +56,45 @@ function Home() {
               size="small"
             />
           </div>
-
-          <div className="mt-7">
-            <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
-            <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[25px]">
-              <h4 className="mb-[10px] cursor-pointer">
-                <Link
-                  to="/update-history"
-                  state={{
-                    message: "v0.1 Mocka service officially launched!",
-                  }}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  v0.1 Mocka service officially launched!
-                </Link>
-              </h4>
-            </div>
+        </div>
+        <div className="mt-7">
+          <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
+          <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[25px]">
+            <h4 className="mb-[10px] cursor-pointer">
+              <Link
+                to="/update-history"
+                state={{
+                  message: "v0.1 Mocka service officially launched!",
+                }}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                v0.1 Mocka service officially launched!
+              </Link>
+            </h4>
           </div>
         </div>
       </div>
-      <div className="ml-[60px] mr-[60px] mt-[40px] flex w-1/2  p-4">
-        <div className="">
-          <img
-            src="/asset/home/home-up-pointer.svg"
-            className="mx-auto w-[30px] cursor-pointer"
-            alt="home-down-pointer"
-          />
-          <div className="mb-[30px] mt-[32px] flex h-[535px] flex-col space-y-4 overflow-y-scroll py-4 pr-3">
-            {projectList.map(({ projectId, projectName }) => (
-              <Project
-                key={projectId}
-                projectId={projectId}
-                title={projectName}
-                date=""
-              />
-            ))}
-          </div>
-          <img
-            src="/asset/home/home-down-pointer.svg"
-            className="mx-auto  w-[30px] cursor-pointer"
-            alt="home-up-pointer"
-          />
+      <div className="p- flex w-1/2 flex-col items-center justify-center">
+        <img
+          src="/asset/home/home-up-pointer.svg"
+          className="mx-auto w-[20px] cursor-pointer"
+          alt="home-down-pointer"
+        />
+        <div className="mb-[30px] mt-[32px] flex h-[480px] flex-col space-y-4 overflow-y-scroll py-4 pr-3">
+          {projectList.map(({ projectId, projectName }) => (
+            <Project
+              key={projectId}
+              projectId={projectId}
+              title={projectName}
+              date=""
+            />
+          ))}
         </div>
+        <img
+          src="/asset/home/home-down-pointer.svg"
+          className="mx-auto  w-[20px] cursor-pointer"
+          alt="home-up-pointer"
+        />
       </div>
     </div>
   );
