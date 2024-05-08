@@ -1,6 +1,6 @@
 import React from "react";
 
-function Button({ type }) {
+function Button({ type, onClick }) {
   const getBoxSize = (type) => {
     switch (type) {
       case "Generate":
@@ -18,6 +18,7 @@ function Button({ type }) {
     <div
       className={`flex h-[30px]  shrink-0 grow-0
         cursor-pointer items-center justify-center rounded-[10px] bg-gray-700 text-white ${getBoxSize(type)}`}
+      onClick={onClick}
     >
       <h4 className="font-semibold ">{type}</h4>
     </div>

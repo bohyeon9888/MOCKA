@@ -1,12 +1,12 @@
 const javaPrimitiveTypes = [
-  "boolean",
-  "byte",
-  "char",
-  "double",
-  "float",
-  "int",
-  "long",
-  "short",
+  "Boolean",
+  "Byte",
+  "Char",
+  "Double",
+  "Float",
+  "Int",
+  "Long",
+  "Short",
   "String",
 ];
 

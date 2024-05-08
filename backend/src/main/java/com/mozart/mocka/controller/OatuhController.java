@@ -23,16 +23,10 @@ public class OatuhController {
     private final OatuhService oauthService;
     private final RefreshService refreshService;
 
-    @Value("${spring.security.oauth2.client.provider.google.authorization-uri}")
-    private String authorization_uri;
-
     @GetMapping("/redirect/{provider}")
     public RedirectView redirectUser(@PathVariable String provider) {
-//        System.out.println(provider);
-//        System.out.println("code " + code);
         RedirectView redirectView = new RedirectView();
-//        log.info("redirect url : " + authorization_uri);
-        redirectView.setUrl(authorization_uri);
+        redirectView.setUrl("https://mock-a.com/oauth2/authorization/"+provider);
         return redirectView;
     }
 

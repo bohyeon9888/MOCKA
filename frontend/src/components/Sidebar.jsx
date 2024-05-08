@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { useModalStore } from "../store";
+import React, { useEffect, useState } from "react";
+import { useModalStore, useProjectStore, useUserStore } from "../store";
 import LoginModal from "./modal/LoginModal";
 
 function Sidebar() {
   const { openModal } = useModalStore();
+  const { recentProjectList } = useProjectStore();
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
+  const { user } = useUserStore();
 
   const toggleRecents = () => {
     setIsRecentsOpen(!isRecentsOpen);
@@ -49,20 +51,19 @@ function Sidebar() {
           </div>
           <h5 className="font-bold text-gray-700">RECENTS</h5>
         </div>
-        {isRecentsOpen && (
-          <div className="pl-6">
-            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">
-                Item name long 123456789
-              </h5>
-            </div>
-            <div className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">
-                Recent Item 2
-              </h5>
-            </div>
-          </div>
-        )}
+        <div className="pl-6">
+          {isRecentsOpen &&
+            recentProjectList.map(({ projectId, projectName }) => (
+              <div
+                key={projectId}
+                className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300"
+              >
+                <h5 className="truncate font-bold text-gray-700">
+                  {projectName}
+                </h5>
+              </div>
+            ))}
+        </div>
         <div
           className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleTeams}
@@ -101,12 +102,12 @@ function Sidebar() {
         onClick={openLoginModal}
       >
         <img
-          src="/asset/sidebar/sidebar-profile.svg"
+          src={user ? user.profile : "/asset/sidebar/sidebar-profile.svg"}
           className="h-10"
           alt="sidebar-profile"
         />
         <h5 className="my-1 ml-2 w-full text-center text-[13px] font-bold text-gray-700">
-          Sign in
+          {user ? user.nickname : "Sign in"}
         </h5>
       </div>
     </aside>

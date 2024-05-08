@@ -26,8 +26,8 @@ public class GenResponse {
 
         HashMap<String, String> appendedClassList = new HashMap<String, String>();
 
-        appendedClassList.put(dtoClassName, "package " + springPackageName + ";\n");
-        String importList = addDefaultPackage("");
+        appendedClassList.put(dtoClassName, "package " + springPackageName + ";\n\n");
+        StringBuilder importList = new StringBuilder(addDefaultPackage(""));
         String classOuterString = addAnnotation("public class " + dtoClassName + "{" + "\n");
         String classInnerString = "";
 
@@ -57,8 +57,8 @@ public class GenResponse {
                     if (appendedClassList.containsKey(className)) {
                         className = className + "Copy";
                     }
-                    importList =
-                        importList + "import " + springPackageName + "." + className + ";" + "\n";
+                    importList.append("import ").append(springPackageName).append(".")
+                        .append(className).append(";").append("\n");
 
                     //data안의 json을 로드 후 map으로 변환
                     List<Map<String, Object>> dataMap =

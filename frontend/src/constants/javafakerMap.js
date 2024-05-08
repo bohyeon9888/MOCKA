@@ -10,52 +10,52 @@ const javafakerMap = {
       date: ["past", "future"],
     },
   },
-  boolean: {
+  Boolean: {
     major: ["bool"],
     sub: {
       bool: ["bool"],
     },
   },
-  byte: {
+  Byte: {
     major: ["number"],
     sub: {
       number: ["random"],
     },
   },
-  char: {
+  Char: {
     major: ["lorem"],
     sub: {
       lorem: ["character"],
     },
   },
-  short: {
+  Short: {
     major: ["number"],
     sub: {
       number: ["random"],
     },
   },
-  int: {
-    major: ["number"],
-    sub: {
-      number: ["random"], 
-    },
-  },
-  long: {
+  Int: {
     major: ["number"],
     sub: {
       number: ["random"],
     },
   },
-  float: {
+  Long: {
     major: ["number"],
     sub: {
-      number: ["random"], 
+      number: ["random"],
     },
   },
-  double: {
+  Float: {
     major: ["number"],
     sub: {
-      number: ["random"], 
+      number: ["random"],
+    },
+  },
+  Double: {
+    major: ["number"],
+    sub: {
+      number: ["random"],
     },
   },
 };

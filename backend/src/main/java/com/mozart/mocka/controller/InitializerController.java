@@ -1,8 +1,10 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiProjectRepository;
+import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.InitializerService;
 import com.mozart.mocka.service.ProjectService;
 import java.nio.file.Files;
@@ -28,6 +30,7 @@ public class InitializerController {
     private final GenResponse genResponse;
     private final InitializerService initializerService;
     private final ApiProjectRepository apiProjectRepository;
+    private final ProjectRepository projectRepository;
 
     @PostMapping("/create/{projectId}")
     public ResponseEntity<Resource> download(
@@ -35,11 +38,12 @@ public class InitializerController {
         @RequestBody InitializerRequestDto request) {
 
         List<ApiProjects> apis = apiProjectRepository.findByProjectId(projectId);
+        Projects project = projectRepository.findByProjectId(projectId);
         // 프로젝트 가져오기
 
         try {
 
-            Path projectRoot = initializerService.createInitializerFiles(request, apis);
+            Path projectRoot = initializerService.createInitializerFiles(request, apis, project.getCommonUri());
             Path zipPath = initializerService.packageProject(projectRoot);
 
             if (!Files.exists(zipPath)) {

@@ -15,5 +15,5 @@ public class InitializerRequestDto {
     private String springName;
     private String springDescription;
     private String springPackageName;
-    private List<String> springDependencyName;
+    private List<String> springDependencyId;
 }

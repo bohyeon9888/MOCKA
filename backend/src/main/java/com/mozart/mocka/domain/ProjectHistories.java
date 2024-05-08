@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -20,5 +22,8 @@ public class ProjectHistories extends BaseEntity {
 
     @Column
     private String projectRole;
+
+    @Column
+    private LocalDateTime recentRead;
 
 }

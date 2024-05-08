@@ -1,6 +1,7 @@
 package com.mozart.mocka.service.generator;
 
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.util.DependencyManager;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,13 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class GenInit {
 
+    private final DependencyManager dependencyManager;
     public void createDirectories(Path projectRoot, InitializerRequestDto request)
         throws IOException {
         Files.createDirectories(projectRoot.resolve(
@@ -26,10 +30,14 @@ public class GenInit {
         Files.createDirectories(projectRoot.resolve("src/test/resources"));
     }
 
-    public void createApplicationProperties(Path projectRoot) throws IOException {
+    public void createApplicationProperties(Path projectRoot, String uri) throws IOException {
         Path propertiesPath = projectRoot.resolve("src/main/resources/application.properties");
-        Files.createFile(propertiesPath);
+        try (BufferedWriter writer = Files.newBufferedWriter(propertiesPath, StandardCharsets.UTF_8)) {
+            String commonUri = "server.servlet.context-path=" + uri;
+            writer.write(commonUri);
+        }
     }
+
 
     public void createApplicationClass(Path projectRoot, InitializerRequestDto request)
         throws IOException {
@@ -61,38 +69,66 @@ public class GenInit {
     }
 
     private String generatePomContent(InitializerRequestDto request) {
-        return "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n" +
-            "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n" +
-            "    <modelVersion>4.0.0</modelVersion>\n" +
-            "    <groupId>" + request.getSpringGroupId() + "</groupId>\n" +
-            "    <artifactId>" + request.getSpringArtifactId() + "</artifactId>\n" +
-            "    <version>0.0.1-SNAPSHOT</version>\n" +
-            "    <name>" + request.getSpringName() + "</name>\n" +
-            "    <description>" + request.getSpringDescription() + "</description>\n" +
-            "    <parent>\n" +
-            "        <groupId>org.springframework.boot</groupId>\n" +
-            "        <artifactId>spring-boot-starter-parent</artifactId>\n" +
-            "        <version>" + request.getSpringPlatformVersion() + "</version>\n" +
-            "        <relativePath/> <!-- lookup parent from repository -->\n" +
-            "    </parent>\n" +
-            "    <dependencies>\n" +
-            "        <dependency>\n" +
-            "            <groupId>org.springframework.boot</groupId>\n" +
-            "            <artifactId>spring-boot-starter</artifactId>\n" +
-            "        </dependency>\n" +
-            "        <dependency>\n" +
-            "            <groupId>org.projectlombok</groupId>\n" +
-            "            <artifactId>lombok</artifactId>\n" +
-            "            <version>1.18.22</version>\n" +
-            "            <scope>provided</scope>\n" +
-            "        </dependency>\n" +
-            "        <!-- Additional dependencies can be added here -->\n" +
-            "    </dependencies>\n" +
-            "    <properties>\n" +
-            "        <java.version>" + request.getSpringJvmVersion() + "</java.version>\n" +
-            "    </properties>\n" +
-            "</project>";
+        StringBuilder sb = new StringBuilder();
+        sb.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n")
+            .append("         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n")
+            .append("         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n")
+            .append("    <modelVersion>4.0.0</modelVersion>\n")
+            .append("    <groupId>").append(request.getSpringGroupId()).append("</groupId>\n")
+            .append("    <artifactId>").append(request.getSpringArtifactId()).append("</artifactId>\n")
+            .append("    <version>0.0.1-SNAPSHOT</version>\n")
+            .append("    <name>").append(request.getSpringName()).append("</name>\n")
+            .append("    <description>").append(request.getSpringDescription()).append("</description>\n")
+            .append("    <parent>\n")
+            .append("        <groupId>org.springframework.boot</groupId>\n")
+            .append("        <artifactId>spring-boot-starter-parent</artifactId>\n")
+            .append("        <version>").append(request.getSpringPlatformVersion()).append("</version>\n")
+            .append("        <relativePath/> <!-- lookup parent from repository -->\n")
+            .append("    </parent>\n")
+            .append("    <dependencyManagement>\n")
+            .append("        <dependencies>\n")
+            .append("            <dependency>\n")
+            .append("                <groupId>org.springframework.boot</groupId>\n")
+            .append("                <artifactId>spring-boot-dependencies</artifactId>\n")
+            .append("                <version>")
+            .append(request.getSpringPlatformVersion())
+            .append("                </version>\n")
+            .append("                <type>pom</type>\n")
+            .append("                <scope>import</scope>\n")
+            .append("            </dependency>\n")
+            .append("        </dependencies>\n")
+            .append("    </dependencyManagement>\n\n")
+            .append("    <dependencies>\n")
+            .append("        <dependency>\n")
+            .append("            <groupId>org.springframework.boot</groupId>\n")
+            .append("            <artifactId>spring-boot-starter-web</artifactId>\n")
+            .append("        </dependency>\n")
+            .append("        <dependency>\n")
+            .append("            <groupId>org.springframework.boot</groupId>\n")
+            .append("            <artifactId>spring-boot-starter-test</artifactId>\n")
+            .append("            <scope>test</scope>\n")
+            .append("        </dependency>\n")
+            .append("        <dependency>\n")
+            .append("            <groupId>org.projectlombok</groupId>\n")
+            .append("            <artifactId>lombok</artifactId>\n")
+            .append("            <optional>true</optional>\n")
+            .append("        </dependency>\n");
+
+        // 추가 의존성이 필요하다면 여기에 추가
+        for (String dependencyId : request.getSpringDependencyId()) {
+            String dependency = dependencyManager.getPomDependency(request.getSpringPlatformVersion(), dependencyId);
+            if (dependency != null) {
+                sb.append(dependency).append("\n");
+            }
+        }
+
+        sb.append("    </dependencies>\n")
+            .append("    <properties>\n")
+            .append("        <java.version>").append(request.getSpringJvmVersion()).append("</java.version>\n")
+            .append("    </properties>\n")
+            .append("</project>");
+
+        return sb.toString();
     }
 
 
@@ -105,29 +141,51 @@ public class GenInit {
     }
 
     private String generateGradleBuildContent(InitializerRequestDto request) {
-        return "plugins {\n" +
-            "    id 'org.springframework.boot' version '" + request.getSpringPlatformVersion()
-            + "'\n" +
-            "    id 'io.spring.dependency-management' version '1.0.11.RELEASE'\n" +
-            "    id 'java'\n" +
-            "}\n\n" +
-            "group = '" + request.getSpringGroupId() + "'\n" +
-            "version = '0.0.1-SNAPSHOT'\n" +
-            "sourceCompatibility = '" + request.getSpringJvmVersion() + "'\n\n" +
-            "repositories {\n" +
-            "    mavenCentral()\n" +
-            "}\n\n" +
-            "dependencies {\n" +
-            "    implementation 'org.springframework.boot:spring-boot-starter-web'\n" +
-            "    testImplementation('org.springframework.boot:spring-boot-starter-test')\n" +
-            "    compileOnly 'org.projectlombok:lombok'\n"+
-            "    annotationProcessor 'org.projectlombok:lombok'\n" +
-            "    // Add additional dependencies here\n" +
-            "}\n\n" +
-            "test {\n" +
-            "    useJUnitPlatform()\n" +
-            "}";
+        StringBuilder sb = new StringBuilder();
+        sb.append("plugins {\n")
+            .append("    id 'org.springframework.boot' version '").append(request.getSpringPlatformVersion()).append("'\n")
+            .append("    id 'io.spring.dependency-management' version '1.0.11.RELEASE'\n")
+            .append("    id 'java'\n")
+            .append("}\n\n")
+            .append("group = '").append(request.getSpringGroupId()).append("'\n")
+            .append("version = '0.0.1-SNAPSHOT'\n")
+            .append("sourceCompatibility = '").append(request.getSpringJvmVersion()).append("'\n\n")
+            .append("repositories {\n")
+            .append("    mavenCentral()\n")
+            .append("}\n\n")
+            .append("configurations {\n")
+            .append("    compileOnly {\n")
+            .append("        extendsFrom annotationProcessor\n")
+            .append("    }\n")
+            .append("}\n\n")
+            .append("dependencyManagement {\n")
+            .append("    imports {\n")
+            .append("        mavenBom 'org.springframework.boot:spring-boot-dependencies:")
+            .append(request.getSpringPlatformVersion())
+            .append("'\n")
+            .append("    }\n")
+            .append("}\n\n")
+            .append("dependencies {\n")
+            .append("    implementation 'org.springframework.boot:spring-boot-starter-web'\n")
+            .append("    testImplementation 'org.springframework.boot:spring-boot-starter-test'\n")
+            .append("    compileOnly 'org.projectlombok:lombok'\n")
+            .append("    annotationProcessor 'org.projectlombok:lombok'\n");
+        // 추가 의존성이 필요하다면 여기에 추가
+        for (String dependencyId : request.getSpringDependencyId()) {
+            String dependency = dependencyManager.getGradleDependency(request.getSpringPlatformVersion(), dependencyId);
+            if (dependency != null) {
+                sb.append(dependency).append("\n");
+            }
+        }
+
+        sb.append("}\n\n")
+            .append("test {\n")
+            .append("    useJUnitPlatform()\n")
+            .append("}");
+
+        return sb.toString();
     }
+
 
     public void createMavenSettings(Path projectRoot, InitializerRequestDto request)
         throws IOException {
