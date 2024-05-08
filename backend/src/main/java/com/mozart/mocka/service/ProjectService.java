@@ -36,7 +36,14 @@ public class ProjectService {
 
         projects = projectRepository.save(projects);
         try {
-            projects.setProjectHashKey(hashKeyService.encryptLong(projects.getProjectId()));
+            String hashStr = hashKeyService.encryptLong(projects.getProjectId());
+            StringBuilder filtered = new StringBuilder();
+            for (char c : hashStr.toCharArray()) {
+                if (Character.isLetter(c)) {
+                    filtered.append(Character.toLowerCase(c));
+                }
+            }
+            projects.setProjectHashKey(filtered.toString());
             projectRepository.save(projects);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -56,8 +63,9 @@ public class ProjectService {
             return false;
 
         projectRepository.deleteById(projectId);
-        projectHistoryRepository.softDeleteByProjectId(projectId);
+        projectHistoryRepository.deleteByProjectHistoryPK_ProjectId(projectId);
         baseUriRepository.deleteByProjectId(projectId);
+        apiProjectRepository.deleteByProjectId(projectId);
         return true;
     }
 

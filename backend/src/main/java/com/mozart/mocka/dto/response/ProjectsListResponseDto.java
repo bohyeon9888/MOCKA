@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectsListResponseDto {
-    long projectId;
+    Long projectId;
     String projectName;
     String projectRole;
     String projectHashKey;

@@ -46,11 +46,11 @@ public class ApiProjects {
     @OneToMany(mappedBy = "apiProject")
     private List<ApiResponse> apiResponses = new ArrayList<>();
 
-    public ApiProjects(Long projectId, String apiMethod, String apiUri, boolean isArray, int arraySize) {
+    public ApiProjects(Long projectId, String apiMethod, String apiUri, boolean apiResponseIsArray, int arraySize) {
         this.projectId = projectId;
         this.apiMethod = apiMethod;
         this.apiUri = apiUri;
-        this.apiResponseIsArray = isArray;
+        this.apiResponseIsArray = apiResponseIsArray;
         this.apiResponseSize = arraySize;
     }
     public String toString(){

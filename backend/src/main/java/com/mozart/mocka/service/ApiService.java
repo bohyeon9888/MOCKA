@@ -41,7 +41,7 @@ public class ApiService {
 
         ObjectMapper mapper = new ObjectMapper();
         for (RequestApiDto path : dto.getApiRequest()) {
-            log.info("request : " + path.isArrayList());
+            log.info("request : " +path.getKey() + "/" + path.isArrayList());
             apiRequestRepository.create(apiProject.getApiId(), path.getKey(), path.getType(),
                 mapper.writeValueAsString(path.getValue()), path.getFakerLocale(),
                 path.getFakerMajor(), path.getFakerSub(), path.isArrayList());
@@ -58,6 +58,10 @@ public class ApiService {
         boolean apiResponseIsArray, int apiResponseSize) {
         String apiUriStr = apiUri;
         apiUri = replacePathUri(apiUri).replace('/', '.');
+        int queryIndex = apiUri.indexOf('?');
+        if (queryIndex != -1) {
+            apiUri = apiUri.substring(0, queryIndex);
+        }
 
         if ('.' == apiUri.charAt(0)) {
             apiUri = apiUri.substring(1);
