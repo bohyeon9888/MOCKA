@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Radio from "../components/Radio";
 import initializerOptions from "../constants/initializerOptions";
 import Button from "../components/button/Button";
+import downloadSpringInitializer from "../apis/Initializer";
 
 export default function Initializer() {
   const [initializerSetting, setInitializerSetting] = useState({
@@ -32,6 +33,12 @@ export default function Initializer() {
     input: "w-full h-[30px] p-2 rounded-[4px] border-2 border-gray-500",
   };
 
+  const onClick = () => {
+    downloadSpringInitializer(initializerSetting).then((data) => {
+      console.log(data);
+    });
+  };
+
   useEffect(() => {
     setInitializerSetting({
       ...initializerSetting,
@@ -47,7 +54,7 @@ export default function Initializer() {
   }, [initializerSetting.artifact]);
 
   return (
-    <div className="h-full w-full overflow-y-scroll p-5 pb-40">
+    <div className="h-full w-full overflow-y-scroll px-12 py-10 pb-40">
       <div className="text-1 font-semibold leading-normal">Project Name</div>
       <div className="mt-4 flex flex-col space-y-[27px] px-4">
         <div>
@@ -180,7 +187,7 @@ export default function Initializer() {
           <h3 className="mb-1 leading-normal">Dependencies</h3>
         </div>
         <div className="ml-auto mr-20">
-          <Button type="Generate" />
+          <Button type="Generate" onClick={onClick} />
         </div>
       </div>
     </div>
