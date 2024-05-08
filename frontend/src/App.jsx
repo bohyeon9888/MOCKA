@@ -7,12 +7,28 @@ import {
   useLocation,
 } from "react-router-dom";
 import Home from "./pages/Home";
-// import Main from "./pages/Main";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import ModalContainer from "./components/ModalContainer";
 import useModalStore from "./store/modal";
+import Login from "./pages/Login";
+
+import { isAuthenticated } from "./utils/auth";
+import Main from "./pages/Main";
+import Initializer from "./pages/Initializer";
+import Viewer from "./pages/Viewer";
 import UpdateHistory from "./pages/UpdateHistory";
+
+function RequireAuthRoutes() {
+  const location = useLocation();
+  // const loggedIn = isAuthenticated();
+  const loggedIn = true;
+
+  if (!loggedIn)
+    return <Navigate to="/main" replace state={{ from: location }} />;
+
+  return <Outlet />;
+}
 
 function App() {
   const { isOpen, title, children } = useModalStore();

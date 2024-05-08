@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
-=======
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
->>>>>>> 9ef52f9 (✨ feat: Main, Home, UpdateHistory 수정, ApiBox 수정중)
-=======
->>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
 import DropDown from "../components/DropDown";
 import Button from "../components/button/Button.jsx";
 import Project from "../components/button/Project";
-
 import { useModalStore, useProjectStore } from "../store";
 import ApiEditModal from "../components/modal/ApiEditModal.jsx";
 import { getProjectList, getRecentProjectList } from "../apis/project.js";
@@ -52,25 +44,11 @@ function Home() {
                 }}
               />
             </div>
-<<<<<<< HEAD
             <h5 className="tracking-[0.1em]">PROJECT NAME</h5>
             <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white" />
             <h5 className="mt-[15px] tracking-[0.1em]">COMMON URL</h5>
             <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white" />
             <h5 className="mb-[4px] mt-[15px] tracking-[0.1em]">VISIBILITY</h5>
-=======
-            <h5 className="tracking-[0.2em]">PROJECT NAME</h5>
-            <input
-              className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white  pl-[10px] text-[12px] "
-              placeholder="PROJECT NAME"
-            />
-            <h5 className="mt-[15px] tracking-[0.2em]">COMMON URL</h5>
-            <input
-              className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500  bg-white pl-[10px] text-[12px]"
-              placeholder="/api"
-            />
-            <h5 className="mb-[4px] mt-[15px] tracking-[0.2em]">VISIBILITY</h5>
->>>>>>> 9ef52f9 (✨ feat: Main, Home, UpdateHistory 수정, ApiBox 수정중)
             <DropDown
               value={selectedValue}
               options={options}
@@ -80,23 +58,7 @@ function Home() {
           </div>
 
           <div className="mt-7">
-<<<<<<< HEAD
-<<<<<<< HEAD
             <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
-
-            <div className="mt-[9px] h-[220px] w-[460px] rounded-[20px] border-[2.5px] border-black bg-black">
-              <img
-                src="/asset/etc/friend.jpg"
-                className="h-full w-full rounded-[20px]"
-                alt="spcae"
-              />
-=======
-            <h2 className="tracking-[0.08em]">UPDATE HISTORY</h2>
-
-=======
-            <h2 className="tracking-[0.08em]">UPDATE HISTORY</h2>
-
->>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
             <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[25px]">
               <h4 className="mb-[10px] cursor-pointer">
                 <Link
@@ -109,10 +71,6 @@ function Home() {
                   v0.1 Mocka service officially launched!
                 </Link>
               </h4>
-<<<<<<< HEAD
->>>>>>> 9ef52f9 (✨ feat: Main, Home, UpdateHistory 수정, ApiBox 수정중)
-=======
->>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
             </div>
           </div>
         </div>
