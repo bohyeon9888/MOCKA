@@ -16,8 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import static javax.xml.crypto.dsig.Transform.BASE64;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
