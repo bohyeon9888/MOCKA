@@ -12,8 +12,8 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 VOLUME /tmp
-COPY --from=gradlebuild /build/build/libs/mockServer.jar /app/mockServer.jar
+COPY --from=gradlebuild /build/build/libs/mockserver-0.0.1-SNAPSHOT.jar /app/mockserver-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mockServer.jar"]
+ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mockserver-0.0.1-SNAPSHOT.jar"]
