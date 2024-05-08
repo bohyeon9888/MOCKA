@@ -216,6 +216,7 @@ public class GenInit {
                 Files.copy(sourceFile, targetFile);
                 log.info("Copied: " + sourceFile + " to " + targetFile);
             } else {
+                log.info(Paths.get("").toAbsolutePath().toString());
                 log.info("File does not exist: " + sourceFile);
             }
         }
@@ -251,6 +252,7 @@ public class GenInit {
                 Files.copy(sourceFile, targetFile);
                 log.info("Copied: " + sourceFile + " to " + targetFile);
             } else {
+                log.info(Paths.get("").toAbsolutePath().toString());
                 log.info("File does not exist: " + sourceFile);
             }
         }
