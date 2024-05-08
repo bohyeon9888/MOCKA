@@ -16,4 +16,4 @@ COPY --from=gradlebuild /build/build/libs/mockServer.jar /app/mockServer.jar
 
 EXPOSE 8082
 
-ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mocka-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mockServer.jar"]
