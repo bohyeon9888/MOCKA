@@ -41,7 +41,7 @@ public class ApiService {
 
         ObjectMapper mapper = new ObjectMapper();
         for (RequestApiDto path : dto.getApiRequest()) {
-            log.info("request : " + path.isArrayList());
+            log.info("request : " +path.getKey() + "/" + path.isArrayList());
             apiRequestRepository.create(apiProject.getApiId(), path.getKey(), path.getType(),
                 mapper.writeValueAsString(path.getValue()), path.getFakerLocale(),
                 path.getFakerMajor(), path.getFakerSub(), path.isArrayList());
