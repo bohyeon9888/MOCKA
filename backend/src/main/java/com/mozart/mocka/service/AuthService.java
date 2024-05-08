@@ -53,34 +53,48 @@ public class AuthService {
     }
     public void baseUriCreateCheck(Long projectId, BaseUriRequestDto baseUriRequestDto){
         Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
         if (project==null){
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
+        //해당 프로젝트에 대한 같은 uri가 이미 존재합니다.
         int baseUriCount=baseUriRepository.selectCountMatchUri(projectId,baseUriRequestDto.getBaseUri());
-//        System.out.println(baseUriCount);
         if (baseUriCount>=1){
             throw new CustomException(BaseUriErrorCode.AlreadyExist.getCode(), BaseUriErrorCode.AlreadyExist.getDescription());
         }
 
+        //softDelete적용시
+        //1.삭제상태 상관없이 ProjectId와 Uri가 일치하는 row 조회
+        //1-1 존재하지 않는다면 정상생성
+        //1-2 존재하지만 삭제된 상태라면 복구경고 예외처리
+        //1-3 존재한다면 존재 예외처리
     }
 
     public void baseUriUpdateCheck(Long projectId,Long baseUriId, BaseUriRequestDto baseUriRequestDto){
         Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
         if (project==null){
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
-        BaseUris deletedBaseUri=baseUriRepository.findByIdDeleted(projectId);
-
-        if (deletedBaseUri != null){
-            throw new CustomException(BaseUriErrorCode.AlreadyDeleted.getCode(), BaseUriErrorCode.AlreadyDeleted.getDescription());
-        }
 
         BaseUris baseUri=baseUriRepository.findByBaseId(baseUriId);
+        //baseId가 존재하지 않습니다.
         if(baseUri==null){
             throw new CustomException(BaseUriErrorCode.NotExist.getCode(), BaseUriErrorCode.NotExist.getDescription());
         }
 
+        //softDelete적용시
+        //1.삭제상태 상관없이 BaseId가 일치하는 BaseUris 조회
+        //1-1 존재하지 않는다면 미존재 예외처리
+        //1-2 존재하지만 삭제된 상태라면 삭제된 상태 예외처리
+        //1-2 존재한다면 정상수정
+        //2.삭제상태 상관없이 ProjectId와 Uri가 일치하는 row 조회
+        //2-1 존재하지 않는다면 정상생성
+        //2-2 존재하지만 삭제된 상태라면 복구경고 예외처리
+        //2-3 존재한다면 존재 예외처리
+
         int baseUriCount=baseUriRepository.selectCountMatchUri(projectId,baseUriRequestDto.getBaseUri());
+        ////해당 프로젝트에 대한 같은 uri가 이미 존재합니다.
         if (baseUriCount>=1){
             throw new CustomException(BaseUriErrorCode.AlreadyExist.getCode(), BaseUriErrorCode.AlreadyExist.getDescription());
         }
@@ -88,19 +102,28 @@ public class AuthService {
 
     public void baseUriDeleteCheck(Long projectId,Long baseUriId){
         Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
         if (project==null){
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
 
-        BaseUris deletedBaseUri=baseUriRepository.findByIdDeleted(projectId);
-
-        if (deletedBaseUri != null){
-            throw new CustomException(BaseUriErrorCode.AlreadyDeleted.getCode(), BaseUriErrorCode.AlreadyDeleted.getDescription());
-        }
-
         BaseUris baseUri=baseUriRepository.findByBaseId(baseUriId);
+        //baseId가 존재하지 않습니다.
         if(baseUri==null){
             throw new CustomException(BaseUriErrorCode.NotExist.getCode(), BaseUriErrorCode.NotExist.getDescription());
+        }
+
+        //1.삭제상태 상관없이 ProjectId와 Uri가 일치하는 row 조회
+        //2-1 존재하지 않는다면 미존재 예외처리
+        //2-2 존재하지만 삭제된 상태라면 삭제상태 예외처리
+        //2-3 존재한다면 정상삭제
+    }
+
+    public void baseUriReadCheck(Long projectId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
     }
 }
