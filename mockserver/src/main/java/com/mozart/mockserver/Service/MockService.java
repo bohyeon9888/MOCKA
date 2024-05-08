@@ -369,6 +369,7 @@ public class MockService {
             Object categoryObject = faker.getClass().getDeclaredMethod(category).invoke(faker);
             return (String) categoryObject.getClass().getDeclaredMethod(method).invoke(categoryObject);
         } catch (Exception e) {
+//            System.out.println("/" + type);
             return switch (type.toUpperCase()){
                 case "BOOLEAN" -> faker.bool().toString();
                 case "INT","INTEGER" -> Integer.toString(faker.hashCode());
@@ -377,6 +378,7 @@ public class MockService {
                 case "SHORT" -> Short.toString((short) faker.number().randomNumber(4, false));
                 case "BYTE" -> Byte.toString((byte) faker.number().randomNumber(2, false));
                 case "LONG" -> Long.toString(faker.number().randomNumber(10, false));
+                case "STRING" -> faker.lorem().characters(10);
                 default -> "null";
             };
         }

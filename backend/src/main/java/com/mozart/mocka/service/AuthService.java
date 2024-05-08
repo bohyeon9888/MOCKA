@@ -25,6 +25,10 @@ public class AuthService {
     public void methodCreateCheck(Long projectId,ApiCreateRequestDto dto){
         //존재하는 것이 하나라도 찾아지면 throw
         String apiUri = dto.getApiUri();
+        int questionMarkIndex = apiUri.indexOf('?');
+        if (questionMarkIndex != -1) {
+            apiUri = apiUri.substring(0, questionMarkIndex);
+        }
         apiUri = replacePathUri(apiUri).replace('/', '.');
 
         if ('.' == apiUri.charAt(0)) {

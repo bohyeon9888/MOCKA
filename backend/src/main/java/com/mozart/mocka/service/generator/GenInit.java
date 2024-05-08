@@ -189,8 +189,11 @@ public class GenInit {
 
     public void createMavenSettings(Path projectRoot, InitializerRequestDto request)
         throws IOException {
+        //Path sourceDirectory = Paths.get(
+        //    "src/main/java/com/mozart/mocka/templates/maven" + request.getSpringPlatformVersion());
+        // 로컬 환경
         Path sourceDirectory = Paths.get(
-            "src/main/java/com/mozart/mocka/templates/maven" + request.getSpringPlatformVersion());
+            "templates/maven" + request.getSpringPlatformVersion());
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
         String[] requiredFiles = {
@@ -224,8 +227,12 @@ public class GenInit {
 
     public void createGradleSettings(Path projectRoot, InitializerRequestDto request)
         throws IOException {
+//        Path sourceDirectory = Paths.get(
+//            "src/main/java/com/mozart/mocka/templates/gradle" + request.getSpringPlatformVersion());
+//        로컬 환경
         Path sourceDirectory = Paths.get(
-            "src/main/java/com/mozart/mocka/templates/gradle" + request.getSpringPlatformVersion());
+            "templates/gradle" + request.getSpringPlatformVersion());
+
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
         String[] requiredFiles = {
