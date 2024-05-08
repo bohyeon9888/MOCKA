@@ -53,6 +53,12 @@ public class InviteService {
             emails[i] = mem.getEmail();
 
             Members newMem = membersRepository.findByMemberEmail(mem.getEmail());
+            // 동일한 초대 내역이 있는지
+            Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(newMem.getMemberId(), projectId);
+            if (invitation.isPresent()) {
+                log.debug("동일한 초대내역이 있습니다.");
+                continue;
+            }
 
             ProjectInvitations invitations = ProjectInvitations.builder()
                     .members(newMem)
