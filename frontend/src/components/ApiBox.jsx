@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Method from "./Method";
 /**바꿀거 */
-// 메소드 타입별로 placeholder 내용 다르게
-//<p className="ml-[10px]">/api/user/detail/{}</p> api url 전역에서 관리할거야
+// 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
 function ApiBox() {
+  const originalApiName = "Bread🍞"; // api명세서 보고 변수로 바꾸기 🍒
   const [isDetailVisible, setIsDetailVisible] = useState(false); //자세히 보기 버튼
   const [methodType] = useState("Get".toUpperCase()); //method타입과 placeholder내용
-  const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //api uri 링크로
+  const [apiName, setApiName] = useState(originalApiName);
+  const [inputValue, setInputValue] = useState(apiName); // 입력 필드 값 관리
+  const [isSaved, setIsSaved] = useState(true); // apiName 저장 상태 관리
+  const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //나중에 명세서 변수보고 바꾸기 🍒
   const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
   const [CopySuccess, setCopySuccess] = useState(false);
+  console.log("apiName : " + apiName);
   const [apiRequest] = [
     [
       {
@@ -224,15 +228,46 @@ function ApiBox() {
     }
   };
 
+  //apiName 실시간 확인 및 변경
+  useEffect(() => {
+    if (inputValue === apiName) {
+      setIsSaved(true);
+    }
+  }, [inputValue, originalApiName]);
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+    setIsSaved(false); // 변경 시 저장 상태를 false로 설정
+  };
+
+  //엔터를 누르면 무조건 saved
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      setApiName(inputValue); // 엔터 키가 눌리면 apiName 상태 업데이트
+      setIsSaved(true); // 저장 상태를 true로 설정
+    }
+  };
+
   return (
     <div
       className=" rounded-[15px] border-[3px] border-gray-200 bg-white "
       style={boxStyle}
     >
-      <input
-        className="ml-[28px] mt-[20px] h-[31px] w-[890px] place-content-start rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] text-[12px]"
-        placeholder={placeholderText}
-      />
+      <div className="ml-[28px] mt-[20px] flex w-[890px] items-center">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          className="h-[30px] w-full rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] pr-[100px] text-[12px]"
+          placeholder={placeholderText}
+        />
+        {isSaved ? (
+          <h6 className="ml-[-60px] text-green-400">saved</h6>
+        ) : (
+          <h6 className="ml-[-100px] text-red-400">press enter</h6>
+        )}
+      </div>
       <div className="ml-[28px] mt-[13px] flex w-[890px] items-center">
         <Method type={methodType} />
         <p className="ml-[10px]">{apiUri}</p>
