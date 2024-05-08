@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 =======
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 >>>>>>> 9ef52f9 (✨ feat: Main, Home, UpdateHistory 수정, ApiBox 수정중)
+=======
+>>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
 import DropDown from "../components/DropDown";
 import Button from "../components/button/Button.jsx";
 import Project from "../components/button/Project";
@@ -78,6 +81,7 @@ function Home() {
 
           <div className="mt-7">
 <<<<<<< HEAD
+<<<<<<< HEAD
             <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
 
             <div className="mt-[9px] h-[220px] w-[460px] rounded-[20px] border-[2.5px] border-black bg-black">
@@ -89,6 +93,10 @@ function Home() {
 =======
             <h2 className="tracking-[0.08em]">UPDATE HISTORY</h2>
 
+=======
+            <h2 className="tracking-[0.08em]">UPDATE HISTORY</h2>
+
+>>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
             <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[25px]">
               <h4 className="mb-[10px] cursor-pointer">
                 <Link
@@ -101,7 +109,10 @@ function Home() {
                   v0.1 Mocka service officially launched!
                 </Link>
               </h4>
+<<<<<<< HEAD
 >>>>>>> 9ef52f9 (✨ feat: Main, Home, UpdateHistory 수정, ApiBox 수정중)
+=======
+>>>>>>> 9ef52f94bc706ad517db096bcabfab1ebee72e90
             </div>
           </div>
         </div>
