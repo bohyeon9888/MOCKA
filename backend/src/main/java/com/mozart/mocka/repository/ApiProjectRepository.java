@@ -32,6 +32,11 @@ public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
                                         @Param("api_method") String apiMethod,
                                         @Param("project_id") Long projectId);
 
+    @Query(value = "SELECT  COUNT(api_id) FROM api_projects WHERE api_id = :api_id and project_id = :project_id",nativeQuery = true)
+    int selectCountMatchApiId(@Param("api_id") Long apiUri,
+                              @Param("project_id") Long projectId);
 
     void deleteByApiId(Long apiId);
+
+    void deleteByProjectId(Long projectId);
 }

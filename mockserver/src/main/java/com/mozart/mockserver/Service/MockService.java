@@ -9,10 +9,12 @@ import com.mozart.mockserver.domain.ApiPath;
 import com.mozart.mockserver.domain.ApiProjects;
 import com.mozart.mockserver.domain.ApiRequest;
 import com.mozart.mockserver.domain.ApiResponse;
+import com.mozart.mockserver.dto.RequestApiDto;
 import com.mozart.mockserver.dto.ResponseApiDto;
 import com.mozart.mockserver.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -21,6 +23,7 @@ import java.net.URL;
 import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MockService {
     private final ProjectRepository projectRepository;
@@ -169,43 +172,60 @@ public class MockService {
             e.printStackTrace();
             return false;
         }
+        log.info("api size" + apiRequestList.size());
         for (ApiRequest apiRequest :apiRequestList) {
             Object obj = map.get(apiRequest.getKey());
+            log.info("obj.toString()");
+            log.info(apiRequest.getType() + " / " + apiRequest.getKey());
             if(obj == null)
                 return false;
-            if(!requestParamCheck(apiRequest,obj))
+            log.info(obj.toString());
+            if(!requestParamCheck(RequestApiDto.builder()
+                            .key(apiRequest.getKey())
+                    .type(apiRequest.getType())
+                    .arrayList(apiRequest.getArrayList())
+                    .fakerLocale(apiRequest.getFakerLocale())
+                    .fakerMajor(apiRequest.getFakerMajor())
+                    .fakerSub(apiRequest.getFakerSub())
+                    .value(apiRequest.getData())
+                    .build(), obj))
                 return false;
         }
         return true;
     }
 
-    private boolean requestParamCheck(ApiRequest apiRequest, Object obj) throws IOException {
+    private boolean requestParamCheck(RequestApiDto apiRequest, Object obj) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-
+        log.info("requestParamCheck" + obj.toString() + "/" + apiRequest.getKey());
         //object type
         if(apiRequest.getType().equals("Object")){
-            List<ApiRequest> apiRequestList;
+            List<RequestApiDto> apiRequestList;
             try {
+                log.info("object / " + apiRequest.getValue() + "/" + apiRequest.getKey() +"/");
                 //object의 request 형식 저장
-                apiRequestList = mapper.readValue(apiRequest.getData(), new TypeReference<List<ApiRequest>>() {});
+                apiRequestList = mapper.readValue(apiRequest.getValue(), new TypeReference<List<RequestApiDto>>() {});
+                log.info("is Error?" + apiRequestList.size());
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
             // 입력받은 데이터 리스트 저장
             List<Object> objectList = new ArrayList<>();
-            if(apiRequest.getArrayList()){
+            log.info("1");
+            if(apiRequest.isArrayList()){
                 objectList = (List<Object>) obj;
             }
             else {
                 objectList.add(obj);
             }
+            log.info("2");
 //            Map<String, Object> map = (Map<String, Object>) obj;
             for (Object list : objectList){
                 Map<String, Object> map = (Map<String, Object>) list;
-                for (ApiRequest request :apiRequestList) {
+                for (RequestApiDto request :apiRequestList) {
                     Object innerObj = map.get(request.getKey());
 
+                    log.info("object list");
                     if(!requestParamCheck(request,innerObj))
                         return false;
                 }
@@ -213,10 +233,16 @@ public class MockService {
 
         }
         else{ // int, long ,, 등
+            log.info("not object");
+            log.info(obj.toString());
+            log.info(apiRequest.isArrayList() + " / " + apiRequest.getKey());
             List<Object> objectList = new ArrayList<>();
-            if(apiRequest.getArrayList()!=null && apiRequest.getArrayList()){
+
+            if(apiRequest.isArrayList()){
                 try {
-                    objectList = (List<Object>) obj; ;
+                    System.out.println("i");
+                    objectList = (List<Object>) obj;
+                    System.out.println("h");
                 }catch (ClassCastException e){
                     return false;
                 }
@@ -227,6 +253,7 @@ public class MockService {
 
             for (Object object : objectList){
                 String str = object.toString();
+                log.info(str);
 //                String str = mapper.readTree((JsonParser) object).get(apiRequest.getKey()).toString();
                 try{
                     typeCheck(apiRequest.getType(), str);
@@ -303,8 +330,10 @@ public class MockService {
         if(response.getArrayList()){ //list
             List<ObjectNode> resultList = new ArrayList<>();
             for (int i = 0; i < response.getArraySize(); i++) {
+                System.out.print("1");
                 ObjectNode temp = mapper.createObjectNode();
                 for (ResponseApiDto responseNode : apiResponseList) {
+                    System.out.print("2");
                     if(!responseNode.getType().equals("Object"))
                         temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
                     else
@@ -312,12 +341,15 @@ public class MockService {
                                 (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
                                         responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
                 }
+                System.out.print("3");
                 resultList.add(temp);
             }
+            System.out.print("4");
             return result.put("adsafsdaf","safdsaf");
         }
         else { // not list
             for (ResponseApiDto responseNode : apiResponseList) {
+                System.out.print("6");
                 if(!responseNode.getType().equals("Object"))
                     result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
                 else
@@ -326,6 +358,7 @@ public class MockService {
                                     responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
 
             }
+            System.out.print("7");
             return result;
         }
     }
@@ -336,6 +369,7 @@ public class MockService {
             Object categoryObject = faker.getClass().getDeclaredMethod(category).invoke(faker);
             return (String) categoryObject.getClass().getDeclaredMethod(method).invoke(categoryObject);
         } catch (Exception e) {
+//            System.out.println("/" + type);
             return switch (type.toUpperCase()){
                 case "BOOLEAN" -> faker.bool().toString();
                 case "INT","INTEGER" -> Integer.toString(faker.hashCode());
@@ -344,6 +378,7 @@ public class MockService {
                 case "SHORT" -> Short.toString((short) faker.number().randomNumber(4, false));
                 case "BYTE" -> Byte.toString((byte) faker.number().randomNumber(2, false));
                 case "LONG" -> Long.toString(faker.number().randomNumber(10, false));
+                case "STRING" -> faker.lorem().characters(10);
                 default -> "null";
             };
         }
