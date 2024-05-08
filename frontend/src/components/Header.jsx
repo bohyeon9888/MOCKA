@@ -11,10 +11,7 @@ function header() {
     <header className="bg-gray-700">
       <div className="mx-auto flex  h-11 flex-wrap items-center justify-between p-2">
         <div className="ml-11">
-          <a
-            href="홈화면으로 이동할꺼야"
-            className="flex items-center space-x-2"
-          >
+          <a href="/" className="flex items-center space-x-2">
             <img src="/logo.svg" className="h-4" alt="Mocka Logo" />
             <span className="text-h3 font-bold text-white">Mocka</span>
           </a>

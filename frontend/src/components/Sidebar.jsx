@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function Sidebar() {
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleRecents = () => {
     setIsRecentsOpen(!isRecentsOpen);
@@ -10,6 +11,11 @@ function Sidebar() {
 
   const toggleTeams = () => {
     setIsTeamsOpen(!isTeamsOpen);
+  };
+
+  //로그인 아이콘 누르면 로그인 모달 나오게 하기
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   return (
@@ -91,6 +97,7 @@ function Sidebar() {
             src="/public/asset/sidebar/sidebar-profile.svg"
             className="absolute left-6 h-10 cursor-pointer"
             alt="sidebar-profile"
+            onClick={toggleModal}
           />
           <h5 className="my-1 ml-2 text-center font-bold text-gray-700">
             Login
