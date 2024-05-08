@@ -1,0 +1,113 @@
+{
+    "apiMethod": "Get",
+    "apiUri": "/users",
+    "apiPathVariable": [],
+    "apiRequest": [],
+    "apiResponseIsArray": true,
+    "apiResponseSize": 12,
+    "apiResponse": [
+        {
+            "key": "memberId",
+            "type": "long",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": null
+        },
+        {
+            "key": "memberName",
+            "type": "String",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "member",
+            "fakerSub": "name",
+            "value": null
+        },
+        {
+            "key": "memberPhonenumber",
+            "type": "String",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "EN",
+            "fakerMajor": "member",
+            "fakerSub": "name",
+            "value": null
+        },
+        {
+            "key": "profileInfo",
+            "type": "Object",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "",
+            "fakerMajor": "",
+            "fakerSub": "",
+            "value": [
+                {
+                    "key": "profileName",
+                    "type": "String",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "EN",
+                    "fakerMajor": "member",
+                    "fakerSub": "name",
+                    "value": null
+                },
+                {
+                    "key": "profileImageUrl",
+                    "type": "String",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "EN",
+                    "fakerMajor": "member",
+                    "fakerSub": "name",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "key": "profileInfo",
+            "type": "Object",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "",
+            "fakerMajor": "",
+            "fakerSub": "",
+            "value": [
+                {
+                    "key": "profileName",
+                    "type": "Object",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "",
+                    "fakerMajor": "",
+                    "fakerSub": "",
+                    "value": [
+                        {
+                            "key": "profileNameFirst",
+                            "type": "String",
+                            "isArray": false,
+                            "arraySize": -1,
+                            "fakerLocale": "EN",
+                            "fakerMajor": "member",
+                            "fakerSub": "name",
+                            "value": ""
+                        },
+                        {
+                            "key": "profileNameSecond",
+                            "type": "String",
+                            "isArray": false,
+                            "arraySize": -1,
+                            "fakerLocale": "EN",
+                            "fakerMajor": "member",
+                            "fakerSub": "name",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

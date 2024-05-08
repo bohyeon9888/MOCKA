@@ -1,0 +1,9 @@
+{
+    "apiMethod": "Get",
+    "apiUri": "/users",
+    "apiPathVariable": [],
+    "apiRequest": [],
+    "apiResponseIsArray": false,
+    "apiResponseSize": 0,
+    "apiResponse": []
+}

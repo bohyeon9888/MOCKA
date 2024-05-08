@@ -1,0 +1,113 @@
+{
+    "apiMethod": "Get",
+    "apiUri": "/users",
+    "apiPathVariable": [],
+    "apiRequest": [
+        {
+            "key": "memberId",
+            "type": "long",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": null
+        },
+        {
+            "key": "memberName",
+            "type": "String",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": null
+        },
+        {
+            "key": "memberPhonenumber",
+            "type": "String",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": null
+        },
+        {
+            "key": "profileInfo",
+            "type": "Object",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": [
+                {
+                    "key": "profileName",
+                    "type": "String",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "KO",
+                    "fakerMajor": "Phone",
+                    "fakerSub": "number",
+                    "value": null
+                },
+                {
+                    "key": "profileImageUrl",
+                    "type": "String",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "KO",
+                    "fakerMajor": "Phone",
+                    "fakerSub": "number",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "key": "profileInfoDetail",
+            "type": "Object",
+            "isArray": false,
+            "arraySize": -1,
+            "fakerLocale": "KO",
+            "fakerMajor": "Phone",
+            "fakerSub": "number",
+            "value": [
+                {
+                    "key": "profileName",
+                    "type": "Object",
+                    "isArray": false,
+                    "arraySize": -1,
+                    "fakerLocale": "KO",
+                    "fakerMajor": "Phone",
+                    "fakerSub": "number",
+                    "value": [
+                        {
+                            "key": "profileNameFirst",
+                            "type": "String",
+                            "isArray": false,
+                            "arraySize": -1,
+                            "fakerLocale": "KO",
+                            "fakerMajor": "Phone",
+                            "fakerSub": "number",
+                            "value": ""
+                        },
+                        {
+                            "key": "profileNameSecond",
+                            "type": "String",
+                            "isArray": false,
+                            "arraySize": -1,
+                            "fakerLocale": "KO",
+                            "fakerMajor": "Phone",
+                            "fakerSub": "number",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "apiResponseIsArray": false,
+    "apiResponseSize": 0,
+    "apiResponse": []
+}
