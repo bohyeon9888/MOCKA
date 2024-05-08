@@ -52,6 +52,10 @@ public class MockService {
     public Long findApi(Long projectId, URL url, String method) {
         String hash = "34e1c029fab";
         String path = getPath(url);
+        int questionMarkIndex = path.indexOf('?');
+        if (questionMarkIndex != -1) {
+            path = path.substring(0, questionMarkIndex);
+        }
         String[] pathArray = path.split("/");
 
         int number = pathArray.length;

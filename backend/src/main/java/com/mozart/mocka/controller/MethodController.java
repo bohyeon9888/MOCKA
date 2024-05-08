@@ -40,4 +40,16 @@ public class MethodController {
         apiService.deleteApi(projectId, apiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("{projectId}/{apiId}")
+    public ResponseEntity<?> createApi(@PathVariable("projectId") Long projectId,@PathVariable("apiId")Long apiId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
+        //edit 인증 체크
+
+        //method 중복 체크
+        authService.methodUpdateCheck(projectId,apiId,requestDto);
+        apiService.deleteApi(projectId,apiId);
+        apiService.createApi(projectId, requestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

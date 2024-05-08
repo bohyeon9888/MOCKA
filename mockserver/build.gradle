@@ -7,12 +7,6 @@ plugins {
 group = 'com.mozart'
 version = '0.0.1-SNAPSHOT'
 
-bootJar{
-    archivesBaseName = 'mock'
-    archiveFileName = 'mockServer.jar'
-    archiveVersion = "0.0.1"
-}
-
 java {
 	sourceCompatibility = '17'
 }

@@ -1,4 +1,4 @@
-FROM gradle:8.7-jdk17-alpine as gradlebuild
+FROM gradle:8.7.0-jdk17 as gradlebuild
 WORKDIR /build
 
 COPY build.gradle settings.gradle /build/
@@ -12,7 +12,8 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 VOLUME /tmp
-COPY --from=gradlebuild /build/build/libs/mockServer.jar /app/mockServer.jar
+COPY --from=gradlebuild /build/build/libs/mockserver-0.0.1-SNAPSHOT.jar /app/mockserver-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8081
-ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mocka-0.0.1-SNAPSHOT.jar"]
+EXPOSE 8082
+
+ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mockserver-0.0.1-SNAPSHOT.jar"]
