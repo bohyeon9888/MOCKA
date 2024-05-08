@@ -11,6 +11,8 @@ import java.util.List;
 public class ApiCreateRequestDto {
     String apiMethod;
     String apiUri;
+    String name;
+    String description;
     List<PathVariableDto> apiPathVariable;
     List<RequestApiDto> apiRequest;
     boolean apiResponseIsArray;

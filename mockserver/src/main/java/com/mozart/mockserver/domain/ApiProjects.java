@@ -39,6 +39,11 @@ public class ApiProjects {
     @Column
     private int apiResponseSize;
 
+    @Column
+    private String name;
+    @Column
+    private String description;
+
     @OneToMany(mappedBy = "apiProject")
     private List<ApiPath> apiPaths = new ArrayList<>();
     @OneToMany(mappedBy = "apiProject")

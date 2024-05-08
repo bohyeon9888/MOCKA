@@ -16,14 +16,16 @@ public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
 //    @Modifying
 //@Modifying
     @Query(value = "INSERT INTO api_projects " +
-            "(project_id, api_method, api_uri, api_uri_str, api_response_is_array, api_response_size) " +
-            "VALUES (:id, :method, CAST(:uri AS ltree), :str, :array, :size) RETURNING api_id", nativeQuery = true)
+            "(project_id, api_method, api_uri, api_uri_str, api_response_is_array, api_response_size, name, description) " +
+            "VALUES (:id, :method, CAST(:uri AS ltree), :str, :array, :size, :name, :description) RETURNING api_id", nativeQuery = true)
     int createApi(@Param("id") Long projectId,
                    @Param("method") String apiMethod,
                    @Param("uri") String apiUri,
                    @Param("str") String str,
                    @Param("array") boolean apiResponseIsArray,
-                   @Param("size") int apiResponseSize);
+                   @Param("size") int apiResponseSize,
+                   @Param("name") String name,
+                   @Param("description") String description);
 
     List<ApiProjects> findByProjectId(Long projectId);
 
