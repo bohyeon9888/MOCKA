@@ -30,7 +30,7 @@ public class ApiService {
     public void createApi(Long projectId, ApiCreateRequestDto dto) throws JsonProcessingException {
         //api create
         ApiProjects apiProject = insertApiProject(projectId, dto.getApiMethod(), dto.getApiUri(),
-            dto.isApiResponseIsArray(), dto.getApiResponseSize());
+            dto.isApiResponseIsArray(), dto.getApiResponseSize(), dto.getName(),dto.getDescription());
         for (PathVariableDto path : dto.getApiPathVariable()) {
             //uri contain check
             if (!dto.getApiUri().contains(path.getKey())) {
@@ -55,7 +55,7 @@ public class ApiService {
     }
 
     public ApiProjects insertApiProject(Long projectId, String apiMethod, String apiUri,
-        boolean apiResponseIsArray, int apiResponseSize) {
+        boolean apiResponseIsArray, int apiResponseSize, String name, String description) {
         String apiUriStr = apiUri;
         int questionMarkIndex = apiUriStr.indexOf('?');
         if (questionMarkIndex != -1) {
@@ -76,7 +76,7 @@ public class ApiService {
         }
         log.info(apiUri);
         int id = apiProjectRepository.createApi(projectId, apiMethod, apiUri, apiUriStr,
-            apiResponseIsArray, apiResponseSize);
+            apiResponseIsArray, apiResponseSize, name, description);
         return apiProjectRepository.findById((long) id).orElse(null);
     }
 
