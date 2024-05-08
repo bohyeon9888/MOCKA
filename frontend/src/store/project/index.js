@@ -4,6 +4,7 @@ import { projectActions } from "./action";
 const useProjectStore = create((set) => ({
   project: null,
   projectList: [],
+  recentProjectList: [],
   setProjectList: (projectList) => {
     projectActions.setProjectList(set, projectList);
   },

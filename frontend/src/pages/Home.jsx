@@ -33,7 +33,7 @@ function Home() {
     <div className="flex w-full ">
       <div className="ml-[60px] mr-[60px] mt-[60px] w-1/2 items-center justify-center p-4">
         <div className="">
-          <h2 className="tracking-[0.08em]">NEW PROJECT</h2>
+          <h2 className="tracking-[0.02em]">NEW PROJECT</h2>
 
           <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[27px]">
             <div className="absolute ml-[295px] mt-[150px]">
@@ -44,20 +44,21 @@ function Home() {
                 }}
               />
             </div>
-            <h5 className="tracking-[0.2em]">PROJECT NAME</h5>
-            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px]  border-[1px] border-gray-500 bg-white" />
-            <h5 className="mt-[15px] tracking-[0.2em]">COMMON URL</h5>
-            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px]  border-[1px] border-gray-500 bg-white" />
-            <h5 className="mb-[4px] mt-[15px] tracking-[0.2em]">VISIBILITY</h5>
+            <h5 className="tracking-[0.1em]">PROJECT NAME</h5>
+            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white" />
+            <h5 className="mt-[15px] tracking-[0.1em]">COMMON URL</h5>
+            <input className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white" />
+            <h5 className="mb-[4px] mt-[15px] tracking-[0.1em]">VISIBILITY</h5>
             <DropDown
               value={selectedValue}
               options={options}
               changeHandler={handleSelect}
-            ></DropDown>
+              size="small"
+            />
           </div>
 
           <div className="mt-7">
-            <h2 className="tracking-[-0.08em]">UPDATE HISTORY</h2>
+            <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
 
             <div className="mt-[9px] h-[220px] w-[460px] rounded-[20px] border-[2.5px] border-black bg-black">
               <img
