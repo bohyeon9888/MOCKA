@@ -1,4 +1,4 @@
-package com.mozart.mockserver.domain;
+package com.mozart.mocka.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
