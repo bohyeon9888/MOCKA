@@ -92,8 +92,6 @@ public class GenResponse {
         for (Map.Entry<String, String> elem : appendedClassList.entrySet()) {
             BufferedWriter writer = new BufferedWriter(
                 new FileWriter(dir + "/" + elem.getKey() + ".java"));
-            log.info("var-------------------------------------------------");
-            log.info(elem.getValue());
             writer.write(elem.getValue());
             writer.close();
         }

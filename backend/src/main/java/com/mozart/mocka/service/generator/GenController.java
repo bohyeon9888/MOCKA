@@ -28,6 +28,7 @@ public class GenController {
     private final ApiResponseRepository apiResponseRepository;
     private final GenRequest genRequest;
     private final GenResponse genResponse;
+    final String HASH = "34e1c029fab";
 
     public void createController(
 
@@ -49,8 +50,6 @@ public class GenController {
         for (int i = 0; i < apis.size(); i++) {
             ApiProjects api = apis.get(i); // 현재 API 프로젝트를 가져옴
 
-            log.info("create dto");
-
             Path requestDirNo = projectRoot.resolve(
                 basePath + request.getSpringPackageName().replace(".", "/") + "/dto/request/api" + (
                     i + 1));
@@ -67,17 +66,10 @@ public class GenController {
                 request.getSpringPackageName() + ".dto.response.api" + (i + 1), api.getApiId(),
                 responseDirNo.toString());
 
-            log.info("create dto success");
-            log.info("create controller");
+            String controllerName = getString(api);
 
-            String controllerName = api.getApiUriStr().split("/")[1];
-            controllerName =
-                controllerName.substring(0, 1).toUpperCase() + controllerName.substring(1);
             String className = controllerName + "Controller";
             Path controllerFile = controllerDir.resolve(className + ".java");
-
-            log.info("create controller success");
-            log.info("update controller");
 
             List<String> lines;
             if (Files.exists(controllerFile)) {
@@ -111,17 +103,35 @@ public class GenController {
                 lines.add("import " + request.getSpringPackageName() + ".dto.response.api" + (i+1) + ".*;");
 
                 lines.add("\n@RestController");
-                lines.add("@RequestMapping(\"/" + controllerName + "\")");
+                if (!className.equals("RootController")) {
+                    lines.add("@RequestMapping(\"/" + controllerName + "\")");
+                }
                 lines.add("public class " + className + " {");
                 lines.addAll(generateMethodLines(api, i + 1));
                 lines.add("}");
             }
 
-            log.info("update controller success");
-
             // 파일 쓰기
             Files.write(controllerFile, lines, StandardCharsets.UTF_8);
-            log.info("Updated or created controller: " + controllerFile);
+        }
+    }
+
+    private String getString(ApiProjects api) {
+        String apiUri = api.getApiUri();
+
+        if (apiUri.contains(".")) {
+            String [] parts = apiUri.split("\\.");
+            if (parts[0].equals(HASH)) {
+                return "Root";
+            } else {
+                return parts[0];
+            }
+        } else {
+            if (apiUri.equals(HASH)) {
+                return "Root";
+            } else {
+                return apiUri;
+            }
         }
     }
 
