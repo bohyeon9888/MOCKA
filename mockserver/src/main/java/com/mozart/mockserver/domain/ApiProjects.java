@@ -22,6 +22,9 @@ public class ApiProjects {
     @Column(nullable = false)
     private Long projectId;
 
+    @Column
+    private Long groupId;
+
     @Column(nullable = false)
     private String apiMethod;
 
