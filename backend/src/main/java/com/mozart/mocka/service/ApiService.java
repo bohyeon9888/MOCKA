@@ -57,6 +57,10 @@ public class ApiService {
     public ApiProjects insertApiProject(Long projectId, String apiMethod, String apiUri,
         boolean apiResponseIsArray, int apiResponseSize) {
         String apiUriStr = apiUri;
+        int questionMarkIndex = apiUriStr.indexOf('?');
+        if (questionMarkIndex != -1) {
+            apiUri = apiUri.substring(0, questionMarkIndex);
+        }
         apiUri = replacePathUri(apiUri).replace('/', '.');
         int queryIndex = apiUri.indexOf('?');
         if (queryIndex != -1) {
