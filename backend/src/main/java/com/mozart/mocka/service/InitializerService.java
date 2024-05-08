@@ -31,6 +31,12 @@ public class InitializerService {
         throws Exception {
 
         Path projectRoot = Paths.get(request.getSpringArtifactId());
+
+        // 기존 디렉토리가 존재하면 삭제
+        if (Files.exists(projectRoot)) {
+            deleteFiles(projectRoot);
+        }
+
         genInit.createDirectories(projectRoot, request);
         genInit.createApplicationProperties(projectRoot, uri);
         genInit.createApplicationClass(projectRoot, request);
@@ -81,6 +87,19 @@ public class InitializerService {
                 .forEach(File::delete);
         } catch (IOException e) {
             log.error("Error cleaning up project files: " + e.getMessage());
+        }
+    }
+
+    public void deleteFiles(Path path) throws IOException {
+        if (Files.isDirectory(path)) {
+            // 디렉터리 내의 모든 파일 및 하위 디렉터리 삭제
+            Files.walk(path)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        } else {
+            // 단일 파일이라면 바로 삭제
+            Files.deleteIfExists(path);
         }
     }
 }
