@@ -6,9 +6,11 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "is_deleted = false")
@@ -41,4 +43,21 @@ public class Projects extends BaseEntity {
     @Setter
     @Column
     private Long defaultGroupId;
+
+//    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Groups> groups = new ArrayList<>();
+
+    public Projects(String projectName, String visibility, String commonUri) {
+        this.projectName = projectName;
+        this.projectVisibility = visibility;
+        this.commonUri = commonUri;
+    }
+
+    public Projects(String projectName, String visibility, String commonUri, Long projectId) {
+        this.projectName = projectName;
+        this.projectVisibility = visibility;
+        this.commonUri = commonUri;
+        this.projectId = projectId;
+    }
 }

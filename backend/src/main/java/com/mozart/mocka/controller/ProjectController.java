@@ -83,6 +83,7 @@ public class ProjectController {
     public ResponseEntity<?> receiveProjectDetail(@PathVariable("projectId") Long projectId) throws JsonProcessingException {
         Long memberId = 1L;
        int authority = projectService.checkAuthority(projectId,memberId);
+       System.out.println("authority " + authority);
        if(authority > 2)
            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
        JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId, memberId));

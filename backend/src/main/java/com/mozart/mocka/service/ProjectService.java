@@ -30,11 +30,7 @@ public class ProjectService {
 
     @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
-        Projects projects = Projects.builder()
-                .projectName(projectName)
-                .projectVisibility(visibility)
-                .commonUri(commonUri)
-                .build();
+        Projects projects = new Projects(projectName,visibility ,commonUri);
 
         projects = projectRepository.save(projects);
         try {
@@ -58,8 +54,7 @@ public class ProjectService {
                 .build();
 
         //default group 생성
-        Groups defaultGroup = groupRepository.save(Groups.builder()
-                .groupName("default").groupUri("").projectId(projects.getProjectId()).build());
+        Groups defaultGroup = groupRepository.save(new Groups("default","",projects));
         projects.setDefaultGroupId(defaultGroup.getGroupId());
         projectRepository.save(projects);
         projectHistoryRepository.save(projectHistories);
@@ -73,7 +68,7 @@ public class ProjectService {
         projectRepository.deleteById(projectId);
         projectHistoryRepository.deleteByProjectHistoryPK_ProjectId(projectId);
         baseUriRepository.deleteByProjectId(projectId);
-        groupRepository.deleteByProjectId(projectId);
+        groupRepository.deleteByProject_ProjectId(projectId);
         apiProjectRepository.deleteByProjectId(projectId);
         return true;
     }
@@ -81,12 +76,8 @@ public class ProjectService {
     public boolean update(Long projectId, Long memberId, String projectName, String commonUri, String visibility) {
         if(checkAuthority(projectId,memberId) > 8)
             return false;
-        Projects projects = Projects.builder()
-                .projectId(projectId)
-                .projectName(projectName)
-                .projectVisibility(visibility)
-                .commonUri(commonUri)
-                .build();
+        Projects projects = new Projects(projectName,visibility,commonUri,projectId);
+
 
         projectRepository.save(projects);
         return true;
@@ -100,13 +91,14 @@ public class ProjectService {
     * */
     @LogExecutionTime
     public int checkAuthority(Long projectId, Long memberId){
+        System.out.println(projectId+"/" + memberId);
         ProjectHistoryPK pk = makePK(projectId,memberId);
         Optional<ProjectHistories> projects = projectHistoryRepository.findById(pk);
         int value = 10;
         if(projects.isEmpty())
             return value;
         String authority = projects.get().getProjectRole();
-
+        System.out.println(authority+"/" + memberId);
         value = switch (authority) {
             case "OWNER" -> 0;
             case "EDITOR" -> 1;
@@ -127,13 +119,13 @@ public class ProjectService {
         return projectsList;
     }
     @LogExecutionTime
-    public List<ApiProjects> getProjectAPIList(Long projectId, Long memberId) {
+    public List<Groups> getProjectAPIList(Long projectId, Long memberId) {
         boolean check = historyService.updateRecentTime(projectId, memberId);
         if (!check) {
             return null;
         }
-
-        return apiProjectRepository.findByProjectId(projectId);
+        return groupRepository.findByProject_ProjectId(projectId);
+//        return apiProjectRepository.findByProjectId(projectId);
 //        List<ApiListResponseDto> resultDto = new ArrayList<>();
 
 //        for (ApiProjects apiProject : apiProjectsList) {
