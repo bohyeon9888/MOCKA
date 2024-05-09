@@ -31,9 +31,9 @@ public class InviteService {
     private final ProjectHistoryService historyService;
 
     @Transactional
-    public boolean createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
+    public boolean createInvitation(String providerId, Long projectId, List<TeamMemberDto> members) throws MessagingException {
         //프로젝트 소유주인지 확인
-        Long ownerId = membersRepository.findByMemberNickname(ownerName).getMemberId();
+        Long ownerId = membersRepository.findByMemberProviderId(providerId).getMemberId();
         if (historyRepository.findOwnerByMemberIdAndProjectId(ownerId, projectId).isEmpty()) {
             log.info("프로젝트의 소유주와 일치하지 않습니다.");
             return false;
@@ -78,10 +78,10 @@ public class InviteService {
     }
 
     @Transactional
-    public InvitationResponseDto checkInvitation(String name, Long projectId) {
-        Members member = membersRepository.findByMemberNickname(name);
+    public InvitationResponseDto checkInvitation(String providerId, Long projectId) {
+        Members member = membersRepository.findByMemberProviderId(providerId);
         if (member == null) {
-            log.warn("No member found with nickname: " + name);
+            log.warn("No member found with nickname: " + providerId);
             return null; // 혹은 적절한 예외 처리
         }
         log.info("멤버 아이디 : " + member.getMemberId());
@@ -124,8 +124,8 @@ public class InviteService {
     }
 
     @Transactional
-    public boolean answerInvitation(String name, Long projectId, String answer) {
-        Members member = membersRepository.findByMemberNickname(name);
+    public boolean answerInvitation(String providerId, Long projectId, String answer) {
+        Members member = membersRepository.findByMemberProviderId(providerId);
 
         Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
         if (invitation.isEmpty()) {
