@@ -1,14 +1,9 @@
 package com.mozart.mocka.controller;
 
-import com.mozart.mocka.domain.ApiProjects;
-import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
-import com.mozart.mocka.repository.ApiProjectRepository;
-import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.InitializerService;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;

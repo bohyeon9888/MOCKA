@@ -57,7 +57,9 @@ public class GenController {
 
         int i = 0;
         for (ApiProjects api: apis) {
-            lines.add(generateImport(api, request.getSpringPackageName(), projectRoot, index + (i++)));
+            String importLine = generateImport(api, request.getSpringPackageName(), projectRoot, index + (i++));
+            if (!importLine.isEmpty())
+                lines.add(importLine);
         }
 
         lines.add("import org.springframework.web.bind.annotation.*;");
@@ -78,7 +80,7 @@ public class GenController {
         // 파일 쓰기
         Files.write(controllerFile, lines, StandardCharsets.UTF_8);
 
-        return index + apis.size() - 1;
+        return index + apis.size();
     }
 
     private String generateImport(ApiProjects api, String packageName, Path projectRoot, int index)
@@ -122,8 +124,6 @@ public class GenController {
         return result;
     }
 
-//
-
     private List<String> generateMethodLines(ApiProjects api, String groupUri, int index) {
         List<String> methodLines = new ArrayList<>();
 
@@ -144,14 +144,14 @@ public class GenController {
             apiResponses.isEmpty() ? "?" : "ResponseDtoNo" + index; // DTO 클래스 이름 또는 Void
         String requestType = "RequestDtoNo" + index; // DTO 클래스 이름
 
+        boolean firstParam = true;
         String methodSignature = "ResponseEntity<" + responseType + ">";
         if (apiPaths.isEmpty() && apiRequests.isEmpty() && !api.getApiUriStr().contains("?")) {
             methodLines.add("    public " + methodSignature + " " + methodName + "() {");
-        } else {
+        }
+        else {
             methodLines.add("    public " + methodSignature + " " + methodName + "(");
 
-            /// api.getApiUriStr() = test3/{userId}?boardId=long
-            // 쿼리스트링 구분 필요
             String[] uriParts = api.getApiUriStr().split("\\?");
             if (uriParts.length > 1) {
                 String queryString = uriParts[1];
@@ -161,23 +161,39 @@ public class GenController {
                     if (keyValue.length > 1) {
                         String key = keyValue[0];
                         String type = keyValue[1]; // 일반적으로 타입 정보는 URI에서 얻을 수 없으므로 예측하거나 기본 타입을 지정해야 함
-                        methodLines.add("        @RequestParam(\"" + key + "\") " + type + " " + key + ",");
+                        if (!firstParam) {
+                            methodLines.add("        ,@RequestParam(\"" + key + "\") " + type + " " + key);
+                        }
+                        else {
+                            methodLines.add("        @RequestParam(\"" + key + "\") " + type + " " + key);
+                            firstParam = false;
+                        }
+
                     }
                 }
             }
 
-            apiPaths.forEach(path -> {
-                methodLines.add(
-                    "        @PathVariable(\"" + path.getKey() + "\") " + path.getData() + " "
-                        + path.getKey() + ",");
-            });
+            for (ApiPath path : apiPaths) {
+                if (!firstParam) {
+                    methodLines.add("        ,@PathVariable(\"" + path.getKey() + "\") " + path.getData() + " " + path.getKey());
+                }
+                else {
+                    methodLines.add("        @PathVariable(\"" + path.getKey() + "\") " + path.getData() + " " + path.getKey());
+                    firstParam = false;
+                }
+
+            }
 
             if (!apiRequests.isEmpty()) {
-                methodLines.add("        @RequestBody " + requestType + " request) {");
-            } else {
-                methodLines.remove(methodLines.size() - 1); // 마지막 콤마 제거
-                methodLines.add("\n        ) {"); // 메서드 매개변수 닫기
+                if (!firstParam) {
+                    methodLines.add("        ,@RequestBody " + requestType + " request");
+                }
+                else {
+                    methodLines.add("        @RequestBody " + requestType + " request");
+                }
             }
+
+            methodLines.add("        ) {"); // 메서드 매개변수 닫기
         }
 
         if (responseType.equals("?")) {
@@ -203,54 +219,5 @@ public class GenController {
         }
 
         return result.toString().split("\\?")[0];
-    }
-
-    private String getString(ApiProjects api) {
-        String apiUri = api.getApiUri();
-
-        if (apiUri.contains(".")) {
-            String [] parts = apiUri.split("\\.");
-            if (parts[0].equals(HASH)) {
-                return "Root";
-            } else {
-                return parts[0];
-            }
-        } else {
-            if (apiUri.equals(HASH)) {
-                return "Root";
-            } else {
-                return apiUri;
-            }
-        }
-    }
-
-    private int findLastImportIndex(List<String> lines) {
-        int lastIndex = -1;
-        for (int j = 0; j < lines.size(); j++) {
-            if (lines.get(j).startsWith("import ")) {
-                lastIndex = j;
-            }
-        }
-        return lastIndex;
-    }
-
-    private int findPackageIndex(List<String> lines) {
-        for (int j = 0; j < lines.size(); j++) {
-            if (lines.get(j).startsWith("package ")) {
-                return j;
-            }
-        }
-        return -1;
-    }
-
-    private int findLastIndex(List<String> lines) {
-        log.info("lines : " + lines.size());
-        for (int j = lines.size() - 1; j >= 0; j--) {
-            if (lines.get(j).trim().equals("}")) {
-                log.info("lastidx : " + j);
-                return j;
-            }
-        }
-        return -1;
     }
 }
