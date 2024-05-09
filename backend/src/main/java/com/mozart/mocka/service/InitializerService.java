@@ -34,7 +34,7 @@ public class InitializerService {
         throws Exception {
 
         Projects project = projectRepository.findByProjectId(projectId);
-        List<Groups> groups = groupRepository.findByProjectId(projectId);
+        List<Groups> groups = groupRepository.findByProject_ProjectId(projectId);
         Path projectRoot = Paths.get(request.getSpringArtifactId());
 
         // 기존 디렉토리가 존재하면 삭제
