@@ -174,6 +174,8 @@ public class MockService {
 
     public boolean requestCheck(Long projectId, Long apiId, HttpServletRequest request) throws IOException {
         List<ApiRequest> apiRequestList = apiRequestRepository.findByApiProject_ApiId(apiId);
+        if(apiRequestList.isEmpty())
+            return true;
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         BufferedReader reader = request.getReader();
