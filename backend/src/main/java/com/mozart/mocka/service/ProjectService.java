@@ -119,12 +119,13 @@ public class ProjectService {
         return projectsList;
     }
     @LogExecutionTime
-    public List<Groups> getProjectAPIList(Long projectId, Long memberId) {
+    public Projects getProjectAPIList(Long projectId, Long memberId) {
         boolean check = historyService.updateRecentTime(projectId, memberId);
         if (!check) {
             return null;
         }
-        return groupRepository.findByProject_ProjectId(projectId);
+        return projectRepository.findByProjectId(projectId);
+//        return groupRepository.findByProject_ProjectId(projectId);
 //        return apiProjectRepository.findByProjectId(projectId);
 //        List<ApiListResponseDto> resultDto = new ArrayList<>();
 

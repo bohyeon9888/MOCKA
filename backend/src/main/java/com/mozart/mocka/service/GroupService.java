@@ -22,11 +22,32 @@ public class GroupService {
     public List<Groups> getGroupList(Long projectId) {
         return groupRepository.findByProject_ProjectId(projectId);
     }
-    public void create(Long projectId, String name, String uri) {
+    public boolean create(Long projectId, String name, String uri) {
         Optional<Projects> project = projectRepository.findById(projectId);
+        // uri 내에 계층 하나 체크
+        int cnt = 0;
+        for (int i = 0; i < uri.length(); i++) {
+            if(uri.charAt(i)=='/')
+                cnt++;
+        }
+        if(cnt == 0)
+            uri = '/' + uri;
+        else if(cnt > 1)
+            return false;
+
+        //uri 중복 체크
+        List<Groups> groups = groupRepository.findByProject_ProjectId(projectId);
+        for(Groups g : groups){
+            if(g.getGroupUri().equals(name)){
+                return false;
+            }
+        }
 
         if(project.isPresent())
-        groupRepository.save(new Groups(name,uri,project.get()));
+            groupRepository.save(new Groups(name,uri,project.get()));
+        else
+            return false;
+        return true;
     }
 
     public void update(Long projectId, Long groupId, String name, String uri) {
