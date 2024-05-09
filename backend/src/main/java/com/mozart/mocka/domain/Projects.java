@@ -38,6 +38,7 @@ public class Projects extends BaseEntity {
     @Column
     private String hash_value;
 
+    @Setter
     @Column
-    private String defaultGroupId;
+    private Long defaultGroupId;
 }
