@@ -4,6 +4,7 @@ import com.mozart.mocka.domain.ApiPath;
 import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.domain.ApiRequest;
 import com.mozart.mocka.domain.ApiResponse;
+import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiPathRepository;
 import com.mozart.mocka.repository.ApiRequestRepository;
@@ -31,7 +32,7 @@ public class GenController {
 
     public void createController(
 
-        Path projectRoot, List<ApiProjects> apis, InitializerRequestDto request) throws Exception {
+        Path projectRoot, Groups group, List<ApiProjects> apis, InitializerRequestDto request) throws Exception {
         String basePath = "src/main/java/";
         Path controllerDir = projectRoot.resolve(
             basePath + request.getSpringPackageName().replace(".", "/") + "/controller");

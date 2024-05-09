@@ -25,21 +25,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/initializer")
 public class InitializerController {
     private final InitializerService initializerService;
-    private final ApiProjectRepository apiProjectRepository;
-    private final ProjectRepository projectRepository;
+
 
     @PostMapping("/create/{projectId}")
     public ResponseEntity<Resource> download(
         @PathVariable("projectId") Long projectId,
         @RequestBody InitializerRequestDto request) {
-
-        List<ApiProjects> apis = apiProjectRepository.findByProjectId(projectId);
-        Projects project = projectRepository.findByProjectId(projectId);
         // 프로젝트 가져오기
 
         try {
 
-            Path projectRoot = initializerService.createInitializerFiles(request, apis, project.getCommonUri());
+            Path projectRoot = initializerService.createInitializerFiles(request, projectId);
             Path zipPath = initializerService.packageProject(projectRoot);
 
             if (!Files.exists(zipPath)) {
