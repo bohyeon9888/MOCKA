@@ -51,7 +51,6 @@ public class InviteService {
         // 1. Project_invitations 테이블에 데이터 추가됨
         for (int i = 0; i < members.size(); i++) {
             TeamMemberDto mem = members.get(i);
-            emails[i] = mem.getEmail();
 
             Members newMem = membersRepository.findByMemberEmail(mem.getEmail());
             // 동일한 초대 내역이 있는지
@@ -61,6 +60,7 @@ public class InviteService {
                 continue;
             }
 
+            emails[i] = mem.getEmail();
             ProjectInvitations invitations = ProjectInvitations.builder()
                     .members(newMem)
                     .projects(project)
@@ -74,6 +74,10 @@ public class InviteService {
         }
 
         // 메일 수신
+        if (emails.length == 0) {
+            log.info("회원이 없습니다.");
+            return false;
+        }
         emailService.sendEmail(emails, project);
         return true;
     }
