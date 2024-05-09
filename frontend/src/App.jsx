@@ -18,14 +18,17 @@ import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
 import Viewer from "./pages/Viewer";
 import UpdateHistory from "./pages/UpdateHistory";
+import { useUserStore } from "./store";
 
 function RequireAuthRoutes() {
   const location = useLocation();
-  // const loggedIn = isAuthenticated();
-  const loggedIn = true;
+  const loggedIn = isAuthenticated();
+  const { getProfileFromToken } = useUserStore();
 
   if (!loggedIn)
     return <Navigate to="/main" replace state={{ from: location }} />;
+
+  getProfileFromToken();
 
   return <Outlet />;
 }

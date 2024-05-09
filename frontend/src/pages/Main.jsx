@@ -1,7 +1,5 @@
-import React from "react";
-
-import ApiEditModal from "../components/modal/ApiEditModal";
 import { useModalStore } from "../store";
+import LoginModal from "../components/modal/LoginModal";
 
 function Home() {
   const { openModal } = useModalStore();
@@ -41,7 +39,7 @@ function Home() {
             <button
               className="rounded-md bg-gray-500 px-6 py-3 font-bold text-white hover:bg-gray-600"
               onClick={() => {
-                openModal("API Edit", <ApiEditModal />);
+                openModal("", <LoginModal />);
               }}
             >
               Get Started
