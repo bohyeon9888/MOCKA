@@ -2,7 +2,15 @@ import Cookies from "js-cookie";
 
 export function isAuthenticated() {
   const token = Cookies.get("accessToken");
-  return !!token;
+  if (!token) return false;
+
+  const username = getValueFromToken("username");
+  const profile = getValueFromToken("profile");
+
+  const isLogin = !!(username && profile);
+  if (!isLogin) logout();
+
+  return isLogin;
 }
 
 export function login(accessToken) {
@@ -25,6 +33,7 @@ export function getValueFromToken(key) {
   if (!token) return undefined;
 
   const base64Url = token.split(".")[1];
+  if (!base64Url) return undefined;
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)

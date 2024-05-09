@@ -21,6 +21,7 @@ export const userActions = {
       const profile = getValueFromToken("profile");
 
       if (!nickname || !profile) return state;
+
       return {
         ...state,
         user: { nickname, profile },

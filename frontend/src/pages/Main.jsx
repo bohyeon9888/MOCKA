@@ -1,8 +1,12 @@
 import { useModalStore } from "../store";
 import LoginModal from "../components/modal/LoginModal";
+import { isAuthenticated } from "../utils/auth";
+import { Navigate } from "react-router-dom";
 
 function Home() {
   const { openModal } = useModalStore();
+
+  if (isAuthenticated()) return <Navigate to="/" replace />;
 
   return (
     <div className="flex h-full w-full">
