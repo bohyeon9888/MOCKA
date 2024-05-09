@@ -22,7 +22,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className="bg-secondary-color flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 py-5">
+    <aside className="flex h-full w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
       <div className="flex h-10 justify-center">
         <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
           PROJECT LIST

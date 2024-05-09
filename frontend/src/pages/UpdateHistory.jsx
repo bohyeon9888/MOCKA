@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import ApiBox from "../components/ApiBox";
+import ApiItems from "../components/ApiIems";
 
 function UpdateHistory() {
   const location = useLocation();
@@ -10,6 +11,8 @@ function UpdateHistory() {
   return (
     <div>
       <ApiBox></ApiBox>
+      <ApiItems></ApiItems>
+      {/*사이드바 */}
       <div className="ml-[105px] mt-[132px] flex items-center">
         <a href="/">
           <img
