@@ -36,7 +36,7 @@ public class GenController {
     public int createController(
         Path projectRoot, Groups group, InitializerRequestDto request, int index) throws Exception {
 
-        List<ApiProjects> apis = apiProjectRepository.findByGroupId(group.getGroupId());
+        List<ApiProjects> apis = apiProjectRepository.findByGroups_GroupId(group.getGroupId());
 
         Path controllerDir = projectRoot.resolve(
             basePath + request.getSpringPackageName().replace(".", "/") + "/controller");
