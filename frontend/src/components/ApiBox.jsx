@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext, useContext } from "react";
 import Method from "./Method";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
+//
 
 function ApiBox() {
   const originalApiName = "Bread🍞"; // api명세서 보고 변수로 바꾸기 🍒
