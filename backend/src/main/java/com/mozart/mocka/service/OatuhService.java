@@ -9,6 +9,7 @@ import com.mozart.mocka.dto.response.Oauth2ResponseDto;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OatuhService {

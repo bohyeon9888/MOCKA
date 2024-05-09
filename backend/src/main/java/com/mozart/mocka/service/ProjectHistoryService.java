@@ -8,6 +8,7 @@ import com.mozart.mocka.dto.response.ProjectMemberDto;
 import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.repository.ProjectHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -19,8 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProjectHistoryService {

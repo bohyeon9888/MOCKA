@@ -11,14 +11,14 @@ import com.mozart.mocka.repository.ProjectInvitationRepository;
 import com.mozart.mocka.repository.ProjectRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class InviteService {
@@ -53,10 +53,14 @@ public class InviteService {
             TeamMemberDto mem = members.get(i);
 
             Members newMem = membersRepository.findByMemberEmail(mem.getEmail());
+            if (newMem == null) {
+                log.error("동일한 이메일을 가진 사용자가 없습니다.");
+                continue;
+            }
             // 동일한 초대 내역이 있는지
             Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(newMem.getMemberId(), projectId);
             if (invitation.isPresent()) {
-                log.debug("동일한 초대내역이 있습니다.");
+                log.error("동일한 초대내역이 있습니다.");
                 continue;
             }
 
@@ -68,7 +72,6 @@ public class InviteService {
                     .projectRole(mem.getProjectRole())
                     .build();
 
-            log.info(invitations);
             invitationRepository.save(invitations);
             log.debug("========= save invitation info ============");
         }
@@ -86,14 +89,14 @@ public class InviteService {
     public InvitationResponseDto checkInvitation(String providerId, Long projectId) {
         Members member = membersRepository.findByMemberProviderId(providerId);
         if (member == null) {
-            log.warn("No member found with nickname: " + providerId);
+            log.error("No member found with nickname: " + providerId);
             return null; // 혹은 적절한 예외 처리
         }
         log.info("멤버 아이디 : " + member.getMemberId());
 
         Projects project = projectRepository.findByProjectId(projectId);
         if (project == null) {
-            log.warn("No project found with ID: " + projectId);
+            log.error("No project found with ID: " + projectId);
             return null; // 혹은 적절한 예외 처리
         }
         log.info("프로젝트 아이디 : " + projectId);
@@ -102,7 +105,7 @@ public class InviteService {
         int isResponse = 0;
 
         if (invitation.isEmpty()) {
-            log.debug("해당 초대가 없음");
+            log.warn("해당 초대가 없음");
             isResponse = 10;
             return InvitationResponseDto.builder()
                     .invite(isResponse)
