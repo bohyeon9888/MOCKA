@@ -23,7 +23,7 @@ const formatInitializerRequest = (InitializerSetting) => {
     springName: InitializerSetting.name,
     springDescription: InitializerSetting.description,
     springPackageName: InitializerSetting.packageName,
-    springDependencyId: [],
+    springDependencyId: InitializerSetting.dependencies.map(({ id }) => id),
   };
 };
 
