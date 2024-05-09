@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,14 +116,13 @@ public class ProjectService {
     }
     @LogExecutionTime
     public List<ProjectsListResponseDto> getProjectList(Long memberId) {
-        List<ProjectsListResponseDto> projectsList = projectRepository.findMyList(memberId);
-        return projectsList;
+        return projectRepository.findMyList(memberId);
     }
     @LogExecutionTime
     public List<Groups> getProjectAPIList(Long projectId, Long memberId) {
         boolean check = historyService.updateRecentTime(projectId, memberId);
         if (!check) {
-            return null;
+            return Collections.emptyList();
         }
         return groupRepository.findByProject_ProjectId(projectId);
 //        return apiProjectRepository.findByProjectId(projectId);
@@ -149,7 +149,7 @@ public class ProjectService {
         List<ProjectHistories> list = projectHistoryRepository.findByMemberIdOrderedByRecentRead(memberId);
 
         if (list.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<ProjectsListResponseDto> data = new ArrayList<>();
