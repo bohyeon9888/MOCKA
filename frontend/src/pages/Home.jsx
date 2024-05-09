@@ -116,7 +116,7 @@ function Home() {
               date={createdAt}
             />
           ))}
-          {(!projectList || projectList.length === 0) && (
+          {projectList && projectList.length === 0 && (
             <div className="flex h-full flex-col items-center justify-center">
               <h2>No Projects</h2>
               <div className="mt-3 text-3 text-gray-500">

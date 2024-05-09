@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useModalStore, useProjectStore, useUserStore } from "../store";
 import LoginModal from "./modal/LoginModal";
 import GroupList from "./sidebar/GroupList";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
   const { openModal } = useModalStore();
@@ -9,7 +10,6 @@ function Sidebar() {
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
   const { user } = useUserStore();
-
   const toggleRecents = () => {
     setIsRecentsOpen(!isRecentsOpen);
   };
@@ -26,7 +26,7 @@ function Sidebar() {
     <aside className="flex w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
       <div className="flex h-10 justify-center">
         <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
-          PROJECT LIST
+          {project ? project.projectName : "PROJECT LIST"}
         </h5>
       </div>
       <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
@@ -57,14 +57,15 @@ function Sidebar() {
             <div className="pl-6">
               {isRecentsOpen &&
                 recentProjectList.map(({ projectId, projectName }) => (
-                  <div
+                  <Link
+                    to={`/project/${projectId}`}
                     key={projectId}
                     className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300"
                   >
                     <h5 className="truncate font-bold text-gray-700">
                       {projectName}
                     </h5>
-                  </div>
+                  </Link>
                 ))}
             </div>
           </>

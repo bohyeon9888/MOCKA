@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ApiItems from "../ApiItems";
+import { useNavigate } from "react-router-dom";
 
 export default function GroupList({ project }) {
+  const navigate = useNavigate();
   const [selectedGroupId, setSelectedGroupId] = useState(-1);
+
+  useEffect(() => {
+    if (project)
+      navigate(
+        `project/${project.projectId}${selectedGroupId === -1 ? "" : `?groupId=${selectedGroupId}`}`,
+      );
+  }, [selectedGroupId]);
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -34,7 +43,7 @@ export default function GroupList({ project }) {
                 {groupName}
               </h5>
             </div>
-            <div className="mt-1 flex flex-col space-y-1 pl-6">
+            <div className="mt-2 flex flex-col space-y-2 pl-6">
               {selectedGroupId === groupId &&
                 apiProjects.length > 0 &&
                 apiProjects.map(({ apiId, apiMethod, apiUriStr }, idx) => (
