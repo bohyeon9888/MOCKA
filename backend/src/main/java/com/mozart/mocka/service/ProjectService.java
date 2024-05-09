@@ -6,6 +6,7 @@ import com.mozart.mocka.dto.response.ApiListResponseDto;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
 import com.mozart.mocka.repository.*;
 import com.mozart.mocka.util.LogExecutionTime;
+import jakarta.persistence.Column;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class ProjectService {
     private final HashKeyService hashKeyService;
     private final ObjectMapper mapper;
     private final ProjectHistoryService historyService;
+    private final GroupRepository groupRepository;
 
     @LogExecutionTime
     public void create(Long memberId, String projectName, String commonUri, String visibility) {
@@ -54,6 +56,12 @@ public class ProjectService {
                 .projectHistoryPK(projectHistoryPK)
                 .projectRole("OWNER")
                 .build();
+
+        //default group 생성
+        Groups defaultGroup = groupRepository.save(Groups.builder()
+                .groupName("default").groupUri("").projectId(projects.getProjectId()).build());
+        projects.setDefaultGroupId(defaultGroup.getGroupId());
+        projectRepository.save(projects);
         projectHistoryRepository.save(projectHistories);
     }
     @LogExecutionTime
@@ -65,6 +73,7 @@ public class ProjectService {
         projectRepository.deleteById(projectId);
         projectHistoryRepository.deleteByProjectHistoryPK_ProjectId(projectId);
         baseUriRepository.deleteByProjectId(projectId);
+        groupRepository.deleteByProjectId(projectId);
         apiProjectRepository.deleteByProjectId(projectId);
         return true;
     }
