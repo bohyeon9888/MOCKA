@@ -22,12 +22,24 @@ public class GenInit {
     private final DependencyManager dependencyManager;
     public void createDirectories(Path projectRoot, InitializerRequestDto request)
         throws IOException {
+        String basePath = "src/main/java/";
         Files.createDirectories(projectRoot.resolve(
-            "src/main/java/" + request.getSpringPackageName().replace('.', '/')));
+            basePath + request.getSpringPackageName().replace('.', '/')));
         Files.createDirectories(projectRoot.resolve("src/main/resources"));
         Files.createDirectories(projectRoot.resolve(
             "src/test/java/" + request.getSpringPackageName().replace('.', '/')));
         Files.createDirectories(projectRoot.resolve("src/test/resources"));
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/")
+                + "/controller")); // 컨트롤러 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/") + "/dto")); // DTO 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/")
+                + "/dto/response")); // Response 디렉토리 생성
+        Files.createDirectories(projectRoot.resolve(
+            basePath + request.getSpringPackageName().replace(".", "/")
+                + "/dto/request")); // Request 디렉토리 생성
     }
 
     public void createApplicationProperties(Path projectRoot, String uri) throws IOException {
@@ -189,8 +201,8 @@ public class GenInit {
 
     public void createMavenSettings(Path projectRoot, InitializerRequestDto request)
         throws IOException {
-        //Path sourceDirectory = Paths.get(
-        //    "src/main/java/com/mozart/mocka/templates/maven" + request.getSpringPlatformVersion());
+//        Path sourceDirectory = Paths.get(
+//            "src/main/java/com/mozart/mocka/templates/maven" + request.getSpringPlatformVersion());
         // 로컬 환경
         Path sourceDirectory = Paths.get(
             "templates/maven" + request.getSpringPlatformVersion());
