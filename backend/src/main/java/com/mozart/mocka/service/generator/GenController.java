@@ -8,7 +8,6 @@ import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiPathRepository;
 import com.mozart.mocka.repository.ApiRequestRepository;
 import com.mozart.mocka.repository.ApiResponseRepository;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +27,7 @@ public class GenController {
     private final ApiResponseRepository apiResponseRepository;
     private final GenRequest genRequest;
     private final GenResponse genResponse;
-    final String HASH = "34e1c029fab";
+    static final String HASH = "34e1c029fab";
 
     public void createController(
 

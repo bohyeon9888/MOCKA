@@ -18,14 +18,19 @@ import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
 import Viewer from "./pages/Viewer";
 import UpdateHistory from "./pages/UpdateHistory";
+import { useUserStore } from "./store";
 
 function RequireAuthRoutes() {
   const location = useLocation();
-  // const loggedIn = isAuthenticated();
-  const loggedIn = true;
+  const loggedIn = isAuthenticated();
+  const { getProfileFromToken, user } = useUserStore();
+
+  console.log(loggedIn);
 
   if (!loggedIn)
     return <Navigate to="/main" replace state={{ from: location }} />;
+
+  if (!user) getProfileFromToken();
 
   return <Outlet />;
 }
@@ -38,7 +43,7 @@ function App() {
       <Header />
       <main className="flex w-full grow flex-row">
         <Sidebar />
-        <div className="h-full w-full overflow-hidden">
+        <div className="h-full grow overflow-hidden">
           <Routes>
             <Route path="/login/google" element={<Login />} />
             <Route path="/main" element={<Main />} />

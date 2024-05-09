@@ -31,9 +31,10 @@ public class InviteService {
     private final ProjectHistoryService historyService;
 
     @Transactional
-    public boolean createInvitation(String ownerName, Long projectId, List<TeamMemberDto> members) throws MessagingException {
+    public boolean createInvitation(String providerId, Long projectId, List<TeamMemberDto> members) throws MessagingException {
         //프로젝트 소유주인지 확인
-        Long ownerId = membersRepository.findByMemberNickname(ownerName).getMemberId();
+        Long ownerId = membersRepository.findByMemberProviderId(providerId).getMemberId();
+        log.debug("현재 회원 아이디 : " + ownerId);
         if (historyRepository.findOwnerByMemberIdAndProjectId(ownerId, projectId).isEmpty()) {
             log.info("프로젝트의 소유주와 일치하지 않습니다.");
             return false;
@@ -45,6 +46,7 @@ public class InviteService {
         }
 
         String[] emails = new String[members.size()];
+        Projects project = projectRepository.findByProjectId(projectId);
 
         // 1. Project_invitations 테이블에 데이터 추가됨
         for (int i = 0; i < members.size(); i++) {
@@ -52,10 +54,16 @@ public class InviteService {
             emails[i] = mem.getEmail();
 
             Members newMem = membersRepository.findByMemberEmail(mem.getEmail());
+            // 동일한 초대 내역이 있는지
+            Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(newMem.getMemberId(), projectId);
+            if (invitation.isPresent()) {
+                log.debug("동일한 초대내역이 있습니다.");
+                continue;
+            }
 
             ProjectInvitations invitations = ProjectInvitations.builder()
                     .members(newMem)
-                    .projects(projectRepository.findByProjectId(projectId))
+                    .projects(project)
                     .accepted(null)
                     .projectRole(mem.getProjectRole())
                     .build();
@@ -66,15 +74,15 @@ public class InviteService {
         }
 
         // 메일 수신
-        emailService.sendEmail(emails);
+        emailService.sendEmail(emails, project);
         return true;
     }
 
     @Transactional
-    public InvitationResponseDto checkInvitation(String name, Long projectId) {
-        Members member = membersRepository.findByMemberNickname(name);
+    public InvitationResponseDto checkInvitation(String providerId, Long projectId) {
+        Members member = membersRepository.findByMemberProviderId(providerId);
         if (member == null) {
-            log.warn("No member found with nickname: " + name);
+            log.warn("No member found with nickname: " + providerId);
             return null; // 혹은 적절한 예외 처리
         }
         log.info("멤버 아이디 : " + member.getMemberId());
@@ -117,8 +125,8 @@ public class InviteService {
     }
 
     @Transactional
-    public boolean answerInvitation(String name, Long projectId, String answer) {
-        Members member = membersRepository.findByMemberNickname(name);
+    public boolean answerInvitation(String providerId, Long projectId, String answer) {
+        Members member = membersRepository.findByMemberProviderId(providerId);
 
         Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(member.getMemberId(), projectId);
         if (invitation.isEmpty()) {

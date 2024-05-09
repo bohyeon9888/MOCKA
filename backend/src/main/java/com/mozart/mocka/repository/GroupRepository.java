@@ -7,7 +7,7 @@ import java.util.List;
 
 
 public interface GroupRepository extends JpaRepository<Groups, Long> {
-    void deleteByProjectId(Long projectId);
+    void deleteByProject_ProjectId(Long projectId);
 
-    List<Groups> findByProjectId(Long projectId);
+    List<Groups> findByProject_ProjectId(Long projectId);
 }

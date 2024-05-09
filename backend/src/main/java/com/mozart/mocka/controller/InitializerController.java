@@ -6,12 +6,9 @@ import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiProjectRepository;
 import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.InitializerService;
-import com.mozart.mocka.service.ProjectService;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import com.mozart.mocka.service.generator.GenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/initializer")
 public class InitializerController {
-    private final GenResponse genResponse;
     private final InitializerService initializerService;
     private final ApiProjectRepository apiProjectRepository;
     private final ProjectRepository projectRepository;

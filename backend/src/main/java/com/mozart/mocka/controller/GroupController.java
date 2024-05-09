@@ -32,9 +32,15 @@ public class GroupController {
     @PostMapping("{projectId}")
     public ResponseEntity<?> createGroup(@PathVariable("projectId") Long projectId,@RequestBody CreateGroupRequestDto request){
         Long memberId = 1L;
-        //사용자 프로젝트 편집 권한 check
-        groupService.create(projectId,request.getGroupName(),request.getGroupUri());
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        //project auth check
+
+
+        boolean isCreate = groupService.create(projectId,request.getGroupName(),request.getGroupUri());
+        if(!isCreate)
+            return new ResponseEntity<>("You can't create Group",HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>("Create Success",HttpStatus.OK);
     }
 
     @PutMapping("{projectId}/{groupId}")

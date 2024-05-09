@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  main * {
+    @apply shrink-0;
+  }
+
   body {
     @apply font-Pretendard leading-none;
   }
@@ -35,7 +39,9 @@
 html,
 body,
 #root {
+  width: 100vw;
   height: 100vh;
+  overflow: hidden;
 }
 
 #root {

@@ -7,11 +7,7 @@ export const googleLogin = async (code) => {
   );
 
   login(data.accessToken);
-
-  sessionStorage.setItem(
-    "profile",
-    JSON.stringify({ nickname: data.nickname, profile: data.profile }),
-  );
+  return data;
 };
 
 export const tokenRefresh = async () => {

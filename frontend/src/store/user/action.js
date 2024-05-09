@@ -1,12 +1,11 @@
-import { logout } from "../../utils/auth";
+import { getValueFromToken, logout } from "../../utils/auth";
 
 export const userActions = {
   login: (set, nickname, profile) => {
     set((state) => {
       return {
         ...state,
-        nickname,
-        profile,
+        user: { nickname, profile },
       };
     });
   },
@@ -14,5 +13,19 @@ export const userActions = {
   logout: (set) => {
     set({ user: null });
     logout();
+  },
+
+  getProfileFromToken: (set) => {
+    set((state) => {
+      const nickname = getValueFromToken("username");
+      const profile = getValueFromToken("profile");
+
+      if (!nickname || !profile) return state;
+
+      return {
+        ...state,
+        user: { nickname, profile },
+      };
+    });
   },
 };

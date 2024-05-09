@@ -1,5 +1,6 @@
 package com.mozart.mocka.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mozart.mocka.util.LTreeConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,8 +23,8 @@ public class ApiProjects {
     @Column(nullable = false)
     private Long projectId;
 
-    @Column
-    private Long groupId;
+//    @Column
+//    private Long groupId;
 
     @Column(nullable = false)
     private String apiMethod;
@@ -53,6 +54,11 @@ public class ApiProjects {
     private List<ApiRequest> apiRequests = new ArrayList<>();
     @OneToMany(mappedBy = "apiProject")
     private List<ApiResponse> apiResponses = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "group_id", nullable = false)
+    @JsonIgnore
+    private Groups groups;
 
     public ApiProjects(Long projectId, String apiMethod, String apiUri, boolean apiResponseIsArray, int arraySize) {
         this.projectId = projectId;

@@ -20,14 +20,16 @@ public class MethodController {
    private final ApiService apiService;
    private final AuthService authService;
 //    @Cacheable(value = "api-project", key = "#projectId")
-    @PostMapping("{projectId}")
-    public ResponseEntity<?> createApi(@PathVariable("projectId") Long projectId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
+    @PostMapping("{projectId}/{groupId}")
+    public ResponseEntity<?> createApi(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("groupId") Long groupId,
+                                       @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
         //edit 인증 체크
 
         //method 중복 체크
         authService.methodCreateCheck(projectId,requestDto);
 
-        apiService.createApi(projectId, requestDto);
+        apiService.createApi(projectId, groupId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -41,14 +43,16 @@ public class MethodController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("{projectId}/{apiId}")
-    public ResponseEntity<?> createApi(@PathVariable("projectId") Long projectId,@PathVariable("apiId")Long apiId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
+    @PutMapping("{projectId}/{groupId}/{apiId}")
+    public ResponseEntity<?> updateApi(@PathVariable("projectId") Long projectId,
+                                       @PathVariable("projectId") Long groupId,
+                                       @PathVariable("apiId")Long apiId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
         //edit 인증 체크
 
         //method 중복 체크
         authService.methodUpdateCheck(projectId,apiId,requestDto);
         apiService.deleteApi(projectId,apiId);
-        apiService.createApi(projectId, requestDto);
+        apiService.createApi(projectId, groupId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

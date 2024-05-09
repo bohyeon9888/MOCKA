@@ -5,8 +5,9 @@ const useModalStore = create((set) => ({
   isOpen: false,
   title: "",
   children: null,
-  openModal: (title, children) => {
-    modalActions.openModal(set, title, children);
+  state: null,
+  openModal: (title, children, state) => {
+    modalActions.openModal(set, title, children, state);
   },
   closeModal: () => {
     modalActions.closeModal(set);
