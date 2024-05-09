@@ -2,6 +2,7 @@ package com.mozart.mocka.service;
 import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
+import com.mozart.mocka.repository.ApiProjectRepository;
 import com.mozart.mocka.repository.GroupRepository;
 import com.mozart.mocka.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -51,9 +53,22 @@ public class GroupService {
     }
 
     public boolean update(Long projectId, Long groupId, String name, String uri) {
-//        groupRepository.save(Groups.builder()
-//                .groupId(groupId).groupName(name).groupUri(uri).projectId(projectId)
-//                .build());
+        Optional<Groups> group = groupRepository.findById(groupId);
+        if(group.isEmpty())
+            return false;
+        if(Objects.equals(group.get().getProject().getProjectId(), projectId)){
+            group.get().setGroupName(name);
+            groupRepository.save(group.get());
+            return true;
+        }
         return false;
+    }
+
+    public void deleteAllEntity(Long projectId, Long groupId) {
+        Optional<Groups> group = groupRepository.findById(groupId);
+        if(group.isEmpty())
+            return;
+        if(Objects.equals(group.get().getProject().getProjectId(), projectId))
+            groupRepository.deleteById(groupId);
     }
 }
