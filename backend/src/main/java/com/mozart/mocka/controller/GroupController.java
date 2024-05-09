@@ -43,6 +43,7 @@ public class GroupController {
         return new ResponseEntity<>("Create Success",HttpStatus.OK);
     }
 
+    //그룹 이름만 변경
     @PutMapping("{projectId}/{groupId}")
     public ResponseEntity<?> updateGroup(@RequestBody CreateGroupRequestDto request, @PathVariable("projectId") Long projectId,@PathVariable("groupId")Long groupId){
         Long memberId = 1L;
@@ -60,6 +61,7 @@ public class GroupController {
         Long memberId = 1L;
         //사용자 프로젝트 편집 권한 check
 
+        groupService.deleteAllEntity(projectId, groupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

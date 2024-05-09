@@ -26,7 +26,13 @@ public class MethodController {
                                        @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
         //edit 인증 체크
 
+
+        String uri = apiService.appendGruopUri(groupId, requestDto.getApiUri());
+        if(uri == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         //method 중복 체크
+        requestDto.setApiUri(uri);
         authService.methodCreateCheck(projectId,requestDto);
 
         apiService.createApi(projectId, groupId, requestDto);

@@ -3,18 +3,18 @@ package com.mozart.mocka.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.ApiDto;
 import com.mozart.mocka.dto.PathVariableDto;
 import com.mozart.mocka.dto.RequestApiDto;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
-import com.mozart.mocka.repository.ApiPathRepository;
-import com.mozart.mocka.repository.ApiProjectRepository;
-import com.mozart.mocka.repository.ApiRequestRepository;
-import com.mozart.mocka.repository.ApiResponseRepository;
+import com.mozart.mocka.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,6 +26,7 @@ public class ApiService {
     private final ApiPathRepository apiPathRepository;
     private final ApiRequestRepository apiRequestRepository;
     private final ApiResponseRepository apiResponseRepository;
+    private final GroupRepository groupRepository;
 
     public void createApi(Long projectId, Long groupId, ApiCreateRequestDto dto) throws JsonProcessingException {
         //api create
@@ -109,5 +110,15 @@ public class ApiService {
         }
         log.info("uri : " + uri);
         return uri;
+    }
+
+    public String appendGruopUri(Long groupId, String apiUri) {
+        Optional<Groups> groupsOptional = groupRepository.findById(groupId);
+        if(groupsOptional.isEmpty())
+            return null;
+        if(apiUri.contains(groupsOptional.get().getGroupUri())){
+            return apiUri;
+        }
+        return groupsOptional.get().getGroupUri() + apiUri;
     }
 }
