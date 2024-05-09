@@ -93,7 +93,7 @@ public class ProjectController {
     @GetMapping("/recent")
     public ResponseEntity<?> getRecentProject() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Members member = membersRepository.findByMemberNickname(auth.getName());
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
 
         if (member == null) {
             log.debug("일치하는 멤버가 없습니다.");

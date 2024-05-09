@@ -45,8 +45,8 @@ public class ProjectHistoryService {
     }
 
     @Transactional
-    public boolean patchProjectMember(String ownerName, Long memberId, Long projectId, String projectRole) {
-        Long ownerId = membersRepository.findByMemberNickname(ownerName).getMemberId();
+    public boolean patchProjectMember(String providerId, Long memberId, Long projectId, String projectRole) {
+        Long ownerId = membersRepository.findByMemberProviderId(providerId).getMemberId();
         if (historyRepository.findOwnerByMemberIdAndProjectId(ownerId, projectId).isEmpty()) {
             log.info("프로젝트의 소유주와 일치하지 않습니다.");
             return false;

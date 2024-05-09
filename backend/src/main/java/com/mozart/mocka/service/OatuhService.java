@@ -96,8 +96,8 @@ public class OatuhService {
         Members member = membersRepository.findByMemberProviderId(oAuth2Response.getProviderId());
 
         // JWT Token 생성
-        String access = jwtUtil.createJwt("access", member.getMemberId(), name, oAuth2Response.getProfileImg(), role, 43200000L);
-        String refresh = jwtUtil.createJwt("refresh", member.getMemberId(), name, oAuth2Response.getProfileImg(), role, 604800000L);
+        String access = jwtUtil.createJwt("access", member.getMemberProviderId(), name, oAuth2Response.getProfileImg(), role, 43200000L);
+        String refresh = jwtUtil.createJwt("refresh", member.getMemberProviderId(), name, oAuth2Response.getProfileImg(), role, 604800000L);
 
         // Authentication 객체 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

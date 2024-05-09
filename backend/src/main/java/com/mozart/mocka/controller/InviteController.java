@@ -4,6 +4,7 @@ import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.dto.request.InvitationAnswerRequestDto;
 import com.mozart.mocka.dto.request.InviteRequestDto;
 import com.mozart.mocka.dto.response.InvitationResponseDto;
+import com.mozart.mocka.repository.MembersRepository;
 import com.mozart.mocka.service.InviteService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,20 @@ import org.springframework.web.bind.annotation.*;
 public class InviteController {
 
     private final InviteService inviteService;
+    private final MembersRepository membersRepository;
+
+    @GetMapping("/test")
+    public String test() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("사용자 이름 : " + auth.getName());
+        Members mem = membersRepository.findByMemberProviderId(auth.getName());
+
+        if (mem == null) {
+            return "해당하는 멤버가 없습니다.";
+        }
+
+        return mem.getMemberNickname();
+    }
 
     @PostMapping
     public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) throws MessagingException {
