@@ -7,6 +7,7 @@ import com.mozart.mocka.domain.ApiResponse;
 import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.repository.ApiPathRepository;
+import com.mozart.mocka.repository.ApiProjectRepository;
 import com.mozart.mocka.repository.ApiRequestRepository;
 import com.mozart.mocka.repository.ApiResponseRepository;
 import java.nio.charset.StandardCharsets;
@@ -26,118 +27,111 @@ public class GenController {
     private final ApiPathRepository apiPathRepository;
     private final ApiRequestRepository apiRequestRepository;
     private final ApiResponseRepository apiResponseRepository;
+    private final ApiProjectRepository apiProjectRepository;
     private final GenRequest genRequest;
     private final GenResponse genResponse;
     static final String HASH = "34e1c029fab";
+    static final String basePath = "src/main/java/";
 
-    public void createController(
+    public int createController(
+        Path projectRoot, Groups group, InitializerRequestDto request, int index) throws Exception {
 
-        Path projectRoot, Groups group, List<ApiProjects> apis, InitializerRequestDto request) throws Exception {
-        String basePath = "src/main/java/";
+        List<ApiProjects> apis = apiProjectRepository.findByGroupId(group.getGroupId());
+
         Path controllerDir = projectRoot.resolve(
             basePath + request.getSpringPackageName().replace(".", "/") + "/controller");
-        Files.createDirectories(controllerDir); // 컨트롤러 디렉토리 생성
 
-        Files.createDirectories(projectRoot.resolve(
-            basePath + request.getSpringPackageName().replace(".", "/") + "/dto")); // DTO 디렉토리 생성
-        Files.createDirectories(projectRoot.resolve(
-            basePath + request.getSpringPackageName().replace(".", "/")
-                + "/dto/response")); // Response 디렉토리 생성
-        Files.createDirectories(projectRoot.resolve(
-            basePath + request.getSpringPackageName().replace(".", "/")
-                + "/dto/request")); // Request 디렉토리 생성
+        String groupUri = group.getGroupUri();
+        String parseName = "Root";
+        if (!groupUri.isEmpty()) {
+            parseName = groupUri.split("/")[1];
+        }
 
-        for (int i = 0; i < apis.size(); i++) {
-            ApiProjects api = apis.get(i); // 현재 API 프로젝트를 가져옴
+        String className = parseName + "Controller";
+        Path controllerFile = controllerDir.resolve(className + ".java");
 
+        List<String> lines;
+            // 새 컨트롤러 파일 생성
+        lines = new ArrayList<>();
+        lines.add("package " + request.getSpringPackageName() + ".controller;\n");
+
+        int i = 0;
+        for (ApiProjects api: apis) {
+            lines.add(generateImport(api, request.getSpringPackageName(), projectRoot, index + (i++)));
+        }
+
+        lines.add("import org.springframework.web.bind.annotation.*;");
+        lines.add("import org.springframework.http.ResponseEntity;\n");
+        lines.add("@RestController");
+        if (!className.equals("RootController")) {
+            lines.add("@RequestMapping(\"" + groupUri + "\")");
+        }
+        lines.add("public class " + className + " {");
+
+        i = 0;
+        for (ApiProjects api: apis) {
+            lines.addAll(generateMethodLines(api, group.getGroupUri() ,index + (i++)));
+        }
+
+        lines.add("}");
+
+        // 파일 쓰기
+        Files.write(controllerFile, lines, StandardCharsets.UTF_8);
+
+        return index + apis.size() - 1;
+    }
+
+    private String generateImport(ApiProjects api, String packageName, Path projectRoot, int index)
+        throws Exception {
+
+        Long apiId = api.getApiId();
+        List<ApiRequest> apiRequests = apiRequestRepository.findByApiProject_ApiId(apiId);
+        List<ApiResponse> apiResponses = apiResponseRepository.findByApiProject_ApiId(apiId);
+
+        if (!apiRequests.isEmpty()) { // req dto 생성
             Path requestDirNo = projectRoot.resolve(
-                basePath + request.getSpringPackageName().replace(".", "/") + "/dto/request/api" + (
-                    i + 1));
-            Files.createDirectories(requestDirNo); // Request 디렉토리 생성
-            genRequest.makeStrObject("RequestDtoNo" + (i + 1),
-                request.getSpringPackageName() + ".dto.request.api" + (i + 1), api.getApiId(),
+                basePath + packageName.replace(".", "/") + "/dto/request/api" + index);
+            Files.createDirectories(requestDirNo);
+            genRequest.makeStrObject("RequestDtoNo" + index,
+                packageName + ".dto.request.api" + index, api.getApiId(),
                 requestDirNo.toString());
-
+        }
+        else if (!apiResponses.isEmpty()) { // res dto 생성
             Path responseDirNo = projectRoot.resolve(
-                basePath + request.getSpringPackageName().replace(".", "/") + "/dto/response/api"
-                    + (i + 1));
-            Files.createDirectories(responseDirNo); // Response 디렉토리 생성
-            genResponse.makeStrObject("ResponseDtoNo" + (i + 1),
-                request.getSpringPackageName() + ".dto.response.api" + (i + 1), api.getApiId(),
+                basePath + packageName.replace(".", "/") + "/dto/response/api" + index);
+            Files.createDirectories(responseDirNo); // ResponseNo 디렉토리 생성
+            genResponse.makeStrObject("ResponseDtoNo" + index,
+                packageName + ".dto.response.api" + index, api.getApiId(),
                 responseDirNo.toString());
-
-            String controllerName = getString(api);
-
-            String className = controllerName + "Controller";
-            Path controllerFile = controllerDir.resolve(className + ".java");
-
-            List<String> lines;
-            if (Files.exists(controllerFile)) {
-                lines = Files.readAllLines(controllerFile, StandardCharsets.UTF_8);
-
-                int importIndex = findLastImportIndex(lines); // 마지막 import 문의 인덱스 찾기
-
-                // 새로운 import 문 추가 (기존 import가 없을 경우, 패키지 선언 바로 다음에 추가)
-                if (importIndex != -1) {
-                    lines.add(importIndex + 1, "import " + request.getSpringPackageName() + ".dto.request.api" + (i + 1) + ".*;");
-                    lines.add(importIndex + 2, "import " + request.getSpringPackageName() + ".dto.response.api" + (i + 1) + ".*;");
-                } else {
-                    int packageIndex = findPackageIndex(lines); // 패키지 선언의 인덱스 찾기
-                    if (packageIndex != -1) {
-                        lines.add(packageIndex + 1, "import " + request.getSpringPackageName() + ".dto.request.api" + (i + 1) + ".*;");
-                        lines.add(packageIndex + 2, "import " + request.getSpringPackageName() + ".dto.response.api" + (i + 1) + ".*;");
-                    }
-                }
-
-                int lastIndex = findLastIndex(lines);
-                // 새로운 메소드를 마지막 중괄호 바로 전에 추가
-                lines.addAll(lastIndex, generateMethodLines(api, i + 1));
-            } else {
-                // 새 컨트롤러 파일 생성
-                lines = new ArrayList<>();
-                lines.add("package " + request.getSpringPackageName() + ".controller;\n");
-
-                lines.add("import org.springframework.web.bind.annotation.*;");
-                lines.add("import org.springframework.http.ResponseEntity;");
-                lines.add("import " + request.getSpringPackageName() + ".dto.request.api" + (i+1) + ".*;");
-                lines.add("import " + request.getSpringPackageName() + ".dto.response.api" + (i+1) + ".*;");
-
-                lines.add("\n@RestController");
-                if (!className.equals("RootController")) {
-                    lines.add("@RequestMapping(\"/" + controllerName + "\")");
-                }
-                lines.add("public class " + className + " {");
-                lines.addAll(generateMethodLines(api, i + 1));
-                lines.add("}");
-            }
-
-            // 파일 쓰기
-            Files.write(controllerFile, lines, StandardCharsets.UTF_8);
         }
+
+        String result="";
+        // req O, res O
+        if (!apiRequests.isEmpty() && !apiResponses.isEmpty()) {
+            result = "import " + packageName + ".dto.request.api" + index + ".*;\n" +
+                "import " + packageName + ".dto.response.api" + index + ".*;";
+        }
+        // req O, res X
+        else if (apiRequests.isEmpty() && !apiResponses.isEmpty())
+            result = "import " + packageName + ".dto.request.api" + index + ".*;";
+        // req X, res O
+        else if (!apiRequests.isEmpty() && apiResponses.isEmpty())
+            result = "import " + packageName + ".dto.response.api" + index + ".*;";
+        // req X, res X
+
+        return result;
     }
 
-    private String getString(ApiProjects api) {
-        String apiUri = api.getApiUri();
+//
 
-        if (apiUri.contains(".")) {
-            String [] parts = apiUri.split("\\.");
-            if (parts[0].equals(HASH)) {
-                return "Root";
-            } else {
-                return parts[0];
-            }
-        } else {
-            if (apiUri.equals(HASH)) {
-                return "Root";
-            } else {
-                return apiUri;
-            }
-        }
-    }
-
-    private List<String> generateMethodLines(ApiProjects api, int index) {
+    private List<String> generateMethodLines(ApiProjects api, String groupUri, int index) {
         List<String> methodLines = new ArrayList<>();
+
         String requestUri = setUri(api.getApiUriStr());
+        if (groupUri.isEmpty()) {
+            requestUri = api.getApiUriStr().split("\\?")[0];
+        }
+
         methodLines.add("\n    @" + api.getApiMethod() + "Mapping(\"" + requestUri + "\")");
 
         Long apiId = api.getApiId();
@@ -151,10 +145,26 @@ public class GenController {
         String requestType = "RequestDtoNo" + index; // DTO 클래스 이름
 
         String methodSignature = "ResponseEntity<" + responseType + ">";
-        if (apiPaths.isEmpty() && apiRequests.isEmpty()) {
+        if (apiPaths.isEmpty() && apiRequests.isEmpty() && !api.getApiUriStr().contains("?")) {
             methodLines.add("    public " + methodSignature + " " + methodName + "() {");
         } else {
             methodLines.add("    public " + methodSignature + " " + methodName + "(");
+
+            /// api.getApiUriStr() = test3/{userId}?boardId=long
+            // 쿼리스트링 구분 필요
+            String[] uriParts = api.getApiUriStr().split("\\?");
+            if (uriParts.length > 1) {
+                String queryString = uriParts[1];
+                String[] queryParams = queryString.split("&");
+                for (String param : queryParams) {
+                    String[] keyValue = param.split("=");
+                    if (keyValue.length > 1) {
+                        String key = keyValue[0];
+                        String type = keyValue[1]; // 일반적으로 타입 정보는 URI에서 얻을 수 없으므로 예측하거나 기본 타입을 지정해야 함
+                        methodLines.add("        @RequestParam(\"" + key + "\") " + type + " " + key + ",");
+                    }
+                }
+            }
 
             apiPaths.forEach(path -> {
                 methodLines.add(
@@ -166,8 +176,7 @@ public class GenController {
                 methodLines.add("        @RequestBody " + requestType + " request) {");
             } else {
                 methodLines.remove(methodLines.size() - 1); // 마지막 콤마 제거
-                methodLines.add(
-                    methodLines.remove(methodLines.size() - 1) + "\n        ) {"); // 메서드 매개변수 닫기
+                methodLines.add("\n        ) {"); // 메서드 매개변수 닫기
             }
         }
 
@@ -193,7 +202,26 @@ public class GenController {
             result.append("/").append(segments[i]);
         }
 
-        return result.toString();
+        return result.toString().split("\\?")[0];
+    }
+
+    private String getString(ApiProjects api) {
+        String apiUri = api.getApiUri();
+
+        if (apiUri.contains(".")) {
+            String [] parts = apiUri.split("\\.");
+            if (parts[0].equals(HASH)) {
+                return "Root";
+            } else {
+                return parts[0];
+            }
+        } else {
+            if (apiUri.equals(HASH)) {
+                return "Root";
+            } else {
+                return apiUri;
+            }
+        }
     }
 
     private int findLastImportIndex(List<String> lines) {

@@ -1,10 +1,8 @@
 package com.mozart.mocka.service;
 
-import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
-import com.mozart.mocka.repository.ApiProjectRepository;
 import com.mozart.mocka.repository.GroupRepository;
 import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.generator.GenController;
@@ -29,7 +27,6 @@ public class InitializerService {
     private final GenInit genInit;
     private final GenController genController;
     private final GroupRepository groupRepository;
-    private final ApiProjectRepository apiProjectRepository;
     private final ProjectRepository projectRepository;
 
     // 파일 생성
@@ -58,9 +55,9 @@ public class InitializerService {
             genInit.updateSettingsGradleFile(projectRoot, request.getSpringName());
         }
 
+        int index = 1;
         for (Groups group : groups) {
-            List<ApiProjects> apis = apiProjectRepository.findByGroupId(group.getGroupId());
-            genController.createController(projectRoot, group, apis, request);
+            index = genController.createController(projectRoot, group, request, index);
         }
 
         return projectRoot;
