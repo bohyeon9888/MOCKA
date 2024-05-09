@@ -13,7 +13,7 @@ const getInvitationState = async (projectId) => {
   return data;
 };
 
-const answerInvitation = async (projectId, answer) => {
+const answerInvitation = async ({ projectId, answer }) => {
   const { data } = await axios.post(`invite/${projectId}`, { answer });
 
   return data;

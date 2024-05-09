@@ -4,11 +4,14 @@ import UserBox from "../UserBox";
 import validateEmail from "../../utils/validateEmail";
 import DropDown from "../DropDown";
 import Button from "../button/Button";
+import { useModalStore } from "../../store";
+import { inviteMembers } from "../../apis/invite";
 
 export default function InviteModal() {
   const [inviteList, setInviteList] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [mode, setMode] = useState("Viewer");
+  const [role, setRole] = useState("Viewer");
+  const { state } = useModalStore();
 
   const removeItem = (idx) => {
     setInviteList([
@@ -31,6 +34,18 @@ export default function InviteModal() {
 
   const changeHandler = (e) => {
     setInputValue(e.target.value);
+  };
+
+  const onClick = () => {
+    inviteMembers({
+      teamMember: inviteList.map((email) => {
+        return {
+          email,
+          projectRole: role.toUpperCase(),
+        };
+      }),
+      projectId: state.projectId,
+    });
   };
 
   return (
@@ -63,11 +78,11 @@ export default function InviteModal() {
       <div className="flex w-full flex-row justify-end space-x-[15px]">
         <DropDown
           size="small"
-          value={mode}
+          value={role}
           options={["Viewer", "Editor"]}
-          changeHandler={setMode}
+          changeHandler={setRole}
         />
-        <Button type="Invite" />
+        <Button type="Invite" onClick={onClick} />
       </div>
     </div>
   );
