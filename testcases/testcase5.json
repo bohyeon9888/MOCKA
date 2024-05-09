@@ -1,0 +1,9 @@
+{
+    "apiMethod": "Get",
+    "apiUri": "/users?id=long&name=string",
+    "apiPathVariable": [],
+    "apiRequest": [],
+    "apiResponseIsArray": false,
+    "apiResponseSize": 0,
+    "apiResponse": []
+}
