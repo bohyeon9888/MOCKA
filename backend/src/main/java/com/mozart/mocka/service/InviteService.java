@@ -45,6 +45,7 @@ public class InviteService {
         }
 
         String[] emails = new String[members.size()];
+        Projects project = projectRepository.findByProjectId(projectId);
 
         // 1. Project_invitations 테이블에 데이터 추가됨
         for (int i = 0; i < members.size(); i++) {
@@ -52,10 +53,16 @@ public class InviteService {
             emails[i] = mem.getEmail();
 
             Members newMem = membersRepository.findByMemberEmail(mem.getEmail());
+            // 동일한 초대 내역이 있는지
+            Optional<ProjectInvitations> invitation = invitationRepository.findByMembers_MemberIdAndProjects_ProjectId(newMem.getMemberId(), projectId);
+            if (invitation.isPresent()) {
+                log.debug("동일한 초대내역이 있습니다.");
+                continue;
+            }
 
             ProjectInvitations invitations = ProjectInvitations.builder()
                     .members(newMem)
-                    .projects(projectRepository.findByProjectId(projectId))
+                    .projects(project)
                     .accepted(null)
                     .projectRole(mem.getProjectRole())
                     .build();
@@ -66,7 +73,7 @@ public class InviteService {
         }
 
         // 메일 수신
-        emailService.sendEmail(emails);
+        emailService.sendEmail(emails, project);
         return true;
     }
 
