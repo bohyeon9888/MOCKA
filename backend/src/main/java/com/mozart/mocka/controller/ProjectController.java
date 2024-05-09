@@ -58,12 +58,15 @@ public class ProjectController {
 //    @CacheEvict(value = "api-project", key = "#projectId")
     @PutMapping("{projectId}")
     public ResponseEntity<?> updateProject(@RequestBody ProjectRequestDto request, @PathVariable("projectId") Long projectId){
-        Long memberId = 1L;
+//        Long memberId = 1L;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
+
         int editNum = request.getVisibility().charAt(0) - '0';
         if(editNum > 2 || editNum < 0)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        boolean check = projectService.update(projectId,memberId, request.getProjectName(),request.getCommonUri(),request.getVisibility());
+        boolean check = projectService.update(projectId, member.getMemberId(), request.getProjectName(),request.getCommonUri(),request.getVisibility());
         if(check)
             return new ResponseEntity<>(HttpStatus.OK);
 
@@ -74,8 +77,11 @@ public class ProjectController {
 //    @CacheEvict(value = "api-project", key = "#projectId")
     @DeleteMapping("{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable("projectId") Long projectId){
-        Long memberId = 1L;
-        Boolean check = projectService.delete(memberId, projectId);
+//        Long memberId = 1L;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
+
+        Boolean check = projectService.delete(member.getMemberId(), projectId);
 
         if(check)
             return new ResponseEntity<>(HttpStatus.OK);
@@ -87,12 +93,15 @@ public class ProjectController {
 //    @Cacheable(value = "api-project", key = "#projectId")
     @GetMapping("{projectId}")
     public ResponseEntity<?> receiveProjectDetail(@PathVariable("projectId") Long projectId) throws JsonProcessingException {
-        Long memberId = 1L;
-       int authority = projectService.checkAuthority(projectId,memberId);
+//        Long memberId = 1L;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
+
+       int authority = projectService.checkAuthority(projectId, member.getMemberId());
        System.out.println("authority " + authority);
        if(authority > 2)
            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-       JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId, memberId));
+       JsonNode jsonNode = objectMapper.valueToTree(projectService.getProjectAPIList(projectId, member.getMemberId()));
 
        return new ResponseEntity<>(jsonNode, HttpStatus.OK);
     }
