@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import Method from "./Method";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
@@ -13,7 +13,6 @@ function ApiBox() {
   const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //나중에 명세서 변수보고 바꾸기 🍒
   const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
   const [CopySuccess, setCopySuccess] = useState(false);
-  console.log("apiName : " + apiName);
   const [apiRequest] = [
     [
       {
