@@ -22,6 +22,13 @@ public class InviteController {
 
     private final InviteService inviteService;
 
+    @GetMapping("/test")
+    public String test() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("사용자 이름 : " + auth.getName());
+        return auth.getName();
+    }
+
     @PostMapping
     public ResponseEntity<?> inviteMember(@RequestBody InviteRequestDto inviteRequestDto) throws MessagingException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

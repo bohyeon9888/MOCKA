@@ -36,7 +36,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userEntity.getMemberNickname();
+        return userEntity.getMemberProviderId();
     }
 
     public Long getId() {

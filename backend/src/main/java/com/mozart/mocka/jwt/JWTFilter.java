@@ -3,6 +3,7 @@ package com.mozart.mocka.jwt;
 import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.domain.Members;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             //조건이 해당되면 메소드 종료 (필수)
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
@@ -43,14 +45,21 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(token);
         } catch (ExpiredJwtException e) {
-
             //response body
             PrintWriter writer = response.getWriter();
             writer.print("access token expired");
-
             //response status code
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
+        } catch (MalformedJwtException e) {
+            PrintWriter writer = response.getWriter();
+            writer.print("Invalid JWT format");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (Exception e) {
+            // 기타 예외 처리
+            PrintWriter writer = response.getWriter();
+            writer.print("Authentication error");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
@@ -75,10 +84,13 @@ public class JWTFilter extends OncePerRequestFilter {
         String profile = jwtUtil.getProfile(token);
         logger.info("token profile : " + profile);
 
+        String providerId = jwtUtil.getProviderId(token);
+
         //userEntity를 생성하여 값 set
         Members userEntity = Members.builder()
                 .memberNickname(name)
                 .memberProfile(profile)
+                .memberProviderId(providerId)
                 .memberRole(role)
                 .build();
 
