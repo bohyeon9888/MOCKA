@@ -123,7 +123,7 @@ public class ProjectService {
     public Projects getProjectAPIList(Long projectId, Long memberId) {
         boolean check = historyService.updateRecentTime(projectId, memberId);
         if (!check) {
-            return Collections.emptyList();
+            return null;
         }
         return projectRepository.findByProjectId(projectId);
 //        return groupRepository.findByProject_ProjectId(projectId);
