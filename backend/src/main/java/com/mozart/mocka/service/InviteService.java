@@ -34,6 +34,7 @@ public class InviteService {
     public boolean createInvitation(String providerId, Long projectId, List<TeamMemberDto> members) throws MessagingException {
         //프로젝트 소유주인지 확인
         Long ownerId = membersRepository.findByMemberProviderId(providerId).getMemberId();
+        log.debug("현재 회원 아이디 : " + ownerId);
         if (historyRepository.findOwnerByMemberIdAndProjectId(ownerId, projectId).isEmpty()) {
             log.info("프로젝트의 소유주와 일치하지 않습니다.");
             return false;

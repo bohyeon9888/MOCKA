@@ -109,7 +109,7 @@ public class OatuhService {
 
         // refresh token 저장
         log.info(refresh);
-        refreshTokenService.storeRefreshToken(name, refresh, 604800000L);
+        refreshTokenService.storeRefreshToken(oAuth2Response.getProviderId(), refresh, 604800000L);
 
         LoginResponseDto loginDto = LoginResponseDto.builder()
                 .nickname(oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4))

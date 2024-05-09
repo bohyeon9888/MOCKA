@@ -55,19 +55,19 @@ public class RefreshController {
         }
 
         // db에 저장된 refresh 와 같은 토큰인지 확인
-        String username = jwtUtil.getUsername(refresh);
-        if (!refresh.equals(refreshService.getRefreshToken(username))) {
+        String providerId = jwtUtil.getProviderId(refresh);
+        if (!refresh.equals(refreshService.getRefreshToken(providerId))) {
             //response status code
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
-        OauthDto oauthDto = refreshService.createAccessToken(username);
+        OauthDto oauthDto = refreshService.createAccessToken(providerId);
 
-        refreshService.deleteRefreshToken(username);
+        refreshService.deleteRefreshToken(providerId);
 
         //response
         response.addCookie(refreshService.createCookie("refreshToken", oauthDto.getRefresh()));
-        refreshService.storeRefreshToken(username, oauthDto.getRefresh(), 604800000L);
+        refreshService.storeRefreshToken(providerId, oauthDto.getRefresh(), 604800000L);
 
         return new ResponseEntity<>(oauthDto.getLoginResponseDto(), HttpStatus.OK);
     }

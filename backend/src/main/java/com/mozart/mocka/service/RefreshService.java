@@ -23,9 +23,9 @@ public class RefreshService {
     private final JWTUtil jwtUtil;
 
     @Transactional
-    public void storeRefreshToken(String username, String refresh, long duration) {
+    public void storeRefreshToken(String providerId, String refresh, long duration) {
         redisTemplate.opsForValue().set(
-                username,
+                providerId,
                 refresh,
                 duration,
                 TimeUnit.MILLISECONDS
@@ -33,8 +33,9 @@ public class RefreshService {
     }
 
     // 리팩토링!!!
-    public OauthDto createAccessToken(String username) {
-        Members member = membersRepository.findByMemberNickname(username);
+    public OauthDto createAccessToken(String providerId) {
+        Members member = membersRepository.findByMemberProviderId(providerId);
+        String username = member.getMemberNickname();
 
         String newAccess = jwtUtil.createJwt("access", member.getMemberProviderId(), username, member.getMemberProfile(), member.getMemberRole(), 43200000L);
         String newRefresh = jwtUtil.createJwt("refresh", member.getMemberProviderId(), username, member.getMemberProfile(), member.getMemberRole(), 604800000L);
@@ -60,12 +61,12 @@ public class RefreshService {
         return cookie;
     }
 
-    public String getRefreshToken(String username) {
-        return redisTemplate.opsForValue().get(username);
+    public String getRefreshToken(String providerId) {
+        return redisTemplate.opsForValue().get(providerId);
     }
 
     @Transactional
-    public void deleteRefreshToken(String username) {
-        redisTemplate.delete(username);
+    public void deleteRefreshToken(String providerId) {
+        redisTemplate.delete(providerId);
     }
 }
