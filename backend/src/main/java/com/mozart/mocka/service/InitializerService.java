@@ -4,8 +4,6 @@ import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
 import com.mozart.mocka.service.generator.GenController;
 import com.mozart.mocka.service.generator.GenInit;
-import com.mozart.mocka.service.generator.GenRequest;
-import com.mozart.mocka.service.generator.GenResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.File;
