@@ -4,11 +4,10 @@ export function isAuthenticated() {
   const token = Cookies.get("accessToken");
   if (!token) return false;
 
-  const memberId = getValueFromToken("memberId");
   const username = getValueFromToken("username");
   const profile = getValueFromToken("profile");
 
-  const isLogin = !!(memberId && username && profile);
+  const isLogin = !!(username && profile);
   if (!isLogin) logout();
 
   return isLogin;
