@@ -112,19 +112,21 @@ public class MockController {
 
         // 요청된 URL 검증
         Long apiId = mockService.findApi(project, url, method);
+        log.info("1 / " + apiId);
         if(apiId < 0)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else if(apiId == 0L)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+        log.info("2");
         // request body 검증
         try {
             if(!mockService.requestCheck(project.getProjectId(), apiId, request))
                 return new ResponseEntity<>("request body 의 값이 잘못되었습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IOException e) {
+            log.info("4");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
+        log.info("5");
         // response faker.js 반환
         return new ResponseEntity<>(mockService.createMock(apiId), HttpStatus.OK);
 

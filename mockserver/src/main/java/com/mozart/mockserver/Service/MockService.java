@@ -53,6 +53,22 @@ public class MockService {
         if (questionMarkIndex != -1) {
             path = path.substring(0, questionMarkIndex);
         }
+        //baseUrl check
+        String commonUri = project.getCommonUri();
+        if(commonUri.length() > 0)
+            commonUri = commonUri.substring(1);
+        if (path.contains(commonUri)) {
+            path = path.replaceFirst(commonUri,"");
+            if(path.length() > 0 && path.charAt(0) == '/')
+                path = path.substring(1);
+            log.info(path);
+        }
+        else {
+            return -1L;
+        }
+
+
+
         String[] pathArray = path.split("/");
 
         int number = pathArray.length;
@@ -77,6 +93,7 @@ public class MockService {
 
             if(apiProjects.isPresent()){
                 ApiProjects apiProject = apiProjects.get();
+                log.info("pathVal");
                 return pathVariableCheck(apiProject, path, numString);
             }
         }
