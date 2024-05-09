@@ -45,7 +45,7 @@ public class MethodController {
 
     @PutMapping("{projectId}/{groupId}/{apiId}")
     public ResponseEntity<?> updateApi(@PathVariable("projectId") Long projectId,
-                                       @PathVariable("projectId") Long groupId,
+                                       @PathVariable("groupId") Long groupId,
                                        @PathVariable("apiId")Long apiId, @RequestBody ApiCreateRequestDto requestDto) throws JsonProcessingException {
         //edit 인증 체크
 
@@ -55,5 +55,4 @@ public class MethodController {
         apiService.createApi(projectId, groupId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
