@@ -33,10 +33,10 @@ public class MockController {
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Long projectId = findProjectId(url);
-        if(projectId < 0)
+        Projects project = findProjectId(url);
+        if(project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return mockServe(request, projectId, url, "Get");
+        return mockServe(request, project, url, "Get");
     }
 
     @GetMapping("/hash/encode/{id}")
@@ -56,10 +56,10 @@ public class MockController {
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Long projectId = findProjectId(url);
-        if(projectId < 0)
+        Projects project = findProjectId(url);
+        if(project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return mockServe(request, projectId, url, "Post");
+        return mockServe(request, project, url, "Post");
     }
 
     @PutMapping
@@ -70,10 +70,10 @@ public class MockController {
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Long projectId = findProjectId(url);
-        if(projectId < 0)
+        Projects project = findProjectId(url);
+        if(project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return mockServe(request, projectId, url, "Put");
+        return mockServe(request, project, url, "Put");
     }
 
     @DeleteMapping
@@ -84,10 +84,10 @@ public class MockController {
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Long projectId = findProjectId(url);
-        if(projectId < 0)
+        Projects project = findProjectId(url);
+        if(project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return mockServe(request, projectId, url, "Delete");
+        return mockServe(request, project, url, "Delete");
     }
 
     @PatchMapping
@@ -98,19 +98,20 @@ public class MockController {
         } catch (MalformedURLException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Long projectId = findProjectId(url);
-        if(projectId < 0)
+        Projects project = findProjectId(url);
+        if(project == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return mockServe(request, projectId, url, "Patch");
+        return mockServe(request, project, url, "Patch");
     }
 
     /*
      *  400 BAD_REQUEST : url 의 path variable type이 맞지 않은 경우
      *  404 NOT_FOUND   : 없는 url의 요청
      * */
-    private ResponseEntity<?> mockServe(HttpServletRequest request, Long projectId, URL url, String method) {
+    private ResponseEntity<?> mockServe(HttpServletRequest request, Projects project, URL url, String method) {
+
         // 요청된 URL 검증
-        Long apiId = mockService.findApi(projectId, url, method);
+        Long apiId = mockService.findApi(project, url, method);
         if(apiId < 0)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else if(apiId == 0L)
@@ -118,7 +119,7 @@ public class MockController {
 
         // request body 검증
         try {
-            if(!mockService.requestCheck(projectId, apiId, request))
+            if(!mockService.requestCheck(project.getProjectId(), apiId, request))
                 return new ResponseEntity<>("request body 의 값이 잘못되었습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -131,11 +132,11 @@ public class MockController {
     /*
     * hash value decode
     * */
-    private Long findProjectId(URL url){
+    private Projects findProjectId(URL url){
         Optional<Projects> project = projectService.getProject(mockService.getHostName(url));
         if (project.isPresent())
-            return project.get().getProjectId();
+            return project.get();
         else
-            return -1L;
+            return null;
     }
 }

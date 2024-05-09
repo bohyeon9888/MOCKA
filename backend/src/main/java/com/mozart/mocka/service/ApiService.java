@@ -39,7 +39,6 @@ public class ApiService {
             }
             apiPathRepository.create(apiProject.getApiId(), path.getKey(), path.getType());
         }
-
         ObjectMapper mapper = new ObjectMapper();
         for (RequestApiDto path : dto.getApiRequest()) {
             log.info("request : " +path.getKey() + "/" + path.isArrayList());
@@ -68,11 +67,11 @@ public class ApiService {
             apiUri = apiUri.substring(0, queryIndex);
         }
 
-        if ('.' == apiUri.charAt(0)) {
+        if (apiUri.length() > 0 &&'.' == apiUri.charAt(0)) {
             apiUri = apiUri.substring(1);
         }
 
-        if ('.' == apiUri.charAt(apiUri.length() - 1)) {
+        if (apiUri.length() > 0 && '.' == apiUri.charAt(apiUri.length() - 1)) {
             apiUri = apiUri.substring(0, apiUri.length() - 1);
         }
         log.info(apiUri);
@@ -112,10 +111,13 @@ public class ApiService {
         return uri;
     }
 
-    public String appendGruopUri(Long groupId, String apiUri) {
+    public String appendGroupUri(Long groupId, String apiUri) {
         Optional<Groups> groupsOptional = groupRepository.findById(groupId);
         if(groupsOptional.isEmpty())
             return null;
+        if(apiUri.length() < groupsOptional.get().getGroupUri().length()) {
+            return groupsOptional.get().getGroupUri() + apiUri;
+        }
         if(apiUri.contains(groupsOptional.get().getGroupUri())){
             return apiUri;
         }
