@@ -2,7 +2,16 @@ import Cookies from "js-cookie";
 
 export function isAuthenticated() {
   const token = Cookies.get("accessToken");
-  return !!token;
+  if (!token) return false;
+
+  const memberId = getValueFromToken("memberId");
+  const username = getValueFromToken("username");
+  const profile = getValueFromToken("profile");
+
+  const isLogin = !!(memberId && username && profile);
+  if (!isLogin) logout();
+
+  return isLogin;
 }
 
 export function login(accessToken) {

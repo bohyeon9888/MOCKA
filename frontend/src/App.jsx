@@ -23,12 +23,14 @@ import { useUserStore } from "./store";
 function RequireAuthRoutes() {
   const location = useLocation();
   const loggedIn = isAuthenticated();
-  const { getProfileFromToken } = useUserStore();
+  const { getProfileFromToken, user } = useUserStore();
+
+  console.log(loggedIn);
 
   if (!loggedIn)
     return <Navigate to="/main" replace state={{ from: location }} />;
 
-  getProfileFromToken();
+  if (!user) getProfileFromToken();
 
   return <Outlet />;
 }
