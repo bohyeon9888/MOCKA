@@ -1,7 +1,16 @@
 {
     "apiMethod": "Get",
-    "apiUri": "/users",
-    "apiPathVariable": [],
+    "apiUri": "/users/{userId}/{boardId}",
+    "apiPathVariable": [
+        {
+            "key": "userId",
+            "type": "long"
+        },
+        {
+            "key": "boardId",
+            "type": "String"
+        }
+    ],
     "apiRequest": [
         {
             "key": "memberId",
@@ -108,6 +117,6 @@
         }
     ],
     "apiResponseIsArray": false,
-    "apiResponseSize": -1,
+    "apiResponseSize": 0,
     "apiResponse": []
 }

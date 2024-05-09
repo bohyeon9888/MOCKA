@@ -9,7 +9,7 @@
         {
             "key": "memberId",
             "type": "long",
-            "isArray": false,
+            "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "KO",
             "fakerMajor": "Phone",
@@ -19,7 +19,7 @@
         {
             "key": "memberName",
             "type": "String",
-            "isArray": false,
+            "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "KO",
             "fakerMajor": "member",
@@ -29,7 +29,7 @@
         {
             "key": "memberPhonenumber",
             "type": "String",
-            "isArray": false,
+            "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "EN",
             "fakerMajor": "member",
@@ -39,7 +39,7 @@
         {
             "key": "profileInfo",
             "type": "Object",
-            "isArray": false,
+            "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "",
             "fakerMajor": "",
@@ -48,7 +48,7 @@
                 {
                     "key": "profileName",
                     "type": "String",
-                    "isArray": false,
+                    "arrayList": false,
                     "arraySize": -1,
                     "fakerLocale": "EN",
                     "fakerMajor": "member",
@@ -58,7 +58,7 @@
                 {
                     "key": "profileImageUrl",
                     "type": "String",
-                    "isArray": false,
+                    "arrayList": false,
                     "arraySize": -1,
                     "fakerLocale": "EN",
                     "fakerMajor": "member",
@@ -70,7 +70,7 @@
         {
             "key": "profileInfo",
             "type": "Object",
-            "isArray": false,
+            "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "",
             "fakerMajor": "",
@@ -79,7 +79,7 @@
                 {
                     "key": "profileName",
                     "type": "Object",
-                    "isArray": false,
+                    "arrayList": false,
                     "arraySize": -1,
                     "fakerLocale": "",
                     "fakerMajor": "",
@@ -88,7 +88,7 @@
                         {
                             "key": "profileNameFirst",
                             "type": "String",
-                            "isArray": false,
+                            "arrayList": false,
                             "arraySize": -1,
                             "fakerLocale": "EN",
                             "fakerMajor": "member",
@@ -98,7 +98,7 @@
                         {
                             "key": "profileNameSecond",
                             "type": "String",
-                            "isArray": false,
+                            "arrayList": false,
                             "arraySize": -1,
                             "fakerLocale": "EN",
                             "fakerMajor": "member",

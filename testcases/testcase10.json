@@ -1,8 +1,20 @@
 {
     "apiMethod": "Get",
-    "apiUri": "/users",
-    "apiPathVariable": [],
-    "apiRequest": [
+    "apiUri": "/users/{userId}/{boardId}",
+    "apiPathVariable": [
+        {
+            "key": "userId",
+            "type": "long"
+        },
+        {
+            "key": "boardId",
+            "type": "String"
+        }
+    ],
+    "apiRequest": [],
+    "apiResponseIsArray": true,
+    "apiResponseSize": 12,
+    "apiResponse": [
         {
             "key": "memberId",
             "type": "long",
@@ -19,8 +31,8 @@
             "arrayList": false,
             "arraySize": -1,
             "fakerLocale": "KO",
-            "fakerMajor": "Phone",
-            "fakerSub": "number",
+            "fakerMajor": "member",
+            "fakerSub": "name",
             "value": null
         },
         {
@@ -28,9 +40,9 @@
             "type": "String",
             "arrayList": false,
             "arraySize": -1,
-            "fakerLocale": "KO",
-            "fakerMajor": "Phone",
-            "fakerSub": "number",
+            "fakerLocale": "EN",
+            "fakerMajor": "member",
+            "fakerSub": "name",
             "value": null
         },
         {
@@ -38,18 +50,18 @@
             "type": "Object",
             "arrayList": false,
             "arraySize": -1,
-            "fakerLocale": "KO",
-            "fakerMajor": "Phone",
-            "fakerSub": "number",
+            "fakerLocale": "",
+            "fakerMajor": "",
+            "fakerSub": "",
             "value": [
                 {
                     "key": "profileName",
                     "type": "String",
                     "arrayList": false,
                     "arraySize": -1,
-                    "fakerLocale": "KO",
-                    "fakerMajor": "Phone",
-                    "fakerSub": "number",
+                    "fakerLocale": "EN",
+                    "fakerMajor": "member",
+                    "fakerSub": "name",
                     "value": null
                 },
                 {
@@ -57,39 +69,39 @@
                     "type": "String",
                     "arrayList": false,
                     "arraySize": -1,
-                    "fakerLocale": "KO",
-                    "fakerMajor": "Phone",
-                    "fakerSub": "number",
+                    "fakerLocale": "EN",
+                    "fakerMajor": "member",
+                    "fakerSub": "name",
                     "value": null
                 }
             ]
         },
         {
-            "key": "profileInfoDetail",
+            "key": "profileInfo",
             "type": "Object",
             "arrayList": false,
             "arraySize": -1,
-            "fakerLocale": "KO",
-            "fakerMajor": "Phone",
-            "fakerSub": "number",
+            "fakerLocale": "",
+            "fakerMajor": "",
+            "fakerSub": "",
             "value": [
                 {
                     "key": "profileName",
                     "type": "Object",
                     "arrayList": false,
                     "arraySize": -1,
-                    "fakerLocale": "KO",
-                    "fakerMajor": "Phone",
-                    "fakerSub": "number",
+                    "fakerLocale": "",
+                    "fakerMajor": "",
+                    "fakerSub": "",
                     "value": [
                         {
                             "key": "profileNameFirst",
                             "type": "String",
                             "arrayList": false,
                             "arraySize": -1,
-                            "fakerLocale": "KO",
-                            "fakerMajor": "Phone",
-                            "fakerSub": "number",
+                            "fakerLocale": "EN",
+                            "fakerMajor": "member",
+                            "fakerSub": "name",
                             "value": ""
                         },
                         {
@@ -97,17 +109,14 @@
                             "type": "String",
                             "arrayList": false,
                             "arraySize": -1,
-                            "fakerLocale": "KO",
-                            "fakerMajor": "Phone",
-                            "fakerSub": "number",
+                            "fakerLocale": "EN",
+                            "fakerMajor": "member",
+                            "fakerSub": "name",
                             "value": ""
                         }
                     ]
                 }
             ]
         }
-    ],
-    "apiResponseIsArray": false,
-    "apiResponseSize": -1,
-    "apiResponse": []
+    ]
 }
