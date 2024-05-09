@@ -36,7 +36,7 @@ public class RefreshController {
 
         if (refresh == null) {
             //response status code
-            return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("refresh token null", HttpStatus.UNAUTHORIZED);
         }
 
         //expired check
@@ -44,21 +44,21 @@ public class RefreshController {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
             //response status code
-            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("refresh token expired", HttpStatus.UNAUTHORIZED);
         }
 
         // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
             //response status code
-            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.UNAUTHORIZED);
         }
 
         // db에 저장된 refresh 와 같은 토큰인지 확인
         String providerId = jwtUtil.getProviderId(refresh);
         if (!refresh.equals(refreshService.getRefreshToken(providerId))) {
             //response status code
-            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.UNAUTHORIZED);
         }
 
         OauthDto oauthDto = refreshService.createAccessToken(providerId);
