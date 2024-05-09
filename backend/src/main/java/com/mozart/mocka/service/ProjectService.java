@@ -115,6 +115,7 @@ public class ProjectService {
                 .build();
     }
     @LogExecutionTime
+//    providerId를 통해 memberID 검색
     public List<ProjectsListResponseDto> getProjectList(Long memberId) {
         return projectRepository.findMyList(memberId);
     }
