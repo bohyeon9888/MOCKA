@@ -25,6 +25,7 @@ export function getValueFromToken(key) {
   if (!token) return undefined;
 
   const base64Url = token.split(".")[1];
+  if (!base64Url) return undefined;
   const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
   const jsonPayload = decodeURIComponent(
     atob(base64)

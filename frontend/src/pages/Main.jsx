@@ -1,8 +1,18 @@
 import { useModalStore } from "../store";
 import LoginModal from "../components/modal/LoginModal";
+import { useEffect } from "react";
+import { isAuthenticated, login } from "../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const { openModal } = useModalStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    login("123");
+    console.log(isAuthenticated());
+    if (isAuthenticated()) navigate("/");
+  }, []);
 
   return (
     <div className="flex h-full w-full">
