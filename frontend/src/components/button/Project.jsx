@@ -1,29 +1,18 @@
-import React from "react";
 import { getProjectDetail } from "../../apis/project";
 import { useNavigate } from "react-router-dom";
+import formatDateString from "../../utils/formatDateString";
+import { useProjectStore } from "../../store";
 
 function Project({ title, date, projectId }) {
   const navigate = useNavigate();
-  const timestamp = Math.floor(new Date() / 1000);
+  const { setProject } = useProjectStore();
   const baseClassName =
-    "flex h-[73px] w-[476px] shrink-0 cursor-pointer items-center justify-between rounded-[20px] border-2 border-box-border-color bg-white duration-200 hover:border-gray-500";
-  var myDate = new Date(timestamp * 1000);
-  var date =
-    myDate.getFullYear() +
-    "-" +
-    (myDate.getMonth() + 1) +
-    "-" +
-    myDate.getDate() +
-    " " +
-    myDate.getHours() +
-    ":" +
-    myDate.getMinutes();
-
-  /*프로젝트명, 시간 2024-05-05 05:05) */
+    "flex h-[73px] w-[476px] shrink-0 cursor-pointer items-center justify-between rounded-[20px] text-gray-700 border-2 border-gray-700 bg-white opacity-60 hover:opacity-100 duration-200";
 
   const onClick = () => {
     getProjectDetail(projectId).then((data) => {
-      navigate("/viewer", {
+      setProject(data);
+      navigate(`/project/${projectId}`, {
         state: { data },
       });
     });
@@ -33,8 +22,10 @@ function Project({ title, date, projectId }) {
     <div className={baseClassName} onClick={onClick}>
       <h2 className="ml-[50px] tracking-[-0.08em]">{title}</h2>
       <div className="mr-[50px] tracking-[-0.08em]">
-        <h5 className="flex justify-center font-medium">Recent update</h5>
-        <h5 className="flex justify-center font-medium">{date}</h5>
+        <h5 className="flex justify-center font-medium">Created At</h5>
+        <h5 className="mt-1 flex justify-center font-medium">
+          {formatDateString(date)}
+        </h5>
       </div>
     </div>
   );

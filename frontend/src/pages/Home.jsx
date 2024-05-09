@@ -55,7 +55,7 @@ function Home() {
         <div>
           <h2 className="tracking-[0.02em]">NEW PROJECT</h2>
 
-          <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[27px]">
+          <div className="mt-[9px] h-[240px] w-[460px] rounded-[20px] border-2 border-gray-500 bg-white pl-[47px] pt-[27px]">
             <div className="absolute ml-[295px] mt-[150px]">
               <Button type="Create" onClick={createNewProject} />
             </div>
@@ -86,7 +86,7 @@ function Home() {
         </div>
         <div className="mt-7">
           <h2 className="tracking-[-0.02em]">UPDATE HISTORY</h2>
-          <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-[2.5px] border-gray-500 bg-white pl-[47px] pt-[25px]">
+          <div className="mt-[9px] h-[150px] w-[460px] rounded-[20px] border-2 border-gray-500 bg-white pl-[47px] pt-[25px]">
             <h4 className="mb-[10px] cursor-pointer">
               <Link
                 to="/update-history"
@@ -108,12 +108,12 @@ function Home() {
           alt="home-down-pointer"
         />
         <div className="mb-[30px] mt-[32px] flex h-[480px] flex-col space-y-4 overflow-y-scroll py-4 pr-3">
-          {projectList.map(({ projectId, projectName }) => (
+          {projectList.map(({ projectId, projectName, createdAt }) => (
             <Project
               key={projectId}
               projectId={projectId}
               title={projectName}
-              date=""
+              date={createdAt}
             />
           ))}
           {(!projectList || projectList.length === 0) && (

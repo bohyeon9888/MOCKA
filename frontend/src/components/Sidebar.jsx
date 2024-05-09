@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useModalStore, useProjectStore, useUserStore } from "../store";
 import LoginModal from "./modal/LoginModal";
+import GroupList from "./sidebar/GroupList";
 
 function Sidebar() {
   const { openModal } = useModalStore();
-  const { recentProjectList } = useProjectStore();
+  const { recentProjectList, project } = useProjectStore();
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
   const { user } = useUserStore();
@@ -29,42 +30,47 @@ function Sidebar() {
         </h5>
       </div>
       <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
-      <div className="w-full grow px-3">
-        <div
-          className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
-          onClick={toggleRecents}
-        >
-          <div className="mr-7 w-3">
-            {isRecentsOpen ? (
-              <img
-                src="/asset/sidebar/sidebar-down-pointer.svg"
-                className="h-1.5 w-full"
-                alt="sidebar-down-pointer"
-              />
-            ) : (
-              <img
-                src="/asset/sidebar/sidebar-right-pointer.svg"
-                className="h-2.5 w-full"
-                alt="sidebar-right-pointer"
-              />
-            )}
-          </div>
-          <h5 className="font-bold text-gray-700">RECENTS</h5>
-        </div>
-        <div className="pl-6">
-          {isRecentsOpen &&
-            recentProjectList.map(({ projectId, projectName }) => (
-              <div
-                key={projectId}
-                className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300"
-              >
-                <h5 className="truncate font-bold text-gray-700">
-                  {projectName}
-                </h5>
+      <div className="flex w-full grow flex-col px-3">
+        {!project && (
+          <>
+            <div
+              className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
+              onClick={toggleRecents}
+            >
+              <div className="mr-7 w-3">
+                {isRecentsOpen ? (
+                  <img
+                    src="/asset/sidebar/sidebar-down-pointer.svg"
+                    className="h-[6px] w-[12px]"
+                    alt="sidebar-down-pointer"
+                  />
+                ) : (
+                  <img
+                    src="/asset/sidebar/sidebar-right-pointer.svg"
+                    className="ml-[3px] h-[12px] w-[6px]"
+                    alt="sidebar-right-pointer"
+                  />
+                )}
               </div>
-            ))}
-        </div>
-        <div
+              <h5 className="font-bold text-gray-700">RECENTS</h5>
+            </div>
+            <div className="pl-6">
+              {isRecentsOpen &&
+                recentProjectList.map(({ projectId, projectName }) => (
+                  <div
+                    key={projectId}
+                    className="mt-2 flex cursor-pointer rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300"
+                  >
+                    <h5 className="truncate font-bold text-gray-700">
+                      {projectName}
+                    </h5>
+                  </div>
+                ))}
+            </div>
+          </>
+        )}
+        {project && <GroupList project={project} />}
+        {/* <div
           className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleTeams}
         >
@@ -94,7 +100,7 @@ function Sidebar() {
               <h5 className="truncate font-bold text-gray-700">Team Item 2</h5>
             </div>
           </div>
-        )}
+        )} */}
       </div>
       <div className="h-[1px] w-[170px] items-center bg-sidebar-division-color" />
       <div

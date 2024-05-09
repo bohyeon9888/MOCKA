@@ -4,7 +4,7 @@ export default function UserBox({ email, removeItem }) {
       <div>{email}</div>
       <img
         className="size-6 cursor-pointer"
-        src="./asset/invite/invite-delete.svg"
+        src="/asset/invite/invite-delete.svg"
         onClick={removeItem}
       />
     </div>

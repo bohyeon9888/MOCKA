@@ -6,8 +6,7 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-const createApi = async (document) => {
-  const projectId = 21;
+const createApi = async ({ document, projectId }) => {
   const requestBody = {
     ...document,
     apiMethod: capitalize(document.apiMethod),

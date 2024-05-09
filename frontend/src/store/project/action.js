@@ -15,4 +15,12 @@ export const projectActions = {
       };
     });
   },
+  setProject: (set, project) => {
+    set((state) => {
+      return {
+        ...state,
+        project,
+      };
+    });
+  },
 };

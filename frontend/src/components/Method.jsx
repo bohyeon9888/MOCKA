@@ -35,7 +35,7 @@ function Method({ type, size, fontSize }) {
 
   return (
     <div
-      className={`flex items-center justify-center rounded-[15px] text-white ${getColorClass(type)}`}
+      className={`flex items-center justify-center rounded-[15px] font-Akshar text-white ${getColorClass(type)}`}
       style={{
         height: finalSize.height,
         width: finalSize.width,
@@ -46,7 +46,12 @@ function Method({ type, size, fontSize }) {
         isShortType ? (
           <h5>{type[0]}</h5>
         ) : (
-          <h4 style={{ fontSize: finalFontSize }}>{type}</h4>
+          <h4
+            className="font-medium tracking-wide"
+            style={{ fontSize: finalFontSize }}
+          >
+            {type}
+          </h4>
         ) // 폰트 크기를 직접 <h4> 태그에 적용
       }
     </div>

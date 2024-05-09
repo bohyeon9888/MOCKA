@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useModalStore } from "../store";
+import { useState, useEffect } from "react";
+import { useModalStore, useProjectStore } from "../store";
 import InviteModal from "./modal/InviteModal";
 import { Link } from "react-router-dom";
 import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
@@ -7,6 +7,7 @@ import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
 function Header() {
   const [isEditMode, setIsEditMode] = useState(false);
   const { openModal } = useModalStore();
+  const { project } = useProjectStore();
   const [showHeaderProjectEditModal, setShowHeaderProjectEditModal] =
     useState(false); //옵션버튼
 
@@ -31,7 +32,9 @@ function Header() {
   }, [showHeaderProjectEditModal]); // 옵션 상태 변경될때마다 업데이트
 
   const openInviteModal = () => {
-    openModal("Invite Member", <InviteModal />);
+    openModal("Invite Member", <InviteModal />, {
+      projectId: project.projectId,
+    });
   };
 
   const toggleHeaderProjectEditModal = (event) => {
@@ -52,49 +55,51 @@ function Header() {
             <span className="text-h3 font-bold text-white">Mocka</span>
           </Link>
         </div>
-        <div
-          className="mr-3 hidden w-full md:block md:w-auto"
-          id="navbar-default"
-        >
-          <ul className="flex items-center md:space-x-[14px]">
-            <li onClick={openInviteModal}>
-              <img
-                src="/asset/header/header-invite.svg"
-                className="h-[13px] cursor-pointer"
-                alt="header-invite"
-              />
-            </li>
-            <li>
-              <img
-                src="/asset/header/header-link.svg"
-                className="h-[13px] cursor-pointer"
-                alt="header-link"
-              />
-            </li>
-            <li onClick={toggleMode} className="cursor-pointer">
-              {isEditMode ? (
+        {project && (
+          <div
+            className="mr-3 hidden w-full md:block md:w-auto"
+            id="navbar-default"
+          >
+            <ul className="flex items-center md:space-x-[14px]">
+              <li onClick={openInviteModal}>
                 <img
-                  src="/asset/header/header-edit-mode.svg"
-                  className="h-7 cursor-pointer pt-1"
-                  alt="header-edit-mode"
+                  src="/asset/header/header-invite.svg"
+                  className="h-[13px] cursor-pointer"
+                  alt="header-invite"
                 />
-              ) : (
+              </li>
+              <li>
                 <img
-                  src="/asset/header/header-viewer-mode.svg"
-                  className="h-7 cursor-pointer pt-1"
-                  alt="header-edit-mode"
+                  src="/asset/header/header-link.svg"
+                  className="h-[13px] cursor-pointer"
+                  alt="header-link"
                 />
-              )}
-            </li>
-            <li onClick={toggleHeaderProjectEditModal}>
-              <img
-                src="/asset/header/header-option.svg"
-                className="h-4 cursor-pointer"
-                alt="header-option"
-              />
-            </li>
-          </ul>
-        </div>
+              </li>
+              <li onClick={toggleMode} className="cursor-pointer">
+                {isEditMode ? (
+                  <img
+                    src="/asset/header/header-edit-mode.svg"
+                    className="h-7 cursor-pointer pt-1"
+                    alt="header-edit-mode"
+                  />
+                ) : (
+                  <img
+                    src="/asset/header/header-viewer-mode.svg"
+                    className="h-7 cursor-pointer pt-1"
+                    alt="header-edit-mode"
+                  />
+                )}
+              </li>
+              <li onClick={toggleHeaderProjectEditModal}>
+                <img
+                  src="/asset/header/header-option.svg"
+                  className="h-4 cursor-pointer"
+                  alt="header-option"
+                />
+              </li>
+            </ul>
+          </div>
+        )}
         {showHeaderProjectEditModal && (
           <div
             style={{ position: "absolute", right: "0px", top: "40px" }}
