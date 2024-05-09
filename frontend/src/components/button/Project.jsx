@@ -1,6 +1,5 @@
 import React from "react";
 import { getProjectDetail } from "../../apis/project";
-import { prettyPrintJson } from "pretty-print-json";
 import { useNavigate } from "react-router-dom";
 
 function Project({ title, date, projectId }) {
@@ -34,7 +33,7 @@ function Project({ title, date, projectId }) {
     <div className={baseClassName} onClick={onClick}>
       <h2 className="ml-[50px] tracking-[-0.08em]">{title}</h2>
       <div className="mr-[50px] tracking-[-0.08em]">
-        <h5 className="flex  justify-center font-medium">Recent update</h5>
+        <h5 className="flex justify-center font-medium">Recent update</h5>
         <h5 className="flex justify-center font-medium">{date}</h5>
       </div>
     </div>
