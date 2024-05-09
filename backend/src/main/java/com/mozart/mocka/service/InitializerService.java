@@ -1,7 +1,10 @@
 package com.mozart.mocka.service;
 
-import com.mozart.mocka.domain.ApiProjects;
+import com.mozart.mocka.domain.Groups;
+import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.repository.GroupRepository;
+import com.mozart.mocka.repository.ProjectRepository;
 import com.mozart.mocka.service.generator.GenController;
 import com.mozart.mocka.service.generator.GenInit;
 import java.io.FileOutputStream;
@@ -23,11 +26,15 @@ public class InitializerService {
 
     private final GenInit genInit;
     private final GenController genController;
+    private final GroupRepository groupRepository;
+    private final ProjectRepository projectRepository;
 
     // 파일 생성
-    public Path createInitializerFiles(InitializerRequestDto request, List<ApiProjects> apis, String uri)
+    public Path createInitializerFiles(InitializerRequestDto request, Long projectId)
         throws Exception {
 
+        Projects project = projectRepository.findByProjectId(projectId);
+        List<Groups> groups = groupRepository.findByProject_ProjectId(projectId);
         Path projectRoot = Paths.get(request.getSpringArtifactId());
 
         // 기존 디렉토리가 존재하면 삭제
@@ -36,7 +43,7 @@ public class InitializerService {
         }
 
         genInit.createDirectories(projectRoot, request);
-        genInit.createApplicationProperties(projectRoot, uri);
+        genInit.createApplicationProperties(projectRoot, project.getCommonUri());
         genInit.createApplicationClass(projectRoot, request);
 
         if ("Maven".equalsIgnoreCase(request.getSpringType())) {
@@ -48,7 +55,10 @@ public class InitializerService {
             genInit.updateSettingsGradleFile(projectRoot, request.getSpringName());
         }
 
-        genController.createController(projectRoot, apis, request);
+        int index = 1;
+        for (Groups group : groups) {
+            index = genController.createController(projectRoot, group, request, index);
+        }
 
         return projectRoot;
     }

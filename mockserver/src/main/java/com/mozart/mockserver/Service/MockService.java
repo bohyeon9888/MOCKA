@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.javafaker.Faker;
-import com.mozart.mockserver.domain.ApiPath;
-import com.mozart.mockserver.domain.ApiProjects;
-import com.mozart.mockserver.domain.ApiRequest;
-import com.mozart.mockserver.domain.ApiResponse;
+import com.mozart.mockserver.domain.*;
 import com.mozart.mockserver.dto.RequestApiDto;
 import com.mozart.mockserver.dto.ResponseApiDto;
 import com.mozart.mockserver.repository.*;
@@ -49,7 +46,7 @@ public class MockService {
         return path[path.length - 1].substring(index + 1);
     }
 
-    public Long findApi(Long projectId, URL url, String method) {
+    public Long findApi(Projects project, URL url, String method) {
         String hash = "34e1c029fab";
         String path = getPath(url);
         int questionMarkIndex = path.indexOf('?');
@@ -75,7 +72,7 @@ public class MockService {
                 pathUrl.append(".");
             }
 
-            Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(projectId, method, pathUrl.substring(0, pathUrl.length()-1));
+            Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
 
 
             if(apiProjects.isPresent()){

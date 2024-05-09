@@ -31,11 +31,10 @@ public class AuthService {
         }
         apiUri = replacePathUri(apiUri).replace('/', '.');
 
-        if ('.' == apiUri.charAt(0)) {
+        if (apiUri.length() >1 && '.' == apiUri.charAt(0)) {
             apiUri = apiUri.substring(1);
         }
-
-        if ('.' == apiUri.charAt(apiUri.length() - 1)) {
+        if (apiUri.length() >1 && '.' == apiUri.charAt(apiUri.length() - 1)) {
             apiUri = apiUri.substring(0, apiUri.length() - 1);
         }
         System.out.println(apiProjectRepository.selectCountMatchApiUriAndMethod(apiUri,dto.getApiMethod(),projectId));

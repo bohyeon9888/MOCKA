@@ -30,6 +30,8 @@ public interface ApiProjectRepository extends JpaRepository<ApiProjects, Long> {
 
     List<ApiProjects> findByProjectId(Long projectId);
 
+    List<ApiProjects> findByGroups_GroupId(Long groupId);
+
     @Query(value = "SELECT  COUNT(api_uri) FROM api_projects WHERE api_uri = CAST(:api_uri AS ltree) and api_method = :api_method and project_id = :project_id",nativeQuery = true)
     int selectCountMatchApiUriAndMethod(@Param("api_uri") String apiUri,
                                         @Param("api_method") String apiMethod,
