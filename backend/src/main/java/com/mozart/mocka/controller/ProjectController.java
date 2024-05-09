@@ -44,12 +44,15 @@ public class ProjectController {
     @LogExecutionTime
     @PostMapping
     public ResponseEntity<?> createProject(@RequestBody ProjectRequestDto request){
-        Long memberId = 1L;
+//        Long memberId = 1L;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
+
         int editNum = request.getVisibility().charAt(0) - '0';
         if(editNum > 2 || editNum < 0)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        projectService.create(memberId, request.getProjectName(),request.getCommonUri(),request.getVisibility());
+        projectService.create(member.getMemberId(), request.getProjectName(),request.getCommonUri(),request.getVisibility());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 //    @CacheEvict(value = "api-project", key = "#projectId")
