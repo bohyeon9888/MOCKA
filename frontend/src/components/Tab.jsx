@@ -36,7 +36,7 @@ function Tab({ type, isSelected, title }) {
       </h5>
       {isSelected === "true" ? (
         <img
-          src="/public/asset/tester/tester-tap-close.svg"
+          src="/asset/tester/tester-tap-close.svg"
           className="absolute ml-[108px] mr-[16px] h-2.5 shrink-0 grow-0"
           alt="tester-tap-close"
         />

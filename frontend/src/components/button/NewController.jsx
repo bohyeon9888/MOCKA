@@ -4,7 +4,7 @@ function NewController() {
   return (
     <div className="flex shrink-0 grow-0 cursor-pointer items-center justify-center">
       <img
-        src="/public/asset/sidebar/sidebar-create-controller.svg"
+        src="/asset/sidebar/sidebar-create-controller.svg"
         className="mr-1 h-4"
         alt="sidebar-create-controller"
       />

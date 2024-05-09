@@ -5,8 +5,7 @@ export const userActions = {
     set((state) => {
       return {
         ...state,
-        nickname,
-        profile,
+        user: { nickname, profile },
       };
     });
   },

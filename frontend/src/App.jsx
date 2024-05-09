@@ -38,7 +38,7 @@ function App() {
       <Header />
       <main className="flex w-full grow flex-row">
         <Sidebar />
-        <div className="h-full w-full overflow-hidden">
+        <div className="h-full grow overflow-hidden">
           <Routes>
             <Route path="/login/google" element={<Login />} />
             <Route path="/main" element={<Main />} />
