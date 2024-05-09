@@ -12,6 +12,8 @@ export const googleLogin = async (code) => {
     "profile",
     JSON.stringify({ nickname: data.nickname, profile: data.profile }),
   );
+
+  return data;
 };
 
 export const tokenRefresh = async () => {
