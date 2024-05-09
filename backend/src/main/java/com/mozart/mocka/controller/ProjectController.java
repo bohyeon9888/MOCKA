@@ -34,8 +34,11 @@ public class ProjectController {
     @LogExecutionTime
     @GetMapping
     public ResponseEntity<List<ProjectsListResponseDto>> getProjectList(){
-        Long memberId = 1L;
-        return new ResponseEntity<>(projectService.getProjectList(memberId),HttpStatus.OK);
+//        Long memberId = 1L;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
+
+        return new ResponseEntity<>(projectService.getProjectList(member.getMemberId()),HttpStatus.OK);
     }
 
     @LogExecutionTime
@@ -94,7 +97,7 @@ public class ProjectController {
     @GetMapping("/recent")
     public ResponseEntity<?> getRecentProject() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Members member = membersRepository.findByMemberNickname(auth.getName());
+        Members member = membersRepository.findByMemberProviderId(auth.getName());
 
         if (member == null) {
             log.debug("일치하는 멤버가 없습니다.");
