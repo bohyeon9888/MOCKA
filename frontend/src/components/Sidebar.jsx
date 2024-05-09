@@ -103,7 +103,7 @@ function Sidebar() {
       >
         <img
           src={user ? user.profile : "/asset/sidebar/sidebar-profile.svg"}
-          className="h-10"
+          className="h-10 rounded-full"
           alt="sidebar-profile"
         />
         <h5 className="my-1 ml-2 w-full shrink text-center text-[13px] font-bold text-gray-700">
