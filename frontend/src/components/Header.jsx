@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useModalStore } from "../store";
 import InviteModal from "./modal/InviteModal";
 import { Link } from "react-router-dom";
+import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
 
 function Header() {
   const [isEditMode, setIsEditMode] = useState(false);
   const { openModal } = useModalStore();
+  const [showHeaderProjectEditModal, setShowHeaderProjectEditModal] =
+    useState(false); //옵션버튼
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      // 모달이 열려있고, 클릭한 요소가 모달 내부가 아니라면 모달을 닫음
+      if (
+        showHeaderProjectEditModal &&
+        !event.target.closest("#header-option-modal")
+      ) {
+        setShowHeaderProjectEditModal(false);
+      }
+    };
+
+    if (showHeaderProjectEditModal) {
+      document.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [showHeaderProjectEditModal]); // 옵션 상태 변경될때마다 업데이트
 
   const openInviteModal = () => {
     openModal("Invite Member", <InviteModal />);
+  };
+
+  const toggleHeaderProjectEditModal = (event) => {
+    event.stopPropagation();
+    setShowHeaderProjectEditModal(!showHeaderProjectEditModal);
   };
 
   const toggleMode = () => {
@@ -58,7 +86,7 @@ function Header() {
                 />
               )}
             </li>
-            <li>
+            <li onClick={toggleHeaderProjectEditModal}>
               <img
                 src="/asset/header/header-option.svg"
                 className="h-4 cursor-pointer"
@@ -67,6 +95,14 @@ function Header() {
             </li>
           </ul>
         </div>
+        {showHeaderProjectEditModal && (
+          <div
+            style={{ position: "absolute", right: "0px", top: "40px" }}
+            id="header-option-modal"
+          >
+            <HeaderProjectEditModal />
+          </div>
+        )}
       </div>
     </header>
   );
