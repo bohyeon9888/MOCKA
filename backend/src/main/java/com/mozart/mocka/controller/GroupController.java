@@ -23,12 +23,16 @@ public class GroupController {
     @GetMapping("{projectId}")
     public ResponseEntity<?> getGroupList(@PathVariable("projectId") Long projectId){
         Long memberId = 1L;
+        //사용자 프로젝트 조회 권한 check
+
+
         return new ResponseEntity<>(groupService.getGroupList(projectId), HttpStatus.OK);
     }
 
     @PostMapping("{projectId}")
     public ResponseEntity<?> createGroup(@PathVariable("projectId") Long projectId,@RequestBody CreateGroupRequestDto request){
         Long memberId = 1L;
+        //사용자 프로젝트 편집 권한 check
         groupService.create(projectId,request.getGroupName(),request.getGroupUri());
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -36,22 +40,26 @@ public class GroupController {
     @PutMapping("{projectId}/{groupId}")
     public ResponseEntity<?> updateGroup(@RequestBody CreateGroupRequestDto request, @PathVariable("projectId") Long projectId,@PathVariable("groupId")Long groupId){
         Long memberId = 1L;
+        //사용자 프로젝트 편집 권한 check
 
-        groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri());
+        if(groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri()))
+            return new ResponseEntity<>("Update Success",HttpStatus.OK);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("You can't update Group",HttpStatus.OK);
     }
 
     @LogExecutionTime
     @DeleteMapping("{projectId}/{groupId}")
     public ResponseEntity<?> deleteGroup(@PathVariable("projectId") Long projectId,@PathVariable("groupId")Long groupId){
         Long memberId = 1L;
+        //사용자 프로젝트 편집 권한 check
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @LogExecutionTime
-    @GetMapping("{groupId}")
-    public ResponseEntity<?> receiveGroupDetail(@PathVariable("groupId") Long groupId) {
+    @GetMapping("{projectId}/{groupId}")
+    public ResponseEntity<?> receiveGroupDetail(@PathVariable("projectId") Long projectId,@PathVariable("groupId") Long groupId) {
         Long memberId = 1L;
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

@@ -24,9 +24,10 @@ public class GroupService {
                 .build());
     }
 
-    public void update(Long projectId, Long groupId, String name, String uri) {
-        groupRepository.save(Groups.builder()
-                .groupId(groupId).groupName(name).groupUri(uri).projectId(projectId)
-                .build());
+    public boolean update(Long projectId, Long groupId, String name, String uri) {
+//        groupRepository.save(Groups.builder()
+//                .groupId(groupId).groupName(name).groupUri(uri).projectId(projectId)
+//                .build());
+        return false;
     }
 }
