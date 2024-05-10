@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import ApiBox from "../components/ApiBox";
 import ApiItems from "../components/ApiIems";
+import InviteModal from "../components/modal/InviteModal";
 
 function UpdateHistory() {
   const location = useLocation();

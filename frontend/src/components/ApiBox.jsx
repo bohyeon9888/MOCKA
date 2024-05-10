@@ -1,5 +1,8 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import Method from "./Method";
+import { deleteApi } from "../apis/api";
+import ApiDeleteModal from "./modal/ApiDeleteModal";
+import { useModalStore, useProjectStore } from "../store";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 //
@@ -14,6 +17,8 @@ function ApiBox() {
   const [apiUri] = useState("/api/user/detail/전역에서가져올거야"); //나중에 명세서 변수보고 바꾸기 🍒
   const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
   const [CopySuccess, setCopySuccess] = useState(false);
+  const { openModal } = useModalStore();
+  const { apiId } = useProjectStore();
   const [apiRequest] = [
     [
       {
@@ -248,6 +253,11 @@ function ApiBox() {
     }
   };
 
+  //apiBox 삭제
+  const openApiDeleteModal = () => {
+    openModal("Delete Api", <ApiDeleteModal />, { apiId });
+  };
+
   return (
     <div
       className=" rounded-[15px] border-[3px] border-gray-200 bg-white "
@@ -296,6 +306,13 @@ function ApiBox() {
             src="/asset/project/project-edit.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
+          />
+          {/* 삭제 */}
+          <img
+            src="/asset/project/project-delete.svg"
+            className="mr-[18px] h-4 cursor-pointer"
+            alt="project-delete"
+            onClick={openApiDeleteModal}
           />
           {/* 자세히 보기 (위/아래화살표 아이콘) */}
           {isDetailVisible ? (
