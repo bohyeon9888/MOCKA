@@ -35,12 +35,14 @@ function ApiBox({
   //일반 vs 자세히 보기 div박스 크기 다르게
   const boxStyle = isDetailVisible
     ? {
-        width: "1400px",
+        // width: "1400px",
+        width: "80%",
         height: "485px",
         transition: "all 0.3s ease",
       }
     : {
-        width: "1400px",
+        // width: "1400px",
+        width: "80%",
         height: "120px",
         transition: "all 0.3s ease",
       };

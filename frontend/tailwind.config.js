@@ -50,6 +50,7 @@ export default {
         "gray-600": "#5D5D5D",
         "gray-700": "#3E3E3F",
         "red-300": "#F93F3E",
+        "red-500": "#EB5757",
         "green-500": "#69AA6D",
         // Code Colors
         "code-yellow": "#A6AD5F",

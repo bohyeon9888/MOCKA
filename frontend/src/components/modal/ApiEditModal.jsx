@@ -12,11 +12,19 @@ import RequestBodyEditor from "../editor/RequestBodyEditor";
 import ResponseBodyEditor from "../editor/ResponseBodyEditor";
 import { createApi } from "../../apis/api";
 import Button from "../button/Button";
+import GroupSelect from "../GroupSelect";
+import { useParams, useSearchParams } from "react-router-dom";
+import { useProjectStore } from "../../store";
 
 export default function ApiEditModal() {
+  const [searchParams] = useSearchParams();
+  const { project } = useProjectStore();
+  const [groupId, setGroupId] = useState(searchParams.get("groupId"));
   const [document, setDocument] = useState({
+    name: "",
+    description: "",
     apiMethod: "GET",
-    apiUri: "/user/{userId}?name=String&age=Int",
+    apiUri: "",
     apiRequest: [],
     apiResponse: [],
     apiResponseIsArray: false,
@@ -43,7 +51,19 @@ export default function ApiEditModal() {
   };
 
   const onClickButton = () => {
-    createApi(document).then((data) => {
+    const commonUri = project.groups.filter(
+      (group) => group.groupId == groupId,
+    )[0].groupUri;
+
+    const convertedDocument = {
+      ...document,
+      apiUri: commonUri + document.apiUri,
+    };
+    createApi({
+      projectId: project.projectId,
+      document: convertedDocument,
+      groupId,
+    }).then((data) => {
       console.log(data);
     });
   };
@@ -78,6 +98,36 @@ export default function ApiEditModal() {
 
   return (
     <div className="flex flex-col space-y-[27px] overflow-y-scroll px-5">
+      <ContentBox title="API Name" description="">
+        <Input
+          isFull
+          value={document.name}
+          changeHandler={(e) => {
+            setDocument({
+              ...document,
+              name: e.target.value,
+            });
+          }}
+        />
+      </ContentBox>
+      <ContentBox title="API Description" description="">
+        <Input
+          isFull
+          value={document.description}
+          changeHandler={(e) => {
+            setDocument({
+              ...document,
+              description: e.target.value,
+            });
+          }}
+        />
+      </ContentBox>
+      <ContentBox
+        title="Group Select"
+        description="When a group is selected, the group's common URI is added to the beginning of the API path."
+      >
+        <GroupSelect groupId={groupId} setGroupId={setGroupId} />
+      </ContentBox>
       <ContentBox
         title="API Path URL"
         description="Enter meaningful resource name, it will be used to generate API

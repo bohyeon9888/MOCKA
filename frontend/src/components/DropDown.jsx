@@ -50,14 +50,14 @@ export default function DropDown({ value, options, changeHandler, size }) {
           <ul className="py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
             {options.map((option) => (
               <li
-                key={option}
+                key={option?.value || option}
                 className={optionClassName}
                 onClick={() => {
-                  if (changeHandler) changeHandler(option);
+                  if (changeHandler) changeHandler(option?.value || option);
                   setIsOpen(false);
                 }}
               >
-                {option}
+                {option?.name || option}
               </li>
             ))}
           </ul>
