@@ -1,5 +1,6 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
 import com.mozart.mocka.service.GroupService;
 import com.mozart.mocka.service.ProjectService;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,18 +23,23 @@ public class GroupController {
 
     @LogExecutionTime
     @GetMapping("{projectId}")
-    public ResponseEntity<?> getGroupList(@PathVariable("projectId") Long projectId){
-        Long memberId = 1L;
+    public ResponseEntity<?> getGroupList(
+            @PathVariable("projectId") Long projectId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ){
         //사용자 프로젝트 조회 권한 check
+
 
 
         return new ResponseEntity<>(groupService.getGroupList(projectId), HttpStatus.OK);
     }
 
     @PostMapping("{projectId}")
-    public ResponseEntity<?> createGroup(@PathVariable("projectId") Long projectId,@RequestBody CreateGroupRequestDto request){
-        Long memberId = 1L;
-
+    public ResponseEntity<?> createGroup(
+            @PathVariable("projectId") Long projectId,
+            @RequestBody CreateGroupRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails user
+    ){
         //project auth check
 
 
@@ -45,8 +52,12 @@ public class GroupController {
 
     //그룹 이름만 변경
     @PutMapping("{projectId}/{groupId}")
-    public ResponseEntity<?> updateGroup(@RequestBody CreateGroupRequestDto request, @PathVariable("projectId") Long projectId,@PathVariable("groupId")Long groupId){
-        Long memberId = 1L;
+    public ResponseEntity<?> updateGroup(
+            @RequestBody CreateGroupRequestDto request,
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("groupId")Long groupId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ){
         //사용자 프로젝트 편집 권한 check
 
         if(groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri()))
@@ -57,8 +68,11 @@ public class GroupController {
 
     @LogExecutionTime
     @DeleteMapping("{projectId}/{groupId}")
-    public ResponseEntity<?> deleteGroup(@PathVariable("projectId") Long projectId,@PathVariable("groupId")Long groupId){
-        Long memberId = 1L;
+    public ResponseEntity<?> deleteGroup(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("groupId")Long groupId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ){
         //사용자 프로젝트 편집 권한 check
 
         groupService.deleteAllEntity(projectId, groupId);
@@ -67,8 +81,11 @@ public class GroupController {
 
     @LogExecutionTime
     @GetMapping("{projectId}/{groupId}")
-    public ResponseEntity<?> receiveGroupDetail(@PathVariable("projectId") Long projectId,@PathVariable("groupId") Long groupId) {
-        Long memberId = 1L;
+    public ResponseEntity<?> receiveGroupDetail(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("groupId") Long groupId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

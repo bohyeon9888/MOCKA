@@ -1,9 +1,11 @@
 package com.mozart.mocka.config;
 
 import com.mozart.mocka.jwt.CustomAuthenticationSuccessHandler;
+import com.mozart.mocka.jwt.CustomLogoutFilter;
 import com.mozart.mocka.jwt.JWTFilter;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.service.CustormOauth2UserService;
+import com.mozart.mocka.service.RefreshService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,6 +35,7 @@ public class SecurityConfig {
     private final CustormOauth2UserService customOAuth2UserService;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final JWTUtil jwtUtil;
+    private final RefreshService refreshService;
 
     @Value("#{'${spring.security.banned-path}'.split(',')}")
     private String[] paths;
@@ -71,7 +75,8 @@ public class SecurityConfig {
                 .requestMatchers( paths).authenticated()
                 .anyRequest().permitAll());
 
-        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService), LogoutFilter.class);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
