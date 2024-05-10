@@ -25,10 +25,14 @@ authAxios.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401) {
-      await tokenRefresh();
-      const accessToken = getToken();
-      error.config.headers.Authorization = `Bearer ${accessToken}`;
-      return authAxios(error.config);
+      try {
+        await tokenRefresh();
+        const accessToken = getToken();
+        error.config.headers.Authorization = `Bearer ${accessToken}`;
+        return authAxios(error.config);
+      } catch (e) {
+        console.log(e);
+      }
     }
   },
 );

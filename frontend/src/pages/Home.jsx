@@ -15,8 +15,13 @@ function Home() {
   const [visibility, setVisibility] = useState("Select");
   const [projectName, setProjectName] = useState("");
   const [commonUri, setCommonUri] = useState("");
-  const { projectList, setProjectList, setRecentProjectList } =
-    useProjectStore();
+  const {
+    project,
+    setProject,
+    projectList,
+    setProjectList,
+    setRecentProjectList,
+  } = useProjectStore();
   const options = ["Private", "Public", "Teams"];
 
   function handleSelect(value) {
@@ -24,6 +29,7 @@ function Home() {
   }
 
   useEffect(() => {
+    if (project) setProject(null);
     if (projectList && projectList.length > 0) return;
     getProjectList().then((data) => {
       setProjectList(data);

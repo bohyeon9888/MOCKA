@@ -1,5 +1,5 @@
 import axios from "axios";
-import { login } from "../utils/auth";
+import { login, logout } from "../utils/auth";
 
 export const googleLogin = async (code) => {
   const { data } = await axios.get(
@@ -11,6 +11,13 @@ export const googleLogin = async (code) => {
 };
 
 export const tokenRefresh = async () => {
-  const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}refresh`);
-  login(data.accessToken);
+  try {
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}refresh`,
+    );
+    login(data.accessToken);
+  } catch (e) {
+    logout();
+    location.href = "/";
+  }
 };

@@ -26,7 +26,6 @@ export default function Viewer() {
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-y-scroll p-6 pb-[220px]">
-      {/* <pre ref={preRef} /> */}
       <h1>
         {project && <span>{project.projectName}</span>}
         {groupName && <span>{` / ${groupName}`}</span>}

@@ -1,17 +1,10 @@
-import { useEffect, useState } from "react";
 import ApiItems from "../ApiItems";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function GroupList({ project }) {
   const navigate = useNavigate();
-  const [selectedGroupId, setSelectedGroupId] = useState(-1);
-
-  useEffect(() => {
-    if (project)
-      navigate(
-        `project/${project.projectId}${selectedGroupId === -1 ? "" : `?groupId=${selectedGroupId}`}`,
-      );
-  }, [selectedGroupId]);
+  const [searchParams] = useSearchParams();
+  const selectedGroupId = searchParams.get("groupId");
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -21,7 +14,10 @@ export default function GroupList({ project }) {
             <div
               className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
               onClick={() => {
-                setSelectedGroupId(selectedGroupId === groupId ? -1 : groupId);
+                if (selectedGroupId == groupId)
+                  navigate(`project/${project.projectId}`);
+                else
+                  navigate(`project/${project.projectId}?groupId=${groupId}`);
               }}
             >
               <div className="mr-3 w-3">

@@ -18,18 +18,13 @@ import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
 import Viewer from "./pages/Viewer";
 import UpdateHistory from "./pages/UpdateHistory";
-import { useProjectStore, useUserStore } from "./store";
+import { useUserStore } from "./store";
 import Invite from "./pages/Invite";
 
 function RequireAuthRoutes() {
   const location = useLocation();
   const loggedIn = isAuthenticated();
   const { getProfileFromToken, user } = useUserStore();
-  const { project, setProject } = useProjectStore();
-
-  if (location.pathname === "/") {
-    if (project) setProject(null);
-  }
 
   if (!loggedIn)
     return <Navigate to="/main" replace state={{ from: location }} />;
@@ -51,11 +46,11 @@ function App() {
           <Routes>
             <Route path="/login/google" element={<Login />} />
             <Route path="/main" element={<Main />} />
+            <Route path="/update-history" element={<UpdateHistory />} />
             <Route element={<RequireAuthRoutes />}>
               <Route path="/" element={<Home />} />
               <Route path="/intializer" element={<Initializer />} />
               <Route path="/project/:projectId" element={<Viewer />} />
-              <Route path="/update-history" element={<UpdateHistory />} />
               <Route path="/invite" element={<Invite />} />
             </Route>
             <Route path="/*" element={<Navigate to="/" replace />} />
