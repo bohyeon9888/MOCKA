@@ -22,7 +22,7 @@ const javafakerMap = {
       number: ["random"],
     },
   },
-  Char: {
+  Character: {
     major: ["lorem"],
     sub: {
       lorem: ["character"],
@@ -34,7 +34,7 @@ const javafakerMap = {
       number: ["random"],
     },
   },
-  Int: {
+  Integer: {
     major: ["number"],
     sub: {
       number: ["random"],
