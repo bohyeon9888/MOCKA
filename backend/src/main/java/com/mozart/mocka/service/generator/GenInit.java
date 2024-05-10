@@ -160,15 +160,17 @@ public class GenInit {
             .append("    id 'java'\n")
             .append("}\n\n")
             .append("group = '").append(request.getSpringGroupId()).append("'\n")
-            .append("version = '0.0.1-SNAPSHOT'\n")
-            .append("sourceCompatibility = '").append(request.getSpringJvmVersion()).append("'\n\n")
-            .append("repositories {\n")
-            .append("    mavenCentral()\n")
+            .append("version = '0.0.1-SNAPSHOT'\n\n")
+            .append("java {")
+            .append("    sourceCompatibility = '").append(request.getSpringJvmVersion()).append("'\n\n")
             .append("}\n\n")
             .append("configurations {\n")
             .append("    compileOnly {\n")
             .append("        extendsFrom annotationProcessor\n")
             .append("    }\n")
+            .append("}\n\n")
+            .append("repositories {\n")
+            .append("    mavenCentral()\n")
             .append("}\n\n")
             .append("dependencyManagement {\n")
             .append("    imports {\n")
@@ -191,7 +193,7 @@ public class GenInit {
         }
 
         sb.append("}\n\n")
-            .append("test {\n")
+            .append("tasks.named('test') {\n")
             .append("    useJUnitPlatform()\n")
             .append("}");
 
