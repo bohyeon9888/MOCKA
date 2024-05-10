@@ -98,7 +98,8 @@ public class GenController {
                 packageName + ".dto.request.api" + index, api.getApiId(),
                 requestDirNo.toString());
         }
-        else if (!apiResponses.isEmpty()) { // res dto 생성
+
+        if (!apiResponses.isEmpty()) { // res dto 생성
             Path responseDirNo = projectRoot.resolve(
                 basePath + packageName.replace(".", "/") + "/dto/response/api" + index);
             Files.createDirectories(responseDirNo); // ResponseNo 디렉토리 생성
@@ -114,11 +115,13 @@ public class GenController {
                 "import " + packageName + ".dto.response.api" + index + ".*;";
         }
         // req O, res X
-        else if (apiRequests.isEmpty() && !apiResponses.isEmpty())
-            result = "import " + packageName + ".dto.request.api" + index + ".*;";
-        // req X, res O
-        else if (!apiRequests.isEmpty() && apiResponses.isEmpty())
+        else if (apiRequests.isEmpty() && !apiResponses.isEmpty()) {
             result = "import " + packageName + ".dto.response.api" + index + ".*;";
+        }
+        // req X, res O
+        else if (!apiRequests.isEmpty() && apiResponses.isEmpty()) {
+            result = "import " + packageName + ".dto.request.api" + index + ".*;";
+        }
         // req X, res X
 
         return result;

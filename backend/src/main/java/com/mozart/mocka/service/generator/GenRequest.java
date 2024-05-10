@@ -4,12 +4,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozart.mocka.domain.ApiRequest;
 import com.mozart.mocka.repository.ApiRequestRepository;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,8 +59,6 @@ public class GenRequest {
                     if (appendedClassList.containsKey(className)) {
                         className = className + "Copy";
                     }
-                    importList.append("import ").append(springPackageName).append(".")
-                        .append(className).append(";").append("\n");
 
                     //data안의 json을 로드 후 map으로 변환
                     List<Map<String, Object>> dataMap =
@@ -121,8 +124,6 @@ public class GenRequest {
                 if (appendedClassList.containsKey(innerClassName)) {
                     innerClassName = innerClassName + "Copy";
                 }
-                importList =
-                    importList + "import " + packageName + "." + innerClassName + ";" + "\n";
 
                 List<Map<String, Object>> valueMap = (List<Map<String, Object>>) data.get("value");
                 makeInnerClass(valueMap, innerClassName, appendedClassList, packageName);
