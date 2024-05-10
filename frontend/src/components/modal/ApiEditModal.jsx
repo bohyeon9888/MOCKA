@@ -13,13 +13,15 @@ import ResponseBodyEditor from "../editor/ResponseBodyEditor";
 import { createApi } from "../../apis/api";
 import Button from "../button/Button";
 import GroupSelect from "../GroupSelect";
-import { useParams, useSearchParams } from "react-router-dom";
-import { useProjectStore } from "../../store";
+import { useSearchParams } from "react-router-dom";
+import { useModalStore, useProjectStore } from "../../store";
+import { getProjectDetail } from "../../apis/project";
 
 export default function ApiEditModal() {
   const [searchParams] = useSearchParams();
-  const { project } = useProjectStore();
+  const { project, setProject } = useProjectStore();
   const [groupId, setGroupId] = useState(searchParams.get("groupId"));
+  const { closeModal } = useModalStore();
   const [document, setDocument] = useState({
     name: "",
     description: "",
@@ -53,18 +55,23 @@ export default function ApiEditModal() {
   const onClickButton = () => {
     const commonUri = project.groups.filter(
       (group) => group.groupId == groupId,
-    )[0].groupUri;
+    )[0]?.groupUri;
 
     const convertedDocument = {
       ...document,
-      apiUri: commonUri + document.apiUri,
+      apiUri: (commonUri || "") + document.apiUri,
     };
+
     createApi({
       projectId: project.projectId,
       document: convertedDocument,
       groupId,
-    }).then((data) => {
-      console.log(data);
+    }).then(() => {
+      getProjectDetail(project.projectId).then((data) => {
+        setProject(data).then(() => {
+          closeModal();
+        });
+      });
     });
   };
 

@@ -49,7 +49,7 @@ function App() {
             <Route path="/update-history" element={<UpdateHistory />} />
             <Route element={<RequireAuthRoutes />}>
               <Route path="/" element={<Home />} />
-              <Route path="/intializer" element={<Initializer />} />
+              <Route path="/initializer/:projectId" element={<Initializer />} />
               <Route path="/project/:projectId" element={<Viewer />} />
               <Route path="/invite" element={<Invite />} />
             </Route>

@@ -16,8 +16,6 @@ export default function Viewer() {
   const groupName = group && group.groupName;
   const { openModal } = useModalStore();
 
-  console.log(project);
-
   useEffect(() => {
     if (!project) {
       getProjectDetail(projectId).then((data) => {

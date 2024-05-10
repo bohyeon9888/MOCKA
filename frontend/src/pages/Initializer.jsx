@@ -4,8 +4,10 @@ import initializerOptions from "../constants/initializerOptions";
 import Button from "../components/button/Button";
 import downloadSpringInitializer from "../apis/initializer";
 import DependencyBox from "../components/DependencyBox";
-import { useModalStore } from "../store";
+import { useModalStore, useProjectStore } from "../store";
 import DependencyModal from "../components/modal/DependencyModal";
+import { useParams, useSearchParams } from "react-router-dom";
+import { getProjectDetail } from "../apis/project";
 
 export default function Initializer() {
   const { openModal } = useModalStore();
@@ -22,6 +24,17 @@ export default function Initializer() {
     packaging: "Jar",
     dependencies: [],
   });
+
+  const { projectId } = useParams();
+  const { project, setProject } = useProjectStore();
+
+  useEffect(() => {
+    if (!project) {
+      getProjectDetail(projectId).then((data) => {
+        setProject(data);
+      });
+    }
+  }, [project]);
 
   const openDependencyModal = () => {
     openModal("Add Dependency", <DependencyModal />, {
@@ -50,7 +63,11 @@ export default function Initializer() {
   };
 
   const onClick = () => {
-    downloadSpringInitializer(initializerSetting).then((data) => {
+    downloadSpringInitializer({
+      projectId,
+      initializerSetting,
+      projectName: project.projectName,
+    }).then((data) => {
       console.log(data);
     });
   };

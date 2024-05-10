@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useModalStore, useProjectStore } from "../store";
 import InviteModal from "./modal/InviteModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
 
 function Header() {
   const [isEditMode, setIsEditMode] = useState(false);
   const { openModal } = useModalStore();
   const { project } = useProjectStore();
+  const navigate = useNavigate();
   const [showHeaderProjectEditModal, setShowHeaderProjectEditModal] =
     useState(false); //옵션버튼
 
@@ -68,7 +69,7 @@ function Header() {
                   alt="header-invite"
                 />
               </li>
-              <li>
+              <li onClick={navigate(`/initializer/${project.projectId}`)}>
                 <img
                   src="/asset/header/header-link.svg"
                   className="h-[13px] cursor-pointer"
