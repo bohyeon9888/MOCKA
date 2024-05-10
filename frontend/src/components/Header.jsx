@@ -69,7 +69,11 @@ function Header() {
                   alt="header-invite"
                 />
               </li>
-              <li onClick={navigate(`/initializer/${project.projectId}`)}>
+              <li
+                onClick={() => {
+                  navigate(`/initializer/${project.projectId}`);
+                }}
+              >
                 <img
                   src="/asset/header/header-link.svg"
                   className="h-[13px] cursor-pointer"
