@@ -1,5 +1,6 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.domain.Members;
 import com.mozart.mocka.dto.request.InvitationAnswerRequestDto;
 import com.mozart.mocka.dto.request.InviteRequestDto;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +27,10 @@ public class InviteController {
     private final MembersRepository membersRepository;
 
     @GetMapping("/test")
-    public String test() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("사용자 이름 : " + auth.getName());
-        Members mem = membersRepository.findByMemberProviderId(auth.getName());
+    public String test(@AuthenticationPrincipal CustomUserDetails user) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("사용자 이름 : " + user.getProviderId());
+        Members mem = membersRepository.findByMemberProviderId(user.getProviderId());
 
         if (mem == null) {
             return "해당하는 멤버가 없습니다.";
