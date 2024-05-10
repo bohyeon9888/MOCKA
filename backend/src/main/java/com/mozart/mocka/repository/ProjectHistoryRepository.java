@@ -28,4 +28,6 @@ public interface ProjectHistoryRepository extends JpaRepository<ProjectHistories
     List<ProjectHistories> findByMemberIdOrderedByRecentRead(@Param("memberId") Long memberId);
 
     void deleteByProjectHistoryPK_ProjectId(Long projectId);
+
+    boolean existsByProjectHistoryPK(ProjectHistoryPK pk);
 }

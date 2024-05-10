@@ -107,4 +107,12 @@ public class ProjectHistoryService {
         return true;
     }
 
+    @Transactional
+    public boolean checkAuthority(Long memberId, Long projectId) {
+        ProjectHistoryPK pk = ProjectHistoryPK.builder()
+                .memberId(memberId)
+                .projectId(projectId)
+                .build();
+        return historyRepository.existsByProjectHistoryPK(pk);
+    }
 }

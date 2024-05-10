@@ -1,5 +1,6 @@
 package com.mozart.mocka.controller;
 
+import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.dto.request.ProjectAuthRequestDto;
 import com.mozart.mocka.dto.response.ProjectMemberDto;
 import com.mozart.mocka.repository.ProjectRepository;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +26,18 @@ public class ProjectHistoryController {
     private final ProjectRepository projectRepository;
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<?> getProjectMembers(@PathVariable("projectId") Long projectId) {
-        // auth 는 이후에
+    public ResponseEntity<?> getProjectMembers(
+            @PathVariable("projectId") Long projectId,
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
         if (!projectRepository.existsByProjectId(projectId)) {
             log.debug("there is no project");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        // 프로젝트 조회권한 체크
+        if (!historyService.checkAuthority(user.getId(), projectId)) {
+            return new ResponseEntity<>("no authority", HttpStatus.BAD_REQUEST);
         }
 
         List<ProjectMemberDto> data = historyService.getMemberList(projectId);
