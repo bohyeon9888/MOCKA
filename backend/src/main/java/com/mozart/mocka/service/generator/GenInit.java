@@ -161,7 +161,7 @@ public class GenInit {
             .append("}\n\n")
             .append("group = '").append(request.getSpringGroupId()).append("'\n")
             .append("version = '0.0.1-SNAPSHOT'\n\n")
-            .append("java {")
+            .append("java {\n")
             .append("    sourceCompatibility = '").append(request.getSpringJvmVersion()).append("'\n\n")
             .append("}\n\n")
             .append("configurations {\n")
