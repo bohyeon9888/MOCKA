@@ -3,6 +3,7 @@ package com.mozart.mocka.controller;
 import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
 import com.mozart.mocka.service.GroupService;
+import com.mozart.mocka.service.ProjectHistoryService;
 import com.mozart.mocka.service.ProjectService;
 import com.mozart.mocka.util.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
     private final ProjectService projectService;
     private final GroupService groupService;
+    private final ProjectHistoryService historyService;
 
     @LogExecutionTime
     @GetMapping("{projectId}")
@@ -28,7 +30,9 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 조회 권한 check
-
+        if (!historyService.checkAuthority(user.getId(), projectId)) {
+            return new ResponseEntity<>("no authority", HttpStatus.BAD_REQUEST);
+        }
 
 
         return new ResponseEntity<>(groupService.getGroupList(projectId), HttpStatus.OK);
@@ -41,7 +45,6 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //project auth check
-
 
         boolean isCreate = groupService.create(projectId,request.getGroupName(),request.getGroupUri());
         if(!isCreate)
@@ -59,6 +62,7 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 편집 권한 check
+
 
         if(groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri()))
             return new ResponseEntity<>("Update Success",HttpStatus.OK);
