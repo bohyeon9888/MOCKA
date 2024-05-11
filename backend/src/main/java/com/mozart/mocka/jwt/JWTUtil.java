@@ -1,6 +1,8 @@
 package com.mozart.mocka.jwt;
 
-import io.jsonwebtoken.Jwts;
+import com.mozart.mocka.exception.CustomException;
+import com.mozart.mocka.exception.errorcode.JwtErrorCode;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -53,5 +55,21 @@ public class JWTUtil {
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
+    }
+    public void checkToken(String token) throws CustomException {
+        try {
+            String category = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+            if (!"access".equals(category)) {
+                throw new CustomException(JwtErrorCode.NotFoundRequiredJwtProperty.getCode(), JwtErrorCode.NotFoundRequiredJwtProperty.getDescription());
+            }
+        } catch (SecurityException | SignatureException | MalformedJwtException e) {
+            throw new CustomException(JwtErrorCode.InvaldJwtSignature.getCode(), JwtErrorCode.InvaldJwtSignature.getDescription());
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(JwtErrorCode.ExpiredJwt.getCode(), JwtErrorCode.ExpiredJwt.getDescription());
+        } catch (UnsupportedJwtException e) {
+            throw new CustomException(JwtErrorCode.UnsupportedJwt.getCode(), JwtErrorCode.UnsupportedJwt.getDescription());
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(JwtErrorCode.IllegalArgumentException.getCode(), JwtErrorCode.IllegalArgumentException.getDescription());
+        }
     }
 }

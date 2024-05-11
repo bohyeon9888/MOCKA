@@ -2,6 +2,7 @@ package com.mozart.mocka.controller;
 
 import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
+import com.mozart.mocka.service.AuthService;
 import com.mozart.mocka.service.GroupService;
 import com.mozart.mocka.service.ProjectHistoryService;
 import com.mozart.mocka.service.ProjectService;
@@ -22,7 +23,7 @@ public class GroupController {
     private final ProjectService projectService;
     private final GroupService groupService;
     private final ProjectHistoryService historyService;
-
+    private final AuthService authService;
     @LogExecutionTime
     @GetMapping("{projectId}")
     public ResponseEntity<?> getGroupList(
@@ -44,11 +45,11 @@ public class GroupController {
             @RequestBody CreateGroupRequestDto request,
             @AuthenticationPrincipal CustomUserDetails user
     ){
-        //project auth check
-
-        boolean isCreate = groupService.create(projectId,request.getGroupName(),request.getGroupUri());
-        if(!isCreate)
-            return new ResponseEntity<>("You can't create Group",HttpStatus.BAD_REQUEST);
+        System.out.println("Post Group!!");
+//        authService.groupCreateCheck(projectId, user.getId());
+//        boolean isCreate = groupService.create(projectId,request.getGroupName(),request.getGroupUri());
+//        if(!isCreate)
+//            return new ResponseEntity<>("You can't create Group",HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>("Create Success",HttpStatus.OK);
     }

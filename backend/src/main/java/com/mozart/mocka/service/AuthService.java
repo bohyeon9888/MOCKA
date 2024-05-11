@@ -1,6 +1,7 @@
 package com.mozart.mocka.service;
 
 import com.mozart.mocka.domain.BaseUris;
+import com.mozart.mocka.domain.ProjectHistories;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
 import com.mozart.mocka.dto.request.BaseUriRequestDto;
@@ -8,10 +9,13 @@ import com.mozart.mocka.exception.CustomException;
 import com.mozart.mocka.exception.errorcode.BaseUriErrorCode;
 import com.mozart.mocka.exception.errorcode.MethodErrorCode;
 import com.mozart.mocka.exception.errorcode.ProjectErrorCode;
+import com.mozart.mocka.exception.errorcode.ProjectHistoryErrorCode;
 import com.mozart.mocka.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static com.mozart.mocka.service.ApiService.replacePathUri;
 
@@ -22,6 +26,8 @@ public class AuthService {
     private final ApiProjectRepository apiProjectRepository;
     private final ProjectRepository projectRepository;
     private final BaseUriRepository baseUriRepository;
+    private final ProjectHistoryRepository projectHistoryRepository;
+
     public void methodCreateCheck(Long projectId,ApiCreateRequestDto dto){
         //존재하는 것이 하나라도 찾아지면 throw
         String apiUri = dto.getApiUri();
@@ -151,5 +157,21 @@ public class AuthService {
             throw new CustomException(MethodErrorCode.AlreadyExist.getCode(),MethodErrorCode.AlreadyExist.getDescription());
         }
 
+    }
+    public void groupCreateCheck(Long projectId,Long userId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        System.out.println(project);
+        //프로젝트가 존재하지 않습니다.
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        Optional<ProjectHistories> projectHistories=projectHistoryRepository.findOwnerByMemberIdAndProjectId(userId,projectId);
+
+        if (projectHistories.isEmpty()){
+            throw new CustomException(ProjectHistoryErrorCode.NotMemberOfProject.getCode(),ProjectHistoryErrorCode.NotMemberOfProject.getDescription());
+        }
+        String projectRole=projectHistories.get().getProjectRole();
+        if (!projectRole.equals("OWNER") && !projectRole.equals("EDITOR"))
+            throw new CustomException(ProjectHistoryErrorCode.NotAvailableAuthority.getCode(), ProjectHistoryErrorCode.NotAvailableAuthority.getDescription());
     }
 }

@@ -34,4 +34,16 @@ public class Members extends BaseEntity {
 
     @Column(name = "member_providerid")
     private String memberProviderId;
+
+    @Override
+    public String toString() {
+        return "Members{" +
+                "memberId=" + memberId +
+                ", memberEmail='" + memberEmail + '\'' +
+                ", memberNickname='" + memberNickname + '\'' +
+                ", memberProfile='" + memberProfile + '\'' +
+                ", memberRole='" + memberRole + '\'' +
+                ", memberProviderId='" + memberProviderId + '\'' +
+                '}';
+    }
 }
