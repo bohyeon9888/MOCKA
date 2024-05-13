@@ -33,7 +33,7 @@ function HeaderProjectEditModal() {
           style={{ top: "50%" }}
         ></div>
         <div
-          className="ml-[25px] mt-[40px] flex cursor-pointer items-center"
+          className=" ml-[25px] mt-[40px] flex cursor-pointer items-center"
           onClick={openProjectDeleteModal}
         >
           <img

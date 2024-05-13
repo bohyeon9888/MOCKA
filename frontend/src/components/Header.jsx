@@ -109,6 +109,7 @@ function Header() {
           <div
             style={{ position: "absolute", right: "0px", top: "40px" }}
             id="header-option-modal"
+            className="z-20"
           >
             <HeaderProjectEditModal />
           </div>
