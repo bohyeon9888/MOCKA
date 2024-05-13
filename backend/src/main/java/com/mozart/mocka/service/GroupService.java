@@ -71,4 +71,8 @@ public class GroupService {
         if(Objects.equals(group.get().getProject().getProjectId(), projectId))
             groupRepository.deleteById(groupId);
     }
+
+    public Groups getGroup(Long groupId){
+        return groupRepository.findByGroupId(groupId);
+    }
 }

@@ -46,7 +46,7 @@ public class ProjectController {
     public ResponseEntity<?> createProject(@RequestBody ProjectRequestDto request){
 //        Long memberId = 1L;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info(auth.getName());
+        log.info("name auth"+auth.getName());
         Members member = membersRepository.findByMemberProviderId(auth.getName());
 
         int editNum = request.getVisibility().charAt(0) - '0';

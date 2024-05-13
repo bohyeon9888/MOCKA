@@ -1,18 +1,15 @@
 package com.mozart.mocka.service;
 
-import com.mozart.mocka.domain.BaseUris;
-import com.mozart.mocka.domain.ProjectHistories;
-import com.mozart.mocka.domain.Projects;
+import com.mozart.mocka.domain.*;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
 import com.mozart.mocka.dto.request.BaseUriRequestDto;
 import com.mozart.mocka.exception.CustomException;
-import com.mozart.mocka.exception.errorcode.BaseUriErrorCode;
-import com.mozart.mocka.exception.errorcode.MethodErrorCode;
-import com.mozart.mocka.exception.errorcode.ProjectErrorCode;
-import com.mozart.mocka.exception.errorcode.ProjectHistoryErrorCode;
+import com.mozart.mocka.exception.errorcode.*;
 import com.mozart.mocka.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +24,9 @@ public class AuthService {
     private final ProjectRepository projectRepository;
     private final BaseUriRepository baseUriRepository;
     private final ProjectHistoryRepository projectHistoryRepository;
+    private final ProjectHistoryService historyService;
+    private final GroupRepository groupRepository;
+    private final MembersRepository membersRepository;
 
     public void methodCreateCheck(Long projectId,ApiCreateRequestDto dto){
         //존재하는 것이 하나라도 찾아지면 throw
@@ -158,20 +158,58 @@ public class AuthService {
         }
 
     }
-    public void groupCreateCheck(Long projectId,Long userId){
+    public void groupCreateCheck(Long projectId,String providerId){
         Projects project=projectRepository.findByProjectId(projectId);
         System.out.println(project);
         //프로젝트가 존재하지 않습니다.
         if (project==null){
             throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
         }
-        Optional<ProjectHistories> projectHistories=projectHistoryRepository.findOwnerByMemberIdAndProjectId(userId,projectId);
-
-        if (projectHistories.isEmpty()){
+        System.out.println(projectId+" "+providerId);
+        Members member=membersRepository.findByMemberProviderId(providerId);
+        ProjectHistoryPK pk = ProjectHistoryPK.builder()
+                .memberId(member.getMemberId())
+                .projectId(projectId)
+                .build();
+        ProjectHistories projectHistories=projectHistoryRepository.findByProjectHistoryPK(pk);
+        System.out.println(projectHistories);
+        if (projectHistories==null){
             throw new CustomException(ProjectHistoryErrorCode.NotMemberOfProject.getCode(),ProjectHistoryErrorCode.NotMemberOfProject.getDescription());
         }
-        String projectRole=projectHistories.get().getProjectRole();
+        String projectRole=projectHistories.getProjectRole();
         if (!projectRole.equals("OWNER") && !projectRole.equals("EDITOR"))
             throw new CustomException(ProjectHistoryErrorCode.NotAvailableAuthority.getCode(), ProjectHistoryErrorCode.NotAvailableAuthority.getDescription());
+    }
+    public void groupListReadCheck(String providerId,Long projectId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        Members member=membersRepository.findByMemberProviderId(providerId);
+        System.out.println(member+" "+projectId);
+        //프로젝트의 소유자가 아닙니다
+        if (!historyService.checkAuthority(member.getMemberId(), projectId)) {
+            throw new CustomException(GroupErrorCode.MemberNotMatch.getCode(),GroupErrorCode.MemberNotMatch.getDescription());
+        }
+    }
+    public void groupReadCheck(Long projectId,String providerId,Long groupId){
+        Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+        //프로젝트의 소유자가 아닙니다.
+        Members member=membersRepository.findByMemberProviderId(providerId);
+        if (!historyService.checkAuthority(member.getMemberId(), projectId)) {
+            throw new CustomException(GroupErrorCode.MemberNotMatch.getCode(),GroupErrorCode.MemberNotMatch.getDescription());
+        }
+
+        //해당 그룹이 존재하지 않습니다.
+        Groups group=groupRepository.findByGroupId(groupId);
+        if(group==null){
+            throw new CustomException(GroupErrorCode.NotFoundGroup.getCode(),GroupErrorCode.NotFoundGroup.getDescription());
+        }
+
     }
 }
