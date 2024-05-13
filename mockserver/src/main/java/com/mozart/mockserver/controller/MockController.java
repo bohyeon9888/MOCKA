@@ -31,11 +31,11 @@ public class MockController {
         try {
             url = new URL(request.getRequestURL().toString());
         } catch (MalformedURLException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("잘못된 URL입니다.", HttpStatus.NOT_FOUND);
         }
         Projects project = findProjectId(url);
         if(project == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("해당하는 API가 존재하지 않습니다.",HttpStatus.NOT_FOUND);
         return mockServe(request, project, url, "Get");
     }
 
