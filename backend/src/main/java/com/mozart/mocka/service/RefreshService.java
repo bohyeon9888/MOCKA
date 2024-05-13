@@ -7,7 +7,6 @@ import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.repository.MembersRepository;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
