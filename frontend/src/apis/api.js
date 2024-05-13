@@ -6,7 +6,7 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-const createApi = async ({ document, projectId }) => {
+const createApi = async ({ document, projectId, groupId }) => {
   const requestBody = {
     ...document,
     apiMethod: capitalize(document.apiMethod),
@@ -14,13 +14,15 @@ const createApi = async ({ document, projectId }) => {
     apiResponse: document.apiResponse.map((body) => formatData(body)),
   };
 
-  const { data } = await axios.post(`method/${projectId}`, requestBody);
+  const { data } = await axios.post(
+    `method/${projectId}/${groupId}`,
+    requestBody,
+  );
 
   return data;
 };
 
-const updateApi = async (document) => {
-  const projectId = 21;
+const updateApi = async ({ document, projectId, groupId, apiId }) => {
   const requestBody = {
     ...document,
     apiMethod: capitalize(document.apiMethod),
@@ -28,7 +30,10 @@ const updateApi = async (document) => {
     apiResponse: document.apiResponse.map((body) => formatData(body)),
   };
 
-  const { data } = await axios.post(`method/${projectId}`, requestBody);
+  const { data } = await axios.post(
+    `method/${projectId}/${groupId}/${apiId}`,
+    requestBody,
+  );
 
   return data;
 };

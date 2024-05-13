@@ -75,7 +75,7 @@ export default function MethodOptions({ className, apiMethod, setApiMethod }) {
       {isOpen && (
         <div
           id="dropdown"
-          className="z-10 mt-1 w-full divide-y divide-gray-100 rounded-lg bg-white shadow shadow dark:bg-gray-700"
+          className="z-10 mt-1 w-full divide-y divide-gray-100 rounded-lg bg-white shadow  dark:bg-gray-700"
         >
           <ul className="py-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
             {methodArray.map((method) => (

@@ -3,6 +3,9 @@ import Method from "./Method";
 import PrettyJson from "./PrettyJson";
 import formatRequestBody from "../utils/formatRequestBody";
 import formatResponseBody from "../utils/fromatResponseBody";
+import { deleteApi } from "../apis/api";
+import ApiDeleteModal from "./modal/ApiDeleteModal";
+import { useModalStore, useProjectStore } from "../store";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
@@ -35,12 +38,14 @@ function ApiBox({
   //일반 vs 자세히 보기 div박스 크기 다르게
   const boxStyle = isDetailVisible
     ? {
-        width: "1400px",
+        // width: "1400px",
+        width: "80%",
         height: "485px",
         transition: "all 0.3s ease",
       }
     : {
-        width: "1400px",
+        // width: "1400px",
+        width: "80%",
         height: "120px",
         transition: "all 0.3s ease",
       };
@@ -106,6 +111,11 @@ function ApiBox({
     }
   };
 
+  //apiBox 삭제
+  const openApiDeleteModal = () => {
+    openModal("Delete Api", <ApiDeleteModal />, { apiId });
+  };
+
   return (
     <div
       className="flex flex-col rounded-[15px] border-2 border-gray-200 bg-white p-8 pt-6"
@@ -154,6 +164,13 @@ function ApiBox({
             src="/asset/project/project-edit.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
+          />
+          {/* 삭제 */}
+          <img
+            src="/asset/project/project-delete.svg"
+            className="mr-[18px] h-4 cursor-pointer"
+            alt="project-delete"
+            onClick={openApiDeleteModal}
           />
           {/* 자세히 보기 (위/아래화살표 아이콘) */}
           {isDetailVisible ? (

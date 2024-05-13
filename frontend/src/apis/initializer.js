@@ -4,11 +4,12 @@ import formatInitializerRequest from "../utils/formatInitializerRequest";
 const downloadSpringInitializer = async ({
   initializerSetting,
   projectName,
+  projectId,
 }) => {
   const formattedSetting = formatInitializerRequest(initializerSetting);
   const { data } = await axios({
     method: "post",
-    url: `${import.meta.env.VITE_BASE_URL}initializer/create/1`,
+    url: `${import.meta.env.VITE_BASE_URL}initializer/create/${projectId}`,
     data: formattedSetting,
     responseType: "blob",
   });
