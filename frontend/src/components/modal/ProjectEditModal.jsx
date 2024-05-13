@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useModalStore } from "../../store";
+import { useModalStore, useProjectStore } from "../../store";
 
 function ProjectEditModal() {
-  const [inputValue, setInputValue] = useState("ProjectName");
+  const { project } = useProjectStore();
+  const [inputValue, setInputValue] = useState(project.projectName);
   const [isValid, setIsValid] = useState(true); // 유효성 검사 결과 상태
   const { closeModal } = useModalStore();
 
@@ -19,6 +20,7 @@ function ProjectEditModal() {
   const update = () => {
     if (isValid) {
       console.log("Updated Value:", inputValue);
+      project.projectName = inputValue; //프로젝트 이름 변경
       alert("Project name changed."); //"프로젝트 이름이 변경됨."
       closeModal();
     } else {

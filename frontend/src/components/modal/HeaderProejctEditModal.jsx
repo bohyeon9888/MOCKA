@@ -1,5 +1,6 @@
 import React from "react";
 import ProjectEditModal from "./ProjectEditModal";
+import ProjectDeleteModal from "./ProjectDeleteModal";
 import { useModalStore } from "../../store";
 
 function HeaderProjectEditModal() {
@@ -7,6 +8,10 @@ function HeaderProjectEditModal() {
 
   const openProjectEditModal = () => {
     openModal("Edit Project", <ProjectEditModal />);
+  };
+
+  const openProjectDeleteModal = () => {
+    openModal("Delete Project", <ProjectDeleteModal />);
   };
 
   return (
@@ -27,7 +32,10 @@ function HeaderProjectEditModal() {
           className="absolute left-0 right-0 mx-auto h-[1px] w-[90%] bg-gray-300"
           style={{ top: "50%" }}
         ></div>
-        <div className="ml-[25px] mt-[40px] flex cursor-pointer items-center">
+        <div
+          className="ml-[25px] mt-[40px] flex cursor-pointer items-center"
+          onClick={openProjectDeleteModal}
+        >
           <img
             src="/asset/header/header-delete.svg"
             className="mr-[17px] h-4"
