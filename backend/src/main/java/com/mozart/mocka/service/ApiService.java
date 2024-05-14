@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -122,5 +124,18 @@ public class ApiService {
             return apiUri;
         }
         return groupsOptional.get().getGroupUri() + apiUri;
+    }
+
+    public void deleteGroup(Long projectId, Long groupId) {
+        Optional<Groups> group = groupRepository.findById(groupId);
+        if(group.isEmpty())
+            return;
+        if(Objects.equals(group.get().getProject().getProjectId(), projectId)){
+            List<ApiProjects> apiProjectsList = apiProjectRepository.findByGroups_GroupId(groupId);
+            for(ApiProjects apiProject : apiProjectsList){
+                deleteApi(apiProject.getProjectId(),apiProject.getApiId());
+            }
+            groupRepository.deleteById(groupId);
+        }
     }
 }

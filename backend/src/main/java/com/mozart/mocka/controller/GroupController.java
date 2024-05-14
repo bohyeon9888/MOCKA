@@ -5,10 +5,7 @@ import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
 import com.mozart.mocka.dto.response.GroupResponseDto;
 import com.mozart.mocka.repository.GroupRepository;
-import com.mozart.mocka.service.AuthService;
-import com.mozart.mocka.service.GroupService;
-import com.mozart.mocka.service.ProjectHistoryService;
-import com.mozart.mocka.service.ProjectService;
+import com.mozart.mocka.service.*;
 import com.mozart.mocka.util.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class GroupController {
     private final GroupService groupService;
     private final AuthService authService;
-    private final GroupRepository groupRepository;
+    private final ApiService apiService;
 
     @LogExecutionTime
     @GetMapping("{projectId}")
@@ -79,7 +76,7 @@ public class GroupController {
     ){
         //사용자 프로젝트 편집 권한 check
 
-        groupService.deleteAllEntity(projectId, groupId);
+        apiService.deleteGroup(projectId,groupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
