@@ -290,6 +290,7 @@ public class MockService {
     }
 
     public Object createMock(Long apiId) {
+        log.info("createMock");
         Optional<ApiProjects> apiProjects = apiProjectRepository.findById(apiId);
         if(apiProjects.isEmpty())
             return null;
@@ -313,6 +314,7 @@ public class MockService {
         else {
             ObjectNode result = mapper.createObjectNode();
             for (ApiResponse response : apiResponseList) {
+                log.info(response.getKey() + response.getArrayList() + response.getType());
                 if(response.getArrayList()){
                     List<ObjectNode> list = new ArrayList<>();
                     for (int i = 0; i < response.getArraySize(); i++) {
@@ -321,7 +323,10 @@ public class MockService {
                     result.put(response.getKey(), list.toString());
                 }
                 else {
-                    result.put(response.getKey(),getObject(response));
+                    if(response.getType().equals("Object"))
+                        result.put(response.getKey(),getObject(response));
+                    else
+                        result.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(),response.getFakerSub(), response.getType()));
                 }
             }
             return result;
@@ -345,7 +350,7 @@ public class MockService {
                 jsonString = "[" + mapper.writeValueAsString(mapList).replace("[","").replace("]","") + "]";
                 apiResponseList = mapper.readValue(jsonString, new TypeReference<List<ResponseApiDto>>() {});
             }catch (Exception exception){
-                System.out.println("is exception");
+                log.info("is exception");
                 return null;
             }
         }
@@ -353,10 +358,10 @@ public class MockService {
         if(response.getArrayList()){ //list
             List<ObjectNode> resultList = new ArrayList<>();
             for (int i = 0; i < response.getArraySize(); i++) {
-                System.out.print("1");
+                log.info("1");
                 ObjectNode temp = mapper.createObjectNode();
                 for (ResponseApiDto responseNode : apiResponseList) {
-                    System.out.print("2");
+                    log.info("2");
                     if(!responseNode.getType().equals("Object"))
                         temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
                     else
@@ -364,15 +369,15 @@ public class MockService {
                                 (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
                                         responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
                 }
-                System.out.print("3");
+                log.info("3");
                 resultList.add(temp);
             }
-            System.out.print("4");
+            log.info("4");
             return result.put("adsafsdaf","safdsaf");
         }
         else { // not list
             for (ResponseApiDto responseNode : apiResponseList) {
-                System.out.print("6");
+                log.info("6");
                 if(!responseNode.getType().equals("Object"))
                     result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
                 else
@@ -381,7 +386,7 @@ public class MockService {
                                     responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
 
             }
-            System.out.print("7");
+            log.info("7");
             return result;
         }
     }
@@ -394,7 +399,7 @@ public class MockService {
         } catch (Exception e) {
 //            System.out.println("/" + type);
             return switch (type.toUpperCase()){
-                case "BOOLEAN" -> faker.bool().toString();
+                case "BOOLEAN" -> String.valueOf(faker.bool().bool());
                 case "INT","INTEGER" -> Integer.toString(faker.hashCode());
                 case "FLOAT", "DOUBLE" -> Double.toString(faker.number().randomDouble(2, 1, 100)); // 소수점 두 자리, 1에서 100 사이
                 case "CHAR" -> Character.toString(faker.letterify("?").charAt(0));
