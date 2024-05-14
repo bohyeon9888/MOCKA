@@ -14,6 +14,6 @@ WORKDIR /app
 VOLUME /tmp
 COPY --from=gradlebuild /build/build/libs/mockserver-0.0.1-SNAPSHOT.jar /app/mockserver-0.0.1-SNAPSHOT.jar
 
-EXPOSE 5001
+EXPOSE 8082
 
 ENTRYPOINT ["java","-jar","-Djava.security.egd=file:/dev/./urandom","mockserver-0.0.1-SNAPSHOT.jar"]
