@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useModalStore, useProjectStore } from "../store";
 import InviteModal from "./modal/InviteModal";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
+import updateQueryParam from "../utils/updateQueryParam";
 
 function Header() {
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isTestMode, setIsTestMode] = useState(
+    searchParams.get("mode") === "test",
+  );
   const { openModal } = useModalStore();
   const { project } = useProjectStore();
   const navigate = useNavigate();
@@ -44,7 +48,13 @@ function Header() {
   };
 
   const toggleMode = () => {
-    setIsEditMode(!isEditMode);
+    setIsTestMode(!isTestMode);
+    updateQueryParam({
+      key: "mode",
+      value: isTestMode ? "test" : "view",
+      searchParams,
+      setSearchParams,
+    });
   };
 
   return (
@@ -81,15 +91,15 @@ function Header() {
                 />
               </li>
               <li onClick={toggleMode} className="cursor-pointer">
-                {isEditMode ? (
+                {isTestMode ? (
                   <img
-                    src="/asset/header/header-edit-mode.svg"
+                    src="/asset/header/header-viewer-mode.svg"
                     className="h-7 cursor-pointer pt-1"
                     alt="header-edit-mode"
                   />
                 ) : (
                   <img
-                    src="/asset/header/header-viewer-mode.svg"
+                    src="/asset/header/header-edit-mode.svg"
                     className="h-7 cursor-pointer pt-1"
                     alt="header-edit-mode"
                   />

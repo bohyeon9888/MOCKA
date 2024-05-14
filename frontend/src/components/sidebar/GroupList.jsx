@@ -1,27 +1,66 @@
+import { useModalStore, useProjectStore } from "../../store";
 import ApiItems from "../ApiItems";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import GroupEditModal from "../modal/GroupEditModal";
+import { useState } from "react";
+import { deleteGroup } from "../../apis/group";
+import { getProjectDetail } from "../../apis/project";
+import deleteQueryParam from "../../utils/deleteQueryParam";
+import updateQueryParam from "../../utils/updateQueryParam";
 
-export default function GroupList({ project }) {
+export default function GroupList() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const selectedGroupId = searchParams.get("groupId");
+  const { openModal } = useModalStore();
+  const { project, setProject } = useProjectStore();
+  const [hoveredGroupId, setHoveredGroupId] = useState();
+  const onClickDeleteGroup = (groupId) => {
+    deleteGroup({ projectId: project.projectId, groupId }).then(() => {
+      getProjectDetail(project.projectId).then((data) => {
+        setProject(data);
+        if (groupId == selectedGroupId)
+          navigate(`/project/${project.projectId}`);
+      });
+    });
+  };
+
+  const onClickGroup = (groupId) => {
+    if (groupId == selectedGroupId)
+      deleteQueryParam({ key: "groupId", searchParams, setSearchParams });
+    else
+      updateQueryParam({
+        key: "groupId",
+        value: groupId,
+        searchParams,
+        setSearchParams,
+      });
+  };
 
   return (
-    <div className="flex h-full w-full flex-col">
-      <div className="flex grow flex-col space-y-2 overflow-x-hidden overflow-y-scroll">
+    <div
+      className="flex w-full flex-col space-y-3"
+      style={{
+        height: "calc(100% - 27px)",
+      }}
+    >
+      <div className="flex h-full flex-col space-y-2 overflow-x-hidden overflow-y-scroll">
         {project.groups.map(({ groupId, groupName, groupUri, apiProjects }) => (
-          <div key={groupId} className="">
+          <div key={groupId}>
             <div
               className="flex w-full cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
               onClick={() => {
-                if (selectedGroupId == groupId)
-                  navigate(`project/${project.projectId}`);
-                else
-                  navigate(`project/${project.projectId}?groupId=${groupId}`);
+                onClickGroup(groupId);
+              }}
+              onMouseEnter={() => {
+                setHoveredGroupId(groupId);
+              }}
+              onMouseLeave={() => {
+                setHoveredGroupId(-1);
               }}
             >
               <div className="mr-3 w-3">
-                {selectedGroupId === groupId ? (
+                {selectedGroupId == groupId ? (
                   <img
                     src="/asset/sidebar/sidebar-down-pointer.svg"
                     className="h-[6px] w-[12px]"
@@ -35,18 +74,28 @@ export default function GroupList({ project }) {
                   />
                 )}
               </div>
-              <h5 className="w-full grow truncate pr-4 font-bold text-gray-700">
+              <h5 className="grow truncate pr-4 font-bold text-gray-700">
                 {groupName}
               </h5>
+              {hoveredGroupId === groupId && (
+                <img
+                  className="-mr-1 size-[12px] opacity-40 hover:opacity-100"
+                  src="/asset/project/project-delete-bold.svg"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClickDeleteGroup(groupId);
+                  }}
+                />
+              )}
             </div>
             <div className="mt-2 flex flex-col space-y-2 pl-6">
-              {selectedGroupId === groupId &&
+              {selectedGroupId == groupId &&
                 apiProjects.length > 0 &&
-                apiProjects.map(({ apiId, apiMethod, apiUriStr }, idx) => (
+                apiProjects.map(({ apiId, apiMethod, name }) => (
                   <ApiItems
                     key={apiId}
                     apiMethod={apiMethod.toUpperCase()}
-                    name={`api ${idx}`}
+                    name={name}
                   />
                 ))}
             </div>
@@ -54,8 +103,11 @@ export default function GroupList({ project }) {
         ))}
       </div>
       <button
-        className="ml-auto mr-auto mt-auto flex flex-row items-center opacity-60 duration-200 hover:opacity-100"
+        className="ml-auto mr-auto mt-auto flex h-[15px] flex-row items-center opacity-60 duration-200 hover:opacity-100"
         type="button"
+        onClick={() => {
+          openModal("Create New Group", <GroupEditModal />);
+        }}
       >
         {/* <span className="mr-1 mt-[1px] flex size-[14px] items-center justify-center rounded-full bg-black pb-[2px] text-[13px] font-semibold leading-none text-white">
           +

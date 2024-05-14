@@ -30,6 +30,8 @@ function ApiBox({
   const [apiUri] = useState(apiUriStr); //나중에 명세서 변수보고 바꾸기 🍒
   const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
   const [CopySuccess, setCopySuccess] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const { openModal } = useModalStore();
 
   const toggleDetails = () => {
     setIsDetailVisible(!isDetailVisible);
@@ -46,7 +48,7 @@ function ApiBox({
     : {
         // width: "1400px",
         width: "80%",
-        height: "120px",
+        height: "110px",
         transition: "all 0.3s ease",
       };
 
@@ -113,7 +115,7 @@ function ApiBox({
 
   //apiBox 삭제
   const openApiDeleteModal = () => {
-    openModal("Delete Api", <ApiDeleteModal />, { apiId });
+    openModal("Delete Api", <ApiDeleteModal />, { apiName });
   };
 
   return (
@@ -122,19 +124,23 @@ function ApiBox({
       style={boxStyle}
     >
       <div className="flex items-center">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          className="h-[30px] w-full rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] pr-[100px] text-[12px]"
-          placeholder={placeholderText}
-        />
-        {isSaved ? (
+        {editMode ? (
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            className="h-[30px] w-full rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] pr-[100px] text-[12px]"
+            placeholder={placeholderText}
+          />
+        ) : (
+          <h3>{name || "API"}</h3>
+        )}
+        {/* {isSaved ? (
           <h6 className="ml-[-60px] text-green-400">saved</h6>
         ) : (
           <h6 className="ml-[-100px] text-red-400">press enter</h6>
-        )}
+        )} */}
       </div>
       <div className="mt-[13px] flex items-center">
         <Method type={methodType} />

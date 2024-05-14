@@ -31,7 +31,7 @@ export default function ApiEditModal() {
     apiResponse: [],
     apiResponseIsArray: false,
     apiResponseSize: 0,
-    apiPathVariable: initPathVariables("/user/{userId}?name=String&age=Int"),
+    apiPathVariable: [],
   });
   const [parameters, setParameters] = useState([]);
 
@@ -68,9 +68,8 @@ export default function ApiEditModal() {
       groupId,
     }).then(() => {
       getProjectDetail(project.projectId).then((data) => {
-        setProject(data).then(() => {
-          closeModal();
-        });
+        setProject(data);
+        closeModal();
       });
     });
   };

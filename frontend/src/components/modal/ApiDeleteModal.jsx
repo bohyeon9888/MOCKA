@@ -7,7 +7,7 @@ function ApiDeleteModal() {
 
   const Yes = () => {
     alert("Api deleted."); // "Api 삭제됨."
-    deleteApi(state.projectId, state.apiId);
+    deleteApi({ projectId: state.projectId, apiId: state.apiId });
     closeModal();
   };
 
@@ -18,7 +18,7 @@ function ApiDeleteModal() {
   return (
     <div className="h-[100x] w-[542px]">
       <h3 className="ml-[32px] mt-[20px] pr-[32px]">
-        Do you want to delete "{state.apiId}" api?
+        Do you want to delete "{state.apiName}" api?
       </h3>
       <div className="flex items-center justify-center rounded-[10px]"></div>
       <div className="mt-[20px] flex items-center justify-center">

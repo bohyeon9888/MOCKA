@@ -16,7 +16,7 @@ import Login from "./pages/Login";
 import { isAuthenticated } from "./utils/auth";
 import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
-import Viewer from "./pages/Viewer";
+import Project from "./pages/Project";
 import UpdateHistory from "./pages/UpdateHistory";
 import { useUserStore } from "./store";
 import Invite from "./pages/Invite";
@@ -50,7 +50,7 @@ function App() {
             <Route element={<RequireAuthRoutes />}>
               <Route path="/" element={<Home />} />
               <Route path="/initializer/:projectId" element={<Initializer />} />
-              <Route path="/project/:projectId" element={<Viewer />} />
+              <Route path="/project/:projectId" element={<Project />} />
               <Route path="/invite" element={<Invite />} />
             </Route>
             <Route path="/*" element={<Navigate to="/" replace />} />

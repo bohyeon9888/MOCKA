@@ -23,14 +23,24 @@ function Sidebar() {
   };
 
   return (
-    <aside className="flex w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
+    <aside
+      style={{
+        height: "calc(100vh - 44px)",
+      }}
+      className="flex w-[216px] shrink-0 flex-col items-center space-y-3 bg-secondary-color py-5"
+    >
       <div className="flex h-10 justify-center">
-        <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
+        <h5 className="text-center text-3 font-bold leading-10 text-gray-700">
           {project ? project.projectName : "PROJECT LIST"}
         </h5>
       </div>
       <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
-      <div className="flex w-full grow flex-col px-3">
+      <div
+        className="flex w-full flex-col px-3"
+        style={{
+          height: "calc(100% - 124px)",
+        }}
+      >
         {!project && (
           <>
             <div
@@ -70,7 +80,7 @@ function Sidebar() {
             </div>
           </>
         )}
-        {project && <GroupList project={project} />}
+        {project && <GroupList />}
         {/* <div
           className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
           onClick={toggleTeams}
@@ -105,7 +115,7 @@ function Sidebar() {
       </div>
       <div className="h-[1px] w-[170px] items-center bg-sidebar-division-color" />
       <div
-        className="flex w-[155px] cursor-pointer items-center"
+        className="flex h-10 w-[155px] cursor-pointer items-center"
         onClick={openLoginModal}
       >
         <img

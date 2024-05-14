@@ -12,7 +12,6 @@ export default function GroupSelect({ groupId, setGroupId }) {
   const group = groupId
     ? project.groups.filter((group) => group.groupId == groupId)[0]
     : project.groups[0];
-  console.log(group);
 
   return (
     <div className="flex flex-row items-center justify-between">
