@@ -4,22 +4,16 @@ import ApiListAll from "../components/ApiListAll";
 import ApiListGroup from "../components/ApiListGroup";
 import ApiEditModal from "../components/modal/ApiEditModal";
 
-export default function Viewer({
-  description,
-  apiRequests,
-  apiResponses,
-  apiResponseIsArray,
-}) {
+export default function Document({ project }) {
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
-  const { project } = useProjectStore();
   const group =
     groupId && project?.groups?.filter((group) => group.groupId == groupId)[0];
   const groupName = group && group.groupName;
   const { openModal } = useModalStore();
 
   return (
-    <div>
+    <div className="relative flex h-full w-full flex-col overflow-y-scroll p-6 pb-[220px]">
       <h2>
         {project && <span>{project.projectName}</span>}
         {groupName && <span>{` / ${groupName}`}</span>}

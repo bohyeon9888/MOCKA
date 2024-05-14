@@ -1,22 +1,10 @@
-import { React, useState } from "react";
-
-function BaseUrl() {
-  const [url, setUrl] = useState("https://finapi.p.ssafy.io/ssafy"); //나중에 받아오는 걸로 바꾸기
-
+function BaseUrl({ baseUrl, setBaseUrl }) {
   const handleSaveClick = () => {
-    console.log("Saved URL : ", url); //잘 저장되네 :)
-    localStorage.setItem("baseUrl", url); // 로컬 스토리지에 저장 (확인용)
+    localStorage.setItem("baseUrl", baseUrl); // 로컬 스토리지에 저장 (확인용)
   };
 
   const handleCopyClick = () => {
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        console.log("복사됨", url);
-      })
-      .catch((err) => {
-        console.error("복사 안됨.", err);
-      });
+    navigator.clipboard.writeText(baseUrl);
   };
 
   return (
@@ -27,9 +15,9 @@ function BaseUrl() {
       <div className="relative flex w-full items-center">
         <input
           type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="h-[34px] w-full rounded-[6px] border-[1px] border-gray-500 pl-[10px] pr-[50px] text-[12px]"
+          value={baseUrl}
+          onChange={(e) => setBaseUrl(e.target.value)}
+          className="h-[34px] w-full truncate rounded-[6px] border-[1px] border-gray-500 pl-[10px] pr-[50px] text-[12px]"
           placeholder="Please enter the base url"
         />
         <div className="absolute right-[10px] flex">

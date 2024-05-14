@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import Viewer from "./Viewer";
+import Document from "./Document";
 import Tester from "./Tester";
 import { useEffect } from "react";
 import { getProjectDetail } from "../apis/project";
@@ -20,8 +20,12 @@ export default function Project() {
   }, [project]);
 
   return (
-    <div className="relative flex h-full w-full flex-col overflow-y-scroll p-6 pb-[220px]">
-      {mode === "test" ? <Tester /> : <Viewer />}
+    <div className="h-full w-full">
+      {mode === "test" ? (
+        <Tester project={project} />
+      ) : (
+        <Document project={project} />
+      )}
     </div>
   );
 }

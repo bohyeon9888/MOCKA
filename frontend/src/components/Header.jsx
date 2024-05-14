@@ -57,6 +57,10 @@ function Header() {
     });
   };
 
+  useEffect(() => {
+    setIsTestMode(searchParams.get("mode") === "test");
+  }, [searchParams]);
+
   return (
     <header className="bg-gray-700">
       <div className="mx-auto flex  h-11 flex-wrap items-center justify-between p-2">

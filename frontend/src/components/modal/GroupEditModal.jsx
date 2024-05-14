@@ -37,13 +37,14 @@ export default function GroupEditModal() {
   };
 
   return (
-    <div className="flex w-[500px] flex-col space-y-5 px-5 pt-2">
+    <div className="flex  flex-col space-y-5 px-5 pt-2">
       <ContentBox title="Group Name">
         <Input isFull value={groupName} changeHandler={changeNameHandler} />
       </ContentBox>
       <ContentBox title="Group Common URI">
         <Input isFull value={groupUri} changeHandler={changeUriHandler} />
       </ContentBox>
+      <div className="h-0 w-[500px]" />
       <div className="mt-4 flex justify-end">
         <Button type="Create" onClick={onClick} />
       </div>
