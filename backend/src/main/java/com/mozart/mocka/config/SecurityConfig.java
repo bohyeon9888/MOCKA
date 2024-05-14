@@ -6,7 +6,6 @@ import com.mozart.mocka.jwt.JWTFilter;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.service.CustormOauth2UserService;
 import com.mozart.mocka.service.RefreshService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
