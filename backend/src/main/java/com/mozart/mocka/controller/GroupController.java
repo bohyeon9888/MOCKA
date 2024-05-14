@@ -60,7 +60,7 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 편집 권한 check
-
+        authService.groupUpdateCheck(user.getProviderId(),projectId,groupId);
         if(groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri()))
             return new ResponseEntity<>("Update Success",HttpStatus.OK);
 
@@ -75,9 +75,9 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 편집 권한 check
-
+        authService.groupDeleteCheck(user.getProviderId(),projectId,groupId);
         apiService.deleteGroup(projectId,groupId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("delete success",HttpStatus.OK);
     }
 
     @LogExecutionTime

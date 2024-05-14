@@ -128,14 +128,10 @@ public class ApiService {
 
     public void deleteGroup(Long projectId, Long groupId) {
         Optional<Groups> group = groupRepository.findById(groupId);
-        if(group.isEmpty())
-            return;
-        if(Objects.equals(group.get().getProject().getProjectId(), projectId)){
-            List<ApiProjects> apiProjectsList = apiProjectRepository.findByGroups_GroupId(groupId);
-            for(ApiProjects apiProject : apiProjectsList){
-                deleteApi(apiProject.getProjectId(),apiProject.getApiId());
-            }
-            groupRepository.deleteById(groupId);
+        List<ApiProjects> apiProjectsList = apiProjectRepository.findByGroups_GroupId(groupId);
+        for(ApiProjects apiProject : apiProjectsList){
+            deleteApi(apiProject.getProjectId(),apiProject.getApiId());
         }
+        groupRepository.deleteById(groupId);
     }
 }

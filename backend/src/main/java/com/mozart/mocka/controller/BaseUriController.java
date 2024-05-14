@@ -40,7 +40,6 @@ public class BaseUriController {
     @PutMapping("{projectId}/{baseUriId}")
     public ResponseEntity<?> updateBaseUri(@PathVariable("projectId") Long projectId, @PathVariable("baseUriId") Long baseUriId, @RequestBody BaseUriRequestDto request){
         authService.baseUriUpdateCheck(projectId,baseUriId,request);
-
         baseUrlService.updateBaseUri(baseUriId,projectId,request.getBaseUri());
         return new ResponseEntity<>(HttpStatus.OK);
     }
