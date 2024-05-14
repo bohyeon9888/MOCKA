@@ -51,7 +51,7 @@ function Header() {
     setIsTestMode(!isTestMode);
     updateQueryParam({
       key: "mode",
-      value: isTestMode ? "test" : "view",
+      value: !isTestMode ? "test" : "view",
       searchParams,
       setSearchParams,
     });
@@ -93,13 +93,13 @@ function Header() {
               <li onClick={toggleMode} className="cursor-pointer">
                 {isTestMode ? (
                   <img
-                    src="/asset/header/header-viewer-mode.svg"
+                    src="/asset/header/header-edit-mode.svg"
                     className="h-7 cursor-pointer pt-1"
                     alt="header-edit-mode"
                   />
                 ) : (
                   <img
-                    src="/asset/header/header-edit-mode.svg"
+                    src="/asset/header/header-viewer-mode.svg"
                     className="h-7 cursor-pointer pt-1"
                     alt="header-edit-mode"
                   />
