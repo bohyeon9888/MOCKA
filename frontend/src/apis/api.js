@@ -45,7 +45,7 @@ const deleteApi = async ({ projectId, apiId }) => {
 };
 
 const getApi = async ({ projectId, apiId }) => {
-  const { data } = axios.get(`method/${projectId}/${apiId}`);
+  const { data } = await axios.get(`method/${projectId}/${apiId}`);
 
   return data;
 };

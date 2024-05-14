@@ -13,12 +13,12 @@ export default function ResponseBodyEditor({
 }) {
   const addNewResponse = () => {
     let newKeyNum = 0;
-    while (apiResponse.find(({ key }) => key === `key ${newKeyNum}`))
+    while (apiResponse.find(({ key }) => key === `key_${newKeyNum}`))
       newKeyNum += 1;
     setApiResponse([
       ...apiResponse,
       {
-        key: `key ${newKeyNum}`,
+        key: `key_${newKeyNum}`,
         type: "String",
         value: null,
         arrayList: false,

@@ -6,6 +6,7 @@ import formatResponseBody from "../utils/fromatResponseBody";
 import { deleteApi } from "../apis/api";
 import ApiDeleteModal from "./modal/ApiDeleteModal";
 import { useModalStore, useProjectStore } from "../store";
+import { useParams } from "react-router-dom";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
@@ -32,6 +33,7 @@ function ApiBox({
   const [CopySuccess, setCopySuccess] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { openModal } = useModalStore();
+  const { projectId } = useParams();
 
   const toggleDetails = () => {
     setIsDetailVisible(!isDetailVisible);
@@ -115,7 +117,7 @@ function ApiBox({
 
   //apiBox 삭제
   const openApiDeleteModal = () => {
-    openModal("Delete Api", <ApiDeleteModal />, { apiName });
+    openModal("Delete Api", <ApiDeleteModal />, { apiName, projectId, apiId });
   };
 
   return (

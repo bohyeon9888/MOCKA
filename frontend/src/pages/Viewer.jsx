@@ -1,28 +1,18 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useModalStore, useProjectStore } from "../store";
-import { useEffect } from "react";
-import { getProjectDetail } from "../apis/project";
 import ApiListAll from "../components/ApiListAll";
 import ApiListGroup from "../components/ApiListGroup";
 import ApiEditModal from "../components/modal/ApiEditModal";
 
 export default function Viewer() {
   const [searchParams] = useSearchParams();
-  const { projectId } = useParams();
-  const { project, setProject } = useProjectStore();
   const groupId = searchParams.get("groupId");
+  const { project } = useProjectStore();
   const group =
     groupId && project?.groups?.filter((group) => group.groupId == groupId)[0];
   const groupName = group && group.groupName;
   const { openModal } = useModalStore();
 
-  useEffect(() => {
-    if (!project) {
-      getProjectDetail(projectId).then((data) => {
-        setProject(data);
-      });
-    }
-  }, [project]);
   return (
     <div>
       <h2>
