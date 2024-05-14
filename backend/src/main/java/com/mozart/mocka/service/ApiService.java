@@ -12,6 +12,7 @@ import com.mozart.mocka.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -137,5 +138,10 @@ public class ApiService {
             }
             groupRepository.deleteById(groupId);
         }
+    }
+
+    public ApiProjects getApi(Long apiId) {
+        Optional<ApiProjects> apiProject = apiProjectRepository.findById(apiId);
+        return apiProject.orElse(null);
     }
 }
