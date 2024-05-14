@@ -2,7 +2,6 @@ package com.mozart.mocka.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mozart.mocka.domain.*;
-import com.mozart.mocka.dto.response.ApiListResponseDto;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
 import com.mozart.mocka.repository.*;
 import com.mozart.mocka.util.LogExecutionTime;
