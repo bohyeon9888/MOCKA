@@ -269,6 +269,27 @@ public class AuthService {
         }
     }
 
-    public void methodReadCheck(Long projectId, Long apiId) {
+    public void methodReadCheck(String providerID,Long projectId, Long apiId) {
+        Projects project=projectRepository.findByProjectId(projectId);
+        //프로젝트가 존재하지 않습니다.
+        if (project==null){
+            throw new CustomException(ProjectErrorCode.NotExist.getCode(), ProjectErrorCode.NotExist.getDescription());
+        }
+
+        //프로젝트의 일원이 아닙니다.
+        Members member=membersRepository.findByMemberProviderId(providerID);
+        ProjectHistoryPK pk = ProjectHistoryPK.builder()
+                .memberId(member.getMemberId())
+                .projectId(projectId)
+                .build();
+        ProjectHistories projectHistories=projectHistoryRepository.findByProjectHistoryPK(pk);
+        if (projectHistories==null){
+            throw new CustomException(ProjectHistoryErrorCode.NotMemberOfProject.getCode(),ProjectHistoryErrorCode.NotMemberOfProject.getDescription());
+        }
+
+        int apiProjectsCount=apiProjectRepository.selectCountMatchApiId(apiId,projectId);
+        if (apiProjectsCount==0){
+            throw new CustomException(MethodErrorCode.NotExist.getCode(), MethodErrorCode.NotExist.getDescription());
+        }
     }
 }
