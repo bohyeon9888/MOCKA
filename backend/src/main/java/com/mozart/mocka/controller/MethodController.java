@@ -2,6 +2,7 @@ package com.mozart.mocka.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
+import com.mozart.mocka.dto.response.GroupResponseDto;
 import com.mozart.mocka.service.ApiService;
 import com.mozart.mocka.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +65,12 @@ public class MethodController {
         apiService.deleteApi(projectId,apiId);
         apiService.createApi(projectId, groupId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("{projectId}/{apiId}")
+    public ResponseEntity<?> updateApi(@PathVariable("projectId") Long projectId,@PathVariable("apiId")Long apiId){
+        //조회 권한 체크
+
+        return new ResponseEntity<>(apiService.getApi(apiId), HttpStatus.OK);
     }
 }
