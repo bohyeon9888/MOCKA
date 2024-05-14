@@ -70,7 +70,7 @@ public class MethodController {
     @GetMapping("{projectId}/{apiId}")
     public ResponseEntity<?> updateApi(@PathVariable("projectId") Long projectId,@PathVariable("apiId")Long apiId){
         //조회 권한 체크
-
+        authService.methodReadCheck(projectId, apiId);
         return new ResponseEntity<>(apiService.getApi(apiId), HttpStatus.OK);
     }
 }

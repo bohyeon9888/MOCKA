@@ -268,4 +268,7 @@ public class AuthService {
             throw new CustomException(GroupErrorCode.ProjectNotMatch.getCode(),GroupErrorCode.ProjectNotMatch.getDescription());
         }
     }
+
+    public void methodReadCheck(Long projectId, Long apiId) {
+    }
 }
