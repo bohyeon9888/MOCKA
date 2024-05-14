@@ -26,15 +26,13 @@ export default function GroupList() {
   };
 
   const onClickGroup = (groupId) => {
-    if (groupId == selectedGroupId)
-      deleteQueryParam({ key: "groupId", searchParams, setSearchParams });
-    else
-      updateQueryParam({
-        key: "groupId",
-        value: groupId,
-        searchParams,
-        setSearchParams,
-      });
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("apiId");
+
+    if (groupId == selectedGroupId) newSearchParams.delete("groupId");
+    else newSearchParams.set("groupId", groupId);
+
+    setSearchParams(newSearchParams);
   };
 
   return (
