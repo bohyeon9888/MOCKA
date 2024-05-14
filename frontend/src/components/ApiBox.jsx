@@ -7,6 +7,7 @@ import { deleteApi } from "../apis/api";
 import ApiDeleteModal from "./modal/ApiDeleteModal";
 import { useModalStore, useProjectStore } from "../store";
 import { useParams } from "react-router-dom";
+import ApiEditModal from "./modal/ApiEditModal";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
@@ -115,6 +116,23 @@ function ApiBox({
     }
   };
 
+  const openApiEditModal = () => {
+    openModal("Edit API", <ApiEditModal />, {
+      document: {
+        name,
+        description,
+        apiId,
+        apiMethod,
+        apiUri: apiUriStr,
+        apiRequest: apiRequests,
+        apiResponse: apiResponses,
+        apiResponseIsArray,
+        apiResponseSize,
+        apiPathVariable: apiPaths,
+      },
+    });
+  };
+
   //apiBox 삭제
   const openApiDeleteModal = () => {
     openModal("Delete Api", <ApiDeleteModal />, { apiName, projectId, apiId });
@@ -172,6 +190,7 @@ function ApiBox({
             src="/asset/project/project-edit.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
+            onClick={openApiEditModal}
           />
           {/* 삭제 */}
           <img

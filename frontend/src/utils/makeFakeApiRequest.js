@@ -32,7 +32,9 @@ const extractObject = (object) => {
 
   object.forEach(({ arraySize, arrayList, key, type, value }) => {
     if (type === "Object") {
-      result[key] = extractObject(value);
+      result[key] = extractObject(value)
+        ? Array.from({ length: arraySize }, () => extractObject(value))
+        : extractObject(value);
     } else {
       result[key] = arrayList
         ? Array.from({ length: arraySize }, () => randomValueByType(type))
@@ -55,7 +57,9 @@ const fakeRequestBody = (data) => {
   const result = {};
   parsedRequests.forEach(({ arrayList, arraySize, key, type, value }) => {
     if (type === "Object") {
-      result[key] = extractObject(value);
+      result[key] = arrayList
+        ? Array.from({ length: arraySize }, () => extractObject(value))
+        : extractObject(value);
     } else {
       result[key] = arrayList
         ? Array.from({ length: arraySize }, () => randomValueByType(type))
