@@ -394,7 +394,7 @@ public class MockService {
         } catch (Exception e) {
 //            System.out.println("/" + type);
             return switch (type.toUpperCase()){
-                case "BOOLEAN" -> faker.bool().toString();
+                case "BOOLEAN" -> String.valueOf(faker.bool().bool());
                 case "INT","INTEGER" -> Integer.toString(faker.hashCode());
                 case "FLOAT", "DOUBLE" -> Double.toString(faker.number().randomDouble(2, 1, 100)); // 소수점 두 자리, 1에서 100 사이
                 case "CHAR" -> Character.toString(faker.letterify("?").charAt(0));
