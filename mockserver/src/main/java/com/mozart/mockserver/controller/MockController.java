@@ -109,7 +109,7 @@ public class MockController {
      *  404 NOT_FOUND   : 없는 url의 요청
      * */
     private ResponseEntity<?> mockServe(HttpServletRequest request, Projects project, URL url, String method) {
-
+        log.info("project id : " + project.getProjectId());
         // 요청된 URL 검증
         Long apiId = mockService.findApi(project, url, method);
         log.info("1 / " + apiId);

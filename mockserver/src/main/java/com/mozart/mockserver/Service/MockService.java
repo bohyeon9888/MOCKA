@@ -72,7 +72,8 @@ public class MockService {
         String[] pathArray = path.split("/");
 
         int number = pathArray.length;
-        for (int i = number * 2 - 1 ; i >= 0 ; i--) {
+        log.info(String.valueOf(number));
+        for (int i = (1 << number) - 1 ; i >= 0 ; i--) {
 
             StringBuilder pathUrl = new StringBuilder();
             String numString = Integer.toBinaryString(i);
@@ -87,7 +88,9 @@ public class MockService {
                     pathUrl.append(hash);
                 pathUrl.append(".");
             }
-
+            log.info("--" + i);
+            log.info(pathUrl.substring(0, pathUrl.length()-1));
+            log.info("--");
             Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
 
 
