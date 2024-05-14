@@ -4,7 +4,12 @@ import ApiListAll from "../components/ApiListAll";
 import ApiListGroup from "../components/ApiListGroup";
 import ApiEditModal from "../components/modal/ApiEditModal";
 
-export default function Viewer() {
+export default function Viewer({
+  description,
+  apiRequests,
+  apiResponses,
+  apiResponseIsArray,
+}) {
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
   const { project } = useProjectStore();
