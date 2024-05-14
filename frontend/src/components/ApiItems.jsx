@@ -1,8 +1,11 @@
+import { useSearchParams } from "react-router-dom";
 import Method from "./Method";
 
 function ApiItems({ apiMethod, name }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   return (
-    <div className="flex items-center">
+    <div className="flex cursor-pointer items-center">
       <Method
         type={apiMethod}
         size={{ width: "40", height: "18" }}

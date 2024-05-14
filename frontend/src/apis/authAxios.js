@@ -9,6 +9,9 @@ const authAxios = axios.create({
 
 authAxios.interceptors.request.use(
   (config) => {
+    config.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    config.headers["Pragma"] = "no-cache";
+    config.headers["Expires"] = "0";
     const accessToken = getToken();
     if (accessToken) config.headers["Authorization"] = `Bearer ${accessToken}`;
 
@@ -31,7 +34,7 @@ authAxios.interceptors.response.use(
         error.config.headers.Authorization = `Bearer ${accessToken}`;
         return authAxios(error.config);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
   },

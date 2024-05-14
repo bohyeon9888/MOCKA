@@ -44,4 +44,10 @@ const deleteApi = async ({ projectId, apiId }) => {
   return data;
 };
 
-export { createApi, updateApi, deleteApi };
+const getApi = async ({ projectId, apiId }) => {
+  const { data } = axios.get(`method/${projectId}/${apiId}`);
+
+  return data;
+};
+
+export { createApi, updateApi, deleteApi, getApi };
