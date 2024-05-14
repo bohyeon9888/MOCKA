@@ -88,12 +88,13 @@ export default function GroupList() {
                 />
               )}
             </div>
-            <div className="mt-2 flex flex-col space-y-2 pl-6">
+            <div className="mt-2 flex flex-col space-y-1 pl-6">
               {selectedGroupId == groupId &&
                 apiProjects.length > 0 &&
                 apiProjects.map(({ apiId, apiMethod, name }) => (
                   <ApiItems
                     key={apiId}
+                    apiId={apiId}
                     apiMethod={apiMethod.toUpperCase()}
                     name={name}
                   />

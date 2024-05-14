@@ -68,7 +68,7 @@ export default function RequestBox({
         fakerSub,
         value: [
           {
-            key: `key 0`,
+            key: `key_0`,
             type: "String",
             value: null,
             arrayList: false,
@@ -136,7 +136,7 @@ export default function RequestBox({
     if (!value || value.length === 0) {
       changeValueHandler([
         {
-          key: `key 0`,
+          key: `key_0`,
           type: "String",
           value: null,
           arrayList: false,
@@ -150,11 +150,11 @@ export default function RequestBox({
       return;
     }
     let newKeyNum = 0;
-    while (value.find(({ key }) => key === `key ${newKeyNum}`)) newKeyNum += 1;
+    while (value.find(({ key }) => key === `key_${newKeyNum}`)) newKeyNum += 1;
     changeValueHandler([
       ...value,
       {
-        key: `key ${newKeyNum}`,
+        key: `key_${newKeyNum}`,
         type: "String",
         value: null,
         arrayList: false,
