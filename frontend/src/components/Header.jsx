@@ -62,6 +62,14 @@ function Header() {
             id="navbar-default"
           >
             <ul className="flex items-center md:space-x-[14px]">
+              <li>
+                <img
+                  src="/asset/tester/tester-start.svg"
+                  className="h-[14px] cursor-pointer"
+                  title="테스트"
+                  alt="tester-start"
+                />
+              </li>
               <li onClick={openInviteModal}>
                 <img
                   src="/asset/header/header-invite.svg"
