@@ -1,7 +1,7 @@
 import { useProjectStore } from "../store";
 import DropDown from "./DropDown";
 
-export default function GroupSelect({ groupId, setGroupId }) {
+export default function GroupSelect({ groupId, setGroupId, setDocument }) {
   const { project } = useProjectStore();
   const groupList = project.groups.map(({ groupName, groupId }) => {
     return {
@@ -24,7 +24,23 @@ export default function GroupSelect({ groupId, setGroupId }) {
       <DropDown
         value={group.groupName}
         options={groupList}
-        changeHandler={setGroupId}
+        changeHandler={(value) => {
+          if (value === groupId) return;
+          const prevUri = project.groups.filter(
+            (group) => group.groupId == groupId,
+          )[0].groupUri;
+          const nextUri = project.groups.filter(
+            (group) => group.groupId == value,
+          )[0].groupUri;
+          setGroupId(value);
+          setDocument((document) => {
+            const newUri = document.apiUri.replace(prevUri, nextUri);
+            return {
+              ...document,
+              apiUri: newUri,
+            };
+          });
+        }}
       />
     </div>
   );

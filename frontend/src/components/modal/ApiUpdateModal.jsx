@@ -10,31 +10,19 @@ import parsePathVariables from "../../utils/parsePathVariables";
 import mergePathVariables from "../../utils/mergePathVariables";
 import RequestBodyEditor from "../editor/RequestBodyEditor";
 import ResponseBodyEditor from "../editor/ResponseBodyEditor";
-import { createApi } from "../../apis/api";
+import { updateApi } from "../../apis/api";
 import Button from "../button/Button";
 import GroupSelect from "../GroupSelect";
-import { useSearchParams } from "react-router-dom";
 import { useModalStore, useProjectStore } from "../../store";
 import { getProjectDetail } from "../../apis/project";
 
-export default function ApiEditModal() {
-  const [searchParams] = useSearchParams();
+export default function ApiUpdateModal() {
   const { project, setProject } = useProjectStore();
-  const [groupId, setGroupId] = useState(searchParams.get("groupId"));
-  const { closeModal } = useModalStore();
-  const [document, setDocument] = useState({
-    name: "",
-    description: "",
-    apiMethod: "GET",
-    apiUri: "",
-    apiRequest: [],
-    apiResponse: [],
-    apiResponseIsArray: false,
-    apiResponseSize: 0,
-    apiPathVariable: [],
-  });
-  const [parameters, setParameters] = useState([]);
-
+  const { closeModal, state } = useModalStore();
+  const [document, setDocument] = useState(state.document);
+  console.log(document);
+  const [groupId, setGroupId] = useState(document.groupId);
+  const [parameters, setParameters] = useState(document.apiPathVariable);
   const uriChangeHandler = (e) => {
     setDocument((document) => {
       return { ...document, apiUri: e.target.value };
@@ -62,9 +50,10 @@ export default function ApiEditModal() {
       apiUri: (commonUri || "") + document.apiUri,
     };
 
-    createApi({
+    updateApi({
       projectId: project.projectId,
       document: convertedDocument,
+      apiId: document.apiId,
       groupId,
     }).then(() => {
       getProjectDetail(project.projectId).then((data) => {
@@ -73,13 +62,6 @@ export default function ApiEditModal() {
       });
     });
   };
-
-  function initPathVariables(apiUri) {
-    const newPathVariableArr = parsePathVariables(apiUri);
-    const mergedPathVariable = mergePathVariables([], newPathVariableArr);
-
-    return mergedPathVariable;
-  }
 
   useEffect(() => {
     if (!isValidURI(document.apiUri)) return;

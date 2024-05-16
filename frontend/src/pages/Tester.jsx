@@ -16,6 +16,7 @@ import setDefaultFakerJs, {
 } from "../utils/setDefaultFakerJs";
 import TabBar from "../components/TabBar";
 import filterTabs from "../utils/filterTabs";
+import Spinner from "../components/Spinner";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
@@ -41,6 +42,7 @@ export default function Tester({ project }) {
   const handleTextClick = (Text) => {
     setActiveText(Text);
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleApiCopyClick = () => {
     navigator.clipboard.writeText(baseUrl + document?.apiUriStr);
@@ -109,13 +111,15 @@ export default function Tester({ project }) {
   };
 
   const sendMethod = () => {
-    if (!document) return;
+    if (!document || isLoading) return;
+    setIsLoading(true);
     sendRequest({
       ...document,
       baseUrl,
       commonUri: project.commonUri,
     })
       .then(({ data, status }) => {
+        setIsLoading(false);
         setResponse({ status, data });
       })
       .catch((e) => {
@@ -264,7 +268,13 @@ export default function Tester({ project }) {
                 />
               </div>
               <div className="mt-[20px] flex h-[180px] w-[1000px] border-2 border-gray-200 bg-white p-[14px]">
-                <PrettyJson data={response} />
+                {isLoading ? (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <PrettyJson data={response} />
+                )}
               </div>
               <div className="mt-[20px] flex justify-end">
                 <Button type="Send" onClick={sendMethod} />

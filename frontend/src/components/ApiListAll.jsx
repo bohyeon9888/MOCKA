@@ -15,7 +15,9 @@ export default function ApiListAll({ groups }) {
             {apiProjects.length === 0 ? (
               <div className="font-medium text-gray-500">No API created.</div>
             ) : (
-              apiProjects.map((api) => <ApiBox key={api.apiId} {...api} />)
+              apiProjects.map((api) => (
+                <ApiBox key={api.apiId} {...{ ...api, groupId }} />
+              ))
             )}
           </div>
         </div>

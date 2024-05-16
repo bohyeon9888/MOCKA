@@ -8,6 +8,9 @@ import ApiDeleteModal from "./modal/ApiDeleteModal";
 import { useModalStore, useProjectStore } from "../store";
 import { useParams } from "react-router-dom";
 import ApiEditModal from "./modal/ApiEditModal";
+import ApiUpdateModal from "./modal/ApiUpdateModal";
+import parseResponse from "../utils/parseResponse";
+import convertBody from "../utils/convertBody";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
@@ -22,6 +25,7 @@ function ApiBox({
   apiPaths,
   apiRequests,
   apiResponses,
+  groupId,
 }) {
   const originalApiName = name; // api명세서 보고 변수로 바꾸기 🍒
   const [isDetailVisible, setIsDetailVisible] = useState(false); //자세히 보기 버튼
@@ -117,18 +121,27 @@ function ApiBox({
   };
 
   const openApiEditModal = () => {
-    openModal("Edit API", <ApiEditModal />, {
+    console.log();
+
+    openModal("Edit API", <ApiUpdateModal />, {
       document: {
         name,
         description,
         apiId,
-        apiMethod,
+        apiMethod: apiMethod.toUpperCase(),
         apiUri: apiUriStr,
-        apiRequest: apiRequests,
-        apiResponse: apiResponses,
+        apiRequest: convertBody(apiRequests),
+        apiResponse: convertBody(apiResponses),
         apiResponseIsArray,
         apiResponseSize,
-        apiPathVariable: apiPaths,
+        groupId,
+        apiPathVariable: apiPaths.map(({ id, key, data }) => {
+          return {
+            id,
+            key,
+            type: data,
+          };
+        }),
       },
     });
   };

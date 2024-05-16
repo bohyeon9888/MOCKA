@@ -106,7 +106,10 @@ function Header() {
     <header className="bg-gray-700">
       <div className="mx-auto flex h-11 flex-wrap items-center justify-between p-2">
         <div className="ml-11">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link
+            to={`/?lang=${language}`}
+            className="flex items-center space-x-2"
+          >
             <img src="/logo.svg" className="h-4" alt="Mocka Logo" />
             <span className="text-h3 font-bold text-white">Mocka</span>
           </Link>
@@ -186,7 +189,7 @@ function Header() {
             <div
               style={{
                 position: "absolute",
-                right: project ? "140px" : "12px",
+                right: project ? "150px" : "12px",
                 top: "30px",
               }}
               id="header-language-modal"
@@ -199,7 +202,7 @@ function Header() {
           )}
           {showHeaderProjectEditModal && (
             <div
-              style={{ position: "absolute", right: "0px", top: "40px" }}
+              style={{ position: "absolute", right: "10px", top: "30px" }}
               id="header-option-modal"
               className="z-20"
             >
