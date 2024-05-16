@@ -1,4 +1,5 @@
 package com.mozart.mocka.service;
+import com.mozart.mocka.domain.ApiProjects;
 import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.domain.Projects;
 import com.mozart.mocka.dto.response.ProjectsListResponseDto;
@@ -64,11 +65,9 @@ public class GroupService {
         return false;
     }
 
-    public void deleteAllEntity(Long projectId, Long groupId) {
-        Optional<Groups> group = groupRepository.findById(groupId);
-        if(group.isEmpty())
-            return;
-        if(Objects.equals(group.get().getProject().getProjectId(), projectId))
-            groupRepository.deleteById(groupId);
+
+
+    public Groups getGroup(Long groupId){
+        return groupRepository.findByGroupId(groupId);
     }
 }

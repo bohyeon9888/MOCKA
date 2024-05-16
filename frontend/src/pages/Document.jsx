@@ -1,35 +1,23 @@
-import { useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useModalStore, useProjectStore } from "../store";
-import { getProjectDetail } from "../apis/project";
-import ApiEditModal from "../components/modal/ApiEditModal";
 import ApiListAll from "../components/ApiListAll";
 import ApiListGroup from "../components/ApiListGroup";
+import ApiEditModal from "../components/modal/ApiEditModal";
 
-export default function Viewer() {
+export default function Document({ project }) {
   const [searchParams] = useSearchParams();
-  const { projectId } = useParams();
-  const { project, setProject } = useProjectStore();
   const groupId = searchParams.get("groupId");
   const group =
-    groupId && project.groups.filter((group) => group.groupId == groupId)[0];
+    groupId && project?.groups?.filter((group) => group.groupId == groupId)[0];
   const groupName = group && group.groupName;
   const { openModal } = useModalStore();
 
-  useEffect(() => {
-    if (!project) {
-      getProjectDetail(projectId).then((data) => {
-        setProject(data);
-      });
-    }
-  }, [project]);
-
   return (
     <div className="relative flex h-full w-full flex-col overflow-y-scroll p-6 pb-[220px]">
-      <h1>
+      <h2>
         {project && <span>{project.projectName}</span>}
         {groupName && <span>{` / ${groupName}`}</span>}
-      </h1>
+      </h2>
       {!groupId && project && project.groups && (
         <ApiListAll groups={project.groups} />
       )}

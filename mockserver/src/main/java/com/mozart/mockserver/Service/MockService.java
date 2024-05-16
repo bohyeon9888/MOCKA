@@ -2,7 +2,9 @@ package com.mozart.mockserver.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.javafaker.Faker;
 import com.mozart.mockserver.domain.*;
@@ -12,11 +14,15 @@ import com.mozart.mockserver.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLData;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -72,7 +78,8 @@ public class MockService {
         String[] pathArray = path.split("/");
 
         int number = pathArray.length;
-        for (int i = number * 2 - 1 ; i >= 0 ; i--) {
+        log.info(String.valueOf(number));
+        for (int i = (1 << number) - 1 ; i >= 0 ; i--) {
 
             StringBuilder pathUrl = new StringBuilder();
             String numString = Integer.toBinaryString(i);
@@ -87,15 +94,22 @@ public class MockService {
                     pathUrl.append(hash);
                 pathUrl.append(".");
             }
-
-            Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
-
-
-            if(apiProjects.isPresent()){
-                ApiProjects apiProject = apiProjects.get();
-                log.info("pathVal");
-                return pathVariableCheck(apiProject, path, numString);
+            log.info("--" + i);
+            log.info(pathUrl.substring(0, pathUrl.length()-1));
+            log.info("--");
+            try{
+                Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
+                if(apiProjects.isPresent()){
+                    ApiProjects apiProject = apiProjects.get();
+                    log.info("pathVal");
+                    return pathVariableCheck(apiProject, path, numString);
+                }
+            } catch (Exception e){
+                log.info("InvalidDataAccessResourceUsageException");
             }
+
+
+
         }
 
         return -1L;
@@ -103,7 +117,7 @@ public class MockService {
 
     private Long pathVariableCheck(ApiProjects apiProject, String substring, String subnet) {
         List<ApiPath> apiPathList = apiPathRepository.findByApiProject_ApiId(apiProject.getApiId());
-
+        log.info(apiProject.getApiId() + " / " + substring + " / " + subnet);
         int pathCnt = 0;
         //pathvar과 0의 갯수가 같은지확인.
         for (int i = 0; i < subnet.length(); i++) {
@@ -120,7 +134,7 @@ public class MockService {
         String[] inputPath = substring.split("/");
         for (ApiPath apiPath : apiPathList) {
             for(int i = 0 ; i < path.length ; i++){
-                if(path[i].contains(apiPath.getKey())){
+                if(path[i].contains("{"+apiPath.getKey()+"}")){
                     //그 자리가 path로 되어 있는지
                     if(subnet.charAt(i) == '1')
                         return 0L;
@@ -136,6 +150,7 @@ public class MockService {
         return apiProject.getApiId();
     }
     public void typeCheck(String type, String str) throws NumberFormatException{
+        log.info("path check" + type + " / " + str);
         switch (type){
             case "String":
                 break;
@@ -287,98 +302,145 @@ public class MockService {
     }
 
     public Object createMock(Long apiId) {
+        log.info("createMock");
+
+        //project 확인
         Optional<ApiProjects> apiProjects = apiProjectRepository.findById(apiId);
         if(apiProjects.isEmpty())
             return null;
+
+        //request 정보 get
         List<ApiResponse> apiResponseList = apiResponseRepository.findByApiProject_ApiId(apiId);
         ObjectMapper mapper = new ObjectMapper();
 
+        //request 가 배열일 경우
         if(apiProjects.get().isApiResponseIsArray()){
             List<ObjectNode> resultList = new ArrayList<>();
+
+            //list 갯수 만큼 생성
             for (int i = 0; i < apiProjects.get().getApiResponseSize(); i++) {
                 ObjectNode temp = mapper.createObjectNode();
                 for (ApiResponse response : apiResponseList) {
                     if(!response.getType().equals("Object"))
                         temp.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
-                    else
+                    else //object
                         temp.put(response.getKey(),getObject(response));
                 }
                 resultList.add(temp);
             }
             return resultList;
         }
-        else {
+        else { // request가 객체일 경우
             ObjectNode result = mapper.createObjectNode();
             for (ApiResponse response : apiResponseList) {
+                log.info(response.getKey() + response.getArrayList() + response.getType());
                 if(response.getArrayList()){
-                    List<ObjectNode> list = new ArrayList<>();
+                    List<JsonNode> list = new ArrayList<>();
                     for (int i = 0; i < response.getArraySize(); i++) {
                         list.add(getObject(response));
                     }
-                    result.put(response.getKey(), list.toString());
+                    result.put(response.getKey(), mapper.valueToTree(list));
                 }
                 else {
-                    result.put(response.getKey(),getObject(response));
+                    if(response.getType().equals("Object")){
+                        log.info("creatMock : " + response.getKey());
+                        result.put(response.getKey(),getObject(response));
+                    }
+                    else{
+                        result.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(),response.getFakerSub(), response.getType()));
+                    }
                 }
             }
             return result;
         }
     }
 
-    public ObjectNode getObject(ApiResponse response){
+    public JsonNode getObject(ApiResponse response){
+        log.info("jsonString : " + response.getData() +" "+ response.getType());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        if(!response.getType().equals("Object")){
-            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
-            return result;
-        }
-        List<ResponseApiDto> apiResponseList;
+//        if(!response.getType().equals("Object")){
+//            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+//            return result;
+//        }
+        List<ResponseApiDto> apiResponseList = new ArrayList<>();
 
-        try {apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
-        } catch (Exception e) {
+        //api responseList check
+        try {
+            if(response.getType().equals("Object"))
+                apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
+    } catch (Exception e) {
             try {
                 String jsonString = mapper.writeValueAsString(response.getData());
+
                 List<Map<String, String>> mapList = parseStringToMapList(jsonString);
                 jsonString = "[" + mapper.writeValueAsString(mapList).replace("[","").replace("]","") + "]";
                 apiResponseList = mapper.readValue(jsonString, new TypeReference<List<ResponseApiDto>>() {});
             }catch (Exception exception){
-                System.out.println("is exception");
+                log.info("is exception");
                 return null;
             }
         }
 
+        //object가 list 일때
         if(response.getArrayList()){ //list
             List<ObjectNode> resultList = new ArrayList<>();
-            for (int i = 0; i < response.getArraySize(); i++) {
-                System.out.print("1");
-                ObjectNode temp = mapper.createObjectNode();
-                for (ResponseApiDto responseNode : apiResponseList) {
-                    System.out.print("2");
-                    if(!responseNode.getType().equals("Object"))
-                        temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
-                    else
+            log.info("list");
+            log.info(response.getKey() +response.getArrayList()+ response.getArraySize() );
+            if(response.getArraySize() < 0)
+                response.setArraySize(2);
+            if(response.getType().equals("Object")){
+                for (int i = 0; i < response.getArraySize(); i++) {
+                    log.info("1 / ");
+                    ObjectNode temp = mapper.createObjectNode();
+                    for (ResponseApiDto responseNode : apiResponseList) {
+                        log.info("2//" + responseNode.getKey());
+        //                    if(!responseNode.getType().equals("Object"))
+        //                        temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+        //                    else {
+        //                        log.info("2#");
+        //                        temp.put(responseNode.getKey(),getObject(new ApiResponse
+        //                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+        //                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+        //                    }
                         temp.put(responseNode.getKey(),getObject(new ApiResponse
-                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
-                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(), responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+                    }
+                    resultList.add(temp);
                 }
-                System.out.print("3");
-                resultList.add(temp);
+                return mapper.valueToTree(resultList);
             }
-            System.out.print("4");
-            return result.put("adsafsdaf","safdsaf");
+            else{
+                log.info("3#");
+                List<Object> temp = new ArrayList<>();
+                for (int i = 0; i < response.getArraySize(); i++){
+                    temp.add(generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+                }
+                ObjectNode objectNodeTemp = mapper.createObjectNode();
+                objectNodeTemp.set(response.getKey(), mapper.valueToTree(temp));
+                resultList.add(objectNodeTemp);
+                return mapper.valueToTree(temp);
+            }
         }
         else { // not list
-            for (ResponseApiDto responseNode : apiResponseList) {
-                System.out.print("6");
-                if(!responseNode.getType().equals("Object"))
-                    result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
-                else
-                    result.put(responseNode.getKey(),getObject(new ApiResponse
-                            (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
-                                    responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+            log.info("not list");
+            if(response.getType().equals("Object")){
+                log.info("object");
+                for (ResponseApiDto responseNode : apiResponseList) {
+                    if(!responseNode.getType().equals("Object"))
+                        result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+                    else
+                        result.put(responseNode.getKey(),getObject(new ApiResponse
+                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
 
+                }
             }
-            System.out.print("7");
+            else {
+                log.info("not object");
+                return mapper.valueToTree(generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+                //result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+            }
             return result;
         }
     }
@@ -391,7 +453,7 @@ public class MockService {
         } catch (Exception e) {
 //            System.out.println("/" + type);
             return switch (type.toUpperCase()){
-                case "BOOLEAN" -> faker.bool().toString();
+                case "BOOLEAN" -> String.valueOf(faker.bool().bool());
                 case "INT","INTEGER" -> Integer.toString(faker.hashCode());
                 case "FLOAT", "DOUBLE" -> Double.toString(faker.number().randomDouble(2, 1, 100)); // 소수점 두 자리, 1에서 100 사이
                 case "CHAR" -> Character.toString(faker.letterify("?").charAt(0));
@@ -405,6 +467,8 @@ public class MockService {
     }
 
     private Faker findLocal(String local) {
+        if(local == null)
+            return new Faker(Locale.ENGLISH);
         return switch (local) {
             case "EN", "ENGLISH" -> new Faker(Locale.ENGLISH);
             case "KO", "KOREAN" -> new Faker(Locale.KOREAN);

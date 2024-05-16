@@ -8,9 +8,11 @@ import { useModalStore, useProjectStore } from "../store";
 import DependencyModal from "../components/modal/DependencyModal";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getProjectDetail } from "../apis/project";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Initializer() {
   const { openModal } = useModalStore();
+  const { language } = useLanguage();
   const [initializerSetting, setInitializerSetting] = useState({
     project: "Gradle-Groovy",
     language: "Java",
@@ -36,8 +38,73 @@ export default function Initializer() {
     }
   }, [project]);
 
+  const translations = {
+    ko: {
+      projectName: "프로젝트 이름",
+      springInitializerSetting: "Spring 초기 설정",
+      selectSettings:
+        "Spring 초기 설정을 선택하여 새 Spring Boot 프로젝트를 구성하십시오",
+      project: "프로젝트",
+      language: "언어",
+      springBoot: "Spring Boot",
+      projectMetadata: "프로젝트 메타데이터",
+      group: "그룹",
+      artifact: "아티팩트",
+      name: "이름",
+      description: "설명",
+      packageName: "패키지 이름",
+      javaVersion: "자바 버전",
+      packaging: "패키징",
+      dependencies: "의존성",
+      addDependencies: "의존성 추가",
+      generate: "생성",
+      lombok: {
+        name: "롬복",
+        description:
+          "보일러 플레이트 코드를 줄이는 데 도움이 되는 Java 어노테이션 라이브러리입니다.",
+      },
+      springWeb: {
+        name: "스프링 웹",
+        description:
+          "Spring MVC를 사용하여 RESTful 응용 프로그램을 포함한 웹을 빌드합니다. 기본 임베디드 컨테이너로 Apache Tomcat을 사용합니다.",
+      },
+    },
+    en: {
+      projectName: "Project Name",
+      springInitializerSetting: "Spring Initializer Setting",
+      selectSettings:
+        "Select your preferred settings on Spring Initializer to configure your new Spring Boot project",
+      project: "Project",
+      language: "Language",
+      springBoot: "Spring Boot",
+      projectMetadata: "Project Metadata",
+      group: "Group",
+      artifact: "Artifact",
+      name: "Name",
+      description: "Description",
+      packageName: "Package Name",
+      javaVersion: "Java Version",
+      packaging: "Packaging",
+      dependencies: "Dependencies",
+      addDependencies: "Add Dependencies",
+      generate: "Generate",
+      lombok: {
+        name: "Lombok",
+        description:
+          "Java annotation library which helps to reduce boilerplate code.",
+      },
+      springWeb: {
+        name: "Spring Web",
+        description:
+          "Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.",
+      },
+    },
+  };
+
+  const t = translations[language];
+
   const openDependencyModal = () => {
-    openModal("Add Dependency", <DependencyModal />, {
+    openModal(t.addDependencies, <DependencyModal />, {
       dependencies: initializerSetting.dependencies,
       setDependencies: (dependencies) => {
         setInitializerSetting({
@@ -67,9 +134,7 @@ export default function Initializer() {
       projectId,
       initializerSetting,
       projectName: project.projectName,
-    }).then((data) => {
-      console.log(data);
-    });
+    }).then((data) => {});
   };
 
   const deleteDependency = (idx) => {
@@ -102,17 +167,14 @@ export default function Initializer() {
 
   return (
     <div className="flex h-full grow-0 flex-col items-start overflow-y-scroll px-12 py-10 pb-40">
-      <div className="text-1 font-semibold leading-normal">Project Name</div>
+      <div className="text-1 font-semibold leading-normal">{t.projectName}</div>
       <div className="mt-8 flex flex-col space-y-[27px] px-20">
         <div>
-          <h2 className="leading-normal">Spring Initializer Setting</h2>
-          <h4 className="leading-normal text-gray-500">
-            Select your preferred settings on Spring Initializer to configure
-            your new Spring Boot project
-          </h4>
+          <h2 className="leading-normal">{t.springInitializerSetting}</h2>
+          <h4 className="leading-normal text-gray-500">{t.selectSettings}</h4>
         </div>
         <div>
-          <h3 className="mb-2 leading-normal">Project</h3>
+          <h3 className="mb-2 leading-normal">{t.project}</h3>
           <Radio
             value={initializerSetting.project}
             options={initializerOptions.project}
@@ -122,7 +184,7 @@ export default function Initializer() {
           />
         </div>
         <div>
-          <h3 className="mb-2 leading-normal">Language</h3>
+          <h3 className="mb-2 leading-normal">{t.language}</h3>
           <Radio
             value={initializerSetting.language}
             options={initializerOptions.language}
@@ -132,7 +194,7 @@ export default function Initializer() {
           />
         </div>
         <div>
-          <h3 className="mb-2 leading-normal">Spring Boot</h3>
+          <h3 className="mb-2 leading-normal">{t.springBoot}</h3>
           <Radio
             value={initializerSetting.springBoot}
             options={initializerOptions.springBoot}
@@ -142,10 +204,10 @@ export default function Initializer() {
           />
         </div>
         <div>
-          <h3 className="mb-1 leading-normal">Project Metadata</h3>
+          <h3 className="mb-1 leading-normal">{t.projectMetadata}</h3>
           <div className="flex w-[750px] flex-col space-y-[15px] text-[14px] leading-normal">
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Group</div>
+              <div className={projectMetaDataClassName.text}>{t.group}</div>
               <input
                 className={projectMetaDataClassName.input}
                 value={initializerSetting.group}
@@ -155,7 +217,7 @@ export default function Initializer() {
               />
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Artifact</div>
+              <div className={projectMetaDataClassName.text}>{t.artifact}</div>
               <input
                 className={projectMetaDataClassName.input}
                 value={initializerSetting.artifact}
@@ -165,7 +227,7 @@ export default function Initializer() {
               />
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Name</div>
+              <div className={projectMetaDataClassName.text}>{t.name}</div>
               <input
                 className={projectMetaDataClassName.input}
                 value={initializerSetting.name}
@@ -175,7 +237,9 @@ export default function Initializer() {
               />
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Description</div>
+              <div className={projectMetaDataClassName.text}>
+                {t.description}
+              </div>
               <input
                 className={projectMetaDataClassName.input}
                 value={initializerSetting.description}
@@ -185,7 +249,9 @@ export default function Initializer() {
               />
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Package Name</div>
+              <div className={projectMetaDataClassName.text}>
+                {t.packageName}
+              </div>
               <input
                 className={projectMetaDataClassName.input}
                 value={initializerSetting.packageName}
@@ -195,7 +261,9 @@ export default function Initializer() {
               />
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Java Version</div>
+              <div className={projectMetaDataClassName.text}>
+                {t.javaVersion}
+              </div>
               <div className="w-full">
                 <Radio
                   value={initializerSetting.javaVersion}
@@ -212,7 +280,7 @@ export default function Initializer() {
               </div>
             </div>
             <div className={projectMetaDataClassName.container}>
-              <div className={projectMetaDataClassName.text}>Packaging</div>
+              <div className={projectMetaDataClassName.text}>{t.packaging}</div>
               <div className="w-full">
                 <Radio
                   value={initializerSetting.packaging}
@@ -232,28 +300,25 @@ export default function Initializer() {
         </div>
         <div>
           <div className="flex justify-between">
-            <h3 className="mb-1 leading-normal">Dependencies</h3>
+            <h3 className="mb-1 leading-normal">{t.dependencies}</h3>
             <button
               className="flex items-center text-gray-500 duration-200 hover:text-gray-700"
               type="button"
               onClick={openDependencyModal}
             >
-              <span className="mb-[2px] mr-1 text-3">+</span> Add Dependencies
+              <span className="mb-[2px] mr-1 text-3">+</span>{" "}
+              {t.addDependencies}
             </button>
           </div>
           <div className="ml-1 mt-2 flex flex-col space-y-2">
             <DependencyBox
-              name={"Lombok"}
-              description={
-                "Java annotation library which helps to reduce boilerplate code."
-              }
+              name={t.lombok.name}
+              description={t.lombok.description}
               fixed
             />
             <DependencyBox
-              name={"Spring Web"}
-              description={
-                "Build web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container."
-              }
+              name={t.springWeb.name}
+              description={t.springWeb.description}
               fixed
             />
             {initializerSetting.dependencies.map(
@@ -271,7 +336,7 @@ export default function Initializer() {
           </div>
         </div>
         <div className="ml-auto">
-          <Button type="Generate" onClick={onClick} />
+          <Button type={t.generate} onClick={onClick} />
         </div>
       </div>
     </div>

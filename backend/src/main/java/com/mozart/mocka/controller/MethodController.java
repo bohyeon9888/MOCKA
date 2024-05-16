@@ -1,7 +1,9 @@
 package com.mozart.mocka.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.dto.request.ApiCreateRequestDto;
+import com.mozart.mocka.dto.response.GroupResponseDto;
 import com.mozart.mocka.service.ApiService;
 import com.mozart.mocka.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -64,5 +67,12 @@ public class MethodController {
         apiService.deleteApi(projectId,apiId);
         apiService.createApi(projectId, groupId, requestDto);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("{projectId}/{apiId}")
+    public ResponseEntity<?> updateApi(@PathVariable("projectId") Long projectId,@PathVariable("apiId")Long apiId,@AuthenticationPrincipal CustomUserDetails user){
+        //조회 권한 체크
+        authService.methodReadCheck(user.getProviderId(),projectId, apiId);
+        return new ResponseEntity<>(apiService.getApi(apiId), HttpStatus.OK);
     }
 }

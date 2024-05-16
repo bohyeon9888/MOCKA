@@ -7,8 +7,11 @@ export default function ApiListAll({ groups }) {
         <div key={groupId} className="flex w-full flex-col items-center">
           <h2 className="w-4/5">{groupName}</h2>
           <div className="mt-4 flex w-full flex-col items-center space-y-5">
-            {apiProjects.length > 0 &&
-              apiProjects.map((api) => <ApiBox key={api.apiId} {...api} />)}
+            {apiProjects.length === 0 ? (
+              <div className="font-medium text-gray-500">No API created.</div>
+            ) : (
+              apiProjects.map((api) => <ApiBox key={api.apiId} {...api} />)
+            )}
           </div>
         </div>
       ))}

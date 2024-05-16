@@ -8,6 +8,8 @@ function Button({ type, onClick }) {
       case "Invite":
       case "Apply":
       case "Create":
+      case "Save":
+      case "Send":
         return "w-[71px]";
       default:
         return "w-[71px]";

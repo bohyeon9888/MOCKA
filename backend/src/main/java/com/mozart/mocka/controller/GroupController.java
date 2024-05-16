@@ -1,10 +1,10 @@
 package com.mozart.mocka.controller;
 
 import com.mozart.mocka.domain.CustomUserDetails;
+import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
-import com.mozart.mocka.service.GroupService;
-import com.mozart.mocka.service.ProjectHistoryService;
-import com.mozart.mocka.service.ProjectService;
+import com.mozart.mocka.dto.response.GroupResponseDto;
+import com.mozart.mocka.service.*;
 import com.mozart.mocka.util.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/group")
 public class GroupController {
-    private final ProjectService projectService;
     private final GroupService groupService;
-    private final ProjectHistoryService historyService;
+    private final AuthService authService;
+    private final ApiService apiService;
 
     @LogExecutionTime
     @GetMapping("{projectId}")
@@ -29,11 +29,9 @@ public class GroupController {
             @PathVariable("projectId") Long projectId,
             @AuthenticationPrincipal CustomUserDetails user
     ){
+        System.out.println("GetGroupList");
         //사용자 프로젝트 조회 권한 check
-        if (!historyService.checkAuthority(user.getId(), projectId)) {
-            return new ResponseEntity<>("no authority", HttpStatus.BAD_REQUEST);
-        }
-
+        authService.groupListReadCheck(user.getProviderId(),projectId);
 
         return new ResponseEntity<>(groupService.getGroupList(projectId), HttpStatus.OK);
     }
@@ -44,8 +42,7 @@ public class GroupController {
             @RequestBody CreateGroupRequestDto request,
             @AuthenticationPrincipal CustomUserDetails user
     ){
-        //project auth check
-
+        authService.groupCreateCheck(projectId, user.getProviderId());
         boolean isCreate = groupService.create(projectId,request.getGroupName(),request.getGroupUri());
         if(!isCreate)
             return new ResponseEntity<>("You can't create Group",HttpStatus.BAD_REQUEST);
@@ -62,8 +59,7 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 편집 권한 check
-
-
+        authService.groupUpdateCheck(user.getProviderId(),projectId,groupId);
         if(groupService.update(projectId,groupId,request.getGroupName(),request.getGroupUri()))
             return new ResponseEntity<>("Update Success",HttpStatus.OK);
 
@@ -78,9 +74,10 @@ public class GroupController {
             @AuthenticationPrincipal CustomUserDetails user
     ){
         //사용자 프로젝트 편집 권한 check
+        authService.groupDeleteCheck(user.getProviderId(),projectId,groupId);
 
-        groupService.deleteAllEntity(projectId, groupId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        apiService.deleteGroup(projectId,groupId);
+        return new ResponseEntity<>("delete success",HttpStatus.OK);
     }
 
     @LogExecutionTime
@@ -90,6 +87,9 @@ public class GroupController {
             @PathVariable("groupId") Long groupId,
             @AuthenticationPrincipal CustomUserDetails user
     ) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        authService.groupReadCheck(projectId,user.getProviderId(),groupId);
+
+        Groups group=groupService.getGroup(groupId);
+        return new ResponseEntity<>(GroupResponseDto.groupResponseDto_from_domain(group), HttpStatus.OK);
     }
 }

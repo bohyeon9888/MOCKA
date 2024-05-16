@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Groups, Long> {
     void deleteByProject_ProjectId(Long projectId);
-
+    Groups findByGroupId(Long group);
     List<Groups> findByProject_ProjectId(Long projectId);
 }

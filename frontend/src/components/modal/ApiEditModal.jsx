@@ -31,7 +31,7 @@ export default function ApiEditModal() {
     apiResponse: [],
     apiResponseIsArray: false,
     apiResponseSize: 0,
-    apiPathVariable: initPathVariables("/user/{userId}?name=String&age=Int"),
+    apiPathVariable: [],
   });
   const [parameters, setParameters] = useState([]);
 
@@ -68,9 +68,8 @@ export default function ApiEditModal() {
       groupId,
     }).then(() => {
       getProjectDetail(project.projectId).then((data) => {
-        setProject(data).then(() => {
-          closeModal();
-        });
+        setProject(data);
+        closeModal();
       });
     });
   };
@@ -183,22 +182,24 @@ export default function ApiEditModal() {
           setPathVariableType={setPathVariableType}
         />
       </ContentBox>
-      <ContentBox
-        title="Request Body"
-        description="Define Resource template, it will be used to generate mock data."
-      >
-        <RequestBodyEditor
-          apiRequest={document.apiRequest}
-          setApiRequest={(apiRequest) => {
-            setDocument((document) => {
-              return {
-                ...document,
-                apiRequest,
-              };
-            });
-          }}
-        />
-      </ContentBox>
+      {document.apiMethod !== "GET" && (
+        <ContentBox
+          title="Request Body"
+          description="Define Resource template, it will be used to generate mock data."
+        >
+          <RequestBodyEditor
+            apiRequest={document.apiRequest}
+            setApiRequest={(apiRequest) => {
+              setDocument((document) => {
+                return {
+                  ...document,
+                  apiRequest,
+                };
+              });
+            }}
+          />
+        </ContentBox>
+      )}
       <ContentBox
         title="Response Body"
         description="Define Resource template, it will be used to generate mock data."

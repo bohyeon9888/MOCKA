@@ -6,7 +6,6 @@ import com.mozart.mocka.jwt.JWTFilter;
 import com.mozart.mocka.jwt.JWTUtil;
 import com.mozart.mocka.service.CustormOauth2UserService;
 import com.mozart.mocka.service.RefreshService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -36,6 +36,7 @@ public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler successHandler;
     private final JWTUtil jwtUtil;
     private final RefreshService refreshService;
+    private final AuthenticationEntryPoint entryPoint;
 
     @Value("#{'${spring.security.banned-path}'.split(',')}")
     private String[] paths;
@@ -76,6 +77,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll());
 
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(handler->handler.authenticationEntryPoint(entryPoint))
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshService), LogoutFilter.class);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

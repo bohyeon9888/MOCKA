@@ -2,7 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import Method from "./Method";
 import PrettyJson from "./PrettyJson";
 import formatRequestBody from "../utils/formatRequestBody";
-import formatResponseBody from "../utils/fromatResponseBody";
+import formatResponseBody from "../utils/formatResponseBody";
+import { deleteApi } from "../apis/api";
+import ApiDeleteModal from "./modal/ApiDeleteModal";
+import { useModalStore, useProjectStore } from "../store";
+import { useParams } from "react-router-dom";
+import ApiEditModal from "./modal/ApiEditModal";
 /**바꿀거 */
 // 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
 
@@ -27,6 +32,9 @@ function ApiBox({
   const [apiUri] = useState(apiUriStr); //나중에 명세서 변수보고 바꾸기 🍒
   const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
   const [CopySuccess, setCopySuccess] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const { openModal } = useModalStore();
+  const { projectId } = useParams();
 
   const toggleDetails = () => {
     setIsDetailVisible(!isDetailVisible);
@@ -43,7 +51,7 @@ function ApiBox({
     : {
         // width: "1400px",
         width: "80%",
-        height: "120px",
+        height: "110px",
         transition: "all 0.3s ease",
       };
 
@@ -108,25 +116,51 @@ function ApiBox({
     }
   };
 
+  const openApiEditModal = () => {
+    openModal("Edit API", <ApiEditModal />, {
+      document: {
+        name,
+        description,
+        apiId,
+        apiMethod,
+        apiUri: apiUriStr,
+        apiRequest: apiRequests,
+        apiResponse: apiResponses,
+        apiResponseIsArray,
+        apiResponseSize,
+        apiPathVariable: apiPaths,
+      },
+    });
+  };
+
+  //apiBox 삭제
+  const openApiDeleteModal = () => {
+    openModal("Delete Api", <ApiDeleteModal />, { apiName, projectId, apiId });
+  };
+
   return (
     <div
       className="flex flex-col rounded-[15px] border-2 border-gray-200 bg-white p-8 pt-6"
       style={boxStyle}
     >
       <div className="flex items-center">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          className="h-[30px] w-full rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] pr-[100px] text-[12px]"
-          placeholder={placeholderText}
-        />
-        {isSaved ? (
+        {editMode ? (
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            className="h-[30px] w-full rounded-[4px] border-[1px] border-gray-400 bg-white pl-[10px] pr-[100px] text-[12px]"
+            placeholder={placeholderText}
+          />
+        ) : (
+          <h3>{name || "API"}</h3>
+        )}
+        {/* {isSaved ? (
           <h6 className="ml-[-60px] text-green-400">saved</h6>
         ) : (
           <h6 className="ml-[-100px] text-red-400">press enter</h6>
-        )}
+        )} */}
       </div>
       <div className="mt-[13px] flex items-center">
         <Method type={methodType} />
@@ -156,6 +190,14 @@ function ApiBox({
             src="/asset/project/project-edit.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
+            onClick={openApiEditModal}
+          />
+          {/* 삭제 */}
+          <img
+            src="/asset/project/project-delete.svg"
+            className="mr-[18px] h-4 cursor-pointer"
+            alt="project-delete"
+            onClick={openApiDeleteModal}
           />
           {/* 자세히 보기 (위/아래화살표 아이콘) */}
           {isDetailVisible ? (

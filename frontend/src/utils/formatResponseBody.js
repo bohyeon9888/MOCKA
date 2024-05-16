@@ -4,7 +4,7 @@ const extractObject = (object) => {
 
   object.forEach(({ arrayList, key, type, value }) => {
     if (type === "Object") {
-      result[key] = extractObject(value);
+      result[key] = arrayList ? [extractObject(value)] : extractObject(value);
     } else {
       result[key] = arrayList ? [type] : type;
     }
@@ -25,7 +25,7 @@ const formatResponseBody = (data, apiResponseIsArray) => {
   const result = {};
   parsedResponses.forEach(({ arrayList, key, type, value }) => {
     if (type === "Object") {
-      result[key] = extractObject(value);
+      result[key] = arrayList ? [extractObject(value)] : extractObject(value);
     } else {
       result[key] = arrayList ? [type] : type;
     }

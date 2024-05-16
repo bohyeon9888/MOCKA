@@ -10,7 +10,7 @@ export default function PrettyJson({ data }) {
       linksNewTab: true,
       trailingCommas: true,
     });
-  }, []);
+  }, [data]);
 
   return <pre ref={ref} className="flex-1 overflow-auto py-2" />;
 }

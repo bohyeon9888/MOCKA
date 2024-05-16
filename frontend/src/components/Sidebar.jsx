@@ -1,8 +1,10 @@
+// src/pages/Sidebar.js
 import { useState } from "react";
 import { useModalStore, useProjectStore, useUserStore } from "../store";
 import LoginModal from "./modal/LoginModal";
 import GroupList from "./sidebar/GroupList";
 import { Link } from "react-router-dom";
+import { useLanguage } from "../contexts/LanguageContext";
 
 function Sidebar() {
   const { openModal } = useModalStore();
@@ -10,6 +12,23 @@ function Sidebar() {
   const [isRecentsOpen, setIsRecentsOpen] = useState(false);
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
   const { user } = useUserStore();
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      projectList: "프로젝트 목록",
+      recents: "최근 항목",
+      signIn: "로그인",
+    },
+    en: {
+      projectList: "PROJECT LIST",
+      recents: "RECENTS",
+      signIn: "Sign in",
+    },
+  };
+
+  const t = translations[language];
+
   const toggleRecents = () => {
     setIsRecentsOpen(!isRecentsOpen);
   };
@@ -23,14 +42,24 @@ function Sidebar() {
   };
 
   return (
-    <aside className="flex w-[216px] shrink-0 flex-col items-center space-y-5 bg-secondary-color py-5">
+    <aside
+      style={{
+        height: "calc(100vh - 44px)",
+      }}
+      className="flex w-[216px] shrink-0 flex-col items-center space-y-3 bg-secondary-color py-5"
+    >
       <div className="flex h-10 justify-center">
-        <h5 className="text-center text-4 font-bold leading-10 text-gray-700">
-          {project ? project.projectName : "PROJECT LIST"}
+        <h5 className="text-center text-3 font-bold leading-10 text-gray-700">
+          {project ? project.projectName : t.projectList}
         </h5>
       </div>
       <div className="h-[1px] w-[170px] items-center border border-dashed bg-sidebar-division-color" />
-      <div className="flex w-full grow flex-col px-3">
+      <div
+        className="flex w-full flex-col px-3"
+        style={{
+          height: "calc(100% - 124px)",
+        }}
+      >
         {!project && (
           <>
             <div
@@ -52,7 +81,7 @@ function Sidebar() {
                   />
                 )}
               </div>
-              <h5 className="font-bold text-gray-700">RECENTS</h5>
+              <h5 className="font-bold text-gray-700">{t.recents}</h5>
             </div>
             <div className="pl-6">
               {isRecentsOpen &&
@@ -70,42 +99,11 @@ function Sidebar() {
             </div>
           </>
         )}
-        {project && <GroupList project={project} />}
-        {/* <div
-          className="mt-4 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-white duration-300 hover:bg-gray-300"
-          onClick={toggleTeams}
-        >
-          <div className="mr-7 w-3">
-            {isTeamsOpen ? (
-              <img
-                src="/asset/sidebar/sidebar-down-pointer.svg"
-                className="h-1.5 w-full"
-                alt="sidebar-down-pointer"
-              />
-            ) : (
-              <img
-                src="/asset/sidebar/sidebar-right-pointer.svg"
-                className="h-2.5 w-full"
-                alt="sidebar-right-pointer"
-              />
-            )}
-          </div>
-          <h5 className="font-bold text-gray-700">TEAMS</h5>
-        </div>
-        {isTeamsOpen && (
-          <div className="pl-6">
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">Team Item 1</h5>
-            </div>
-            <div className="mt-2 flex cursor-pointer items-center rounded-md p-2.5 px-2 text-white duration-300 hover:bg-gray-300">
-              <h5 className="truncate font-bold text-gray-700">Team Item 2</h5>
-            </div>
-          </div>
-        )} */}
+        {project && <GroupList />}
       </div>
       <div className="h-[1px] w-[170px] items-center bg-sidebar-division-color" />
       <div
-        className="flex w-[155px] cursor-pointer items-center"
+        className="flex h-10 w-[155px] cursor-pointer items-center"
         onClick={openLoginModal}
       >
         <img
@@ -114,7 +112,7 @@ function Sidebar() {
           alt="sidebar-profile"
         />
         <h5 className="my-1 ml-2 w-full shrink text-center text-[13px] font-bold text-gray-700">
-          {user ? user.nickname : "Sign in"}
+          {user ? user.nickname : t.signIn}
         </h5>
       </div>
     </aside>

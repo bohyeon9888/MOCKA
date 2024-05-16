@@ -4,12 +4,12 @@ import Switch from "../Switch";
 export default function RequestBodyEditor({ apiRequest, setApiRequest }) {
   const addNewRequest = () => {
     let newKeyNum = 0;
-    while (apiRequest.find(({ key }) => key === `key ${newKeyNum}`))
+    while (apiRequest.find(({ key }) => key === `key_${newKeyNum}`))
       newKeyNum += 1;
     setApiRequest([
       ...apiRequest,
       {
-        key: `key ${newKeyNum}`,
+        key: `key_${newKeyNum}`,
         type: "String",
         value: null,
         arrayList: false,
