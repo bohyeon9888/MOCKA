@@ -31,11 +31,13 @@ export default function GroupList() {
 
   const onClickDeleteGroup = (groupId) => {
     deleteGroup({ projectId: project.projectId, groupId }).then(() => {
-      getProjectDetail(project.projectId).then((data) => {
-        setProject(data);
-        if (groupId == selectedGroupId)
-          navigate(`/project/${project.projectId}`);
-      });
+      setTimeout(() => {
+        getProjectDetail(project.projectId).then((data) => {
+          setProject(data);
+          if (groupId == selectedGroupId)
+            navigate(`/project/${project.projectId}`);
+        });
+      }, 100);
     });
   };
 
@@ -89,16 +91,17 @@ export default function GroupList() {
               <h5 className="grow truncate pr-4 font-bold text-gray-700">
                 {groupName}
               </h5>
-              {hoveredGroupId === groupId && (
-                <img
-                  className="-mr-1 size-[12px] opacity-40 hover:opacity-100"
-                  src="/asset/project/project-delete-bold.svg"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClickDeleteGroup(groupId);
-                  }}
-                />
-              )}
+              {project?.defaultGroupId !== groupId &&
+                hoveredGroupId === groupId && (
+                  <img
+                    className="-mr-1 size-[12px] opacity-40 hover:opacity-100"
+                    src="/asset/project/project-delete-bold.svg"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClickDeleteGroup(groupId);
+                    }}
+                  />
+                )}
             </div>
             <div className="mt-2 flex flex-col space-y-1 pl-6">
               {selectedGroupId == groupId &&

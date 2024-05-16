@@ -24,7 +24,6 @@ export default function Tester({ project }) {
     localStorage?.tabs &&
     JSON.parse(localStorage.tabs) &&
     JSON.parse(localStorage.tabs)[projectId];
-  console.log(savedTabs);
   const [tabs, setTabs] = useState(savedTabs || []);
   const apiId = searchParams.get("apiId");
   const [document, setDocument] = useState({
@@ -78,6 +77,8 @@ export default function Tester({ project }) {
             },
           ];
       });
+
+      setResponse(null);
     });
   }, [apiId]);
 
