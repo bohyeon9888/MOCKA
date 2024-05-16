@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "../Input";
 import UserBox from "../UserBox";
 import validateEmail from "../../utils/validateEmail";
@@ -6,12 +6,41 @@ import DropDown from "../DropDown";
 import Button from "../button/Button";
 import { useModalStore } from "../../store";
 import { inviteMembers } from "../../apis/invite";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function InviteModal() {
+  const { state } = useModalStore();
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      placeHolder: "예: mocka304@gmail.com",
+      instruction: "프로젝트에 초대할 사람의 이메일을 입력해주세요",
+      invite: "초대",
+      viewer: "뷰어",
+      editor: "편집자",
+    },
+    en: {
+      placeHolder: "Example: mocka304@gmail.com",
+      instruction:
+        "Please enter the email of the person you want to invite to the project",
+      invite: "Invite",
+      viewer: "Viewer",
+      editor: "Editor",
+    },
+  };
+
+  const t = translations[language];
+
+  // Initial state for role based on language
+  const [role, setRole] = useState(t.viewer);
   const [inviteList, setInviteList] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [role, setRole] = useState("Viewer");
-  const { state } = useModalStore();
+
+  // Update role when language changes
+  useEffect(() => {
+    setRole(t.viewer);
+  }, [language]);
 
   const removeItem = (idx) => {
     setInviteList([
@@ -37,11 +66,12 @@ export default function InviteModal() {
   };
 
   const onClick = () => {
+    const translatedRole = role === t.viewer ? "VIEWER" : "EDITOR";
     inviteMembers({
       teamMember: inviteList.map((email) => {
         return {
           email,
-          projectRole: role.toUpperCase(),
+          projectRole: translatedRole,
         };
       }),
       projectId: state.projectId,
@@ -49,10 +79,13 @@ export default function InviteModal() {
   };
 
   return (
-    <div className="flex flex-col space-y-[27px] px-5">
+    <div
+      className="flex flex-col space-y-[27px] px-5"
+      style={{ width: "530px", maxWidth: "100%" }}
+    >
       <div className="flex flex-col space-y-1">
         <Input
-          placeHolder="Example: mocka304@gmail.com"
+          placeHolder={t.placeHolder}
           onKeyDownHandler={onKeyDownHandler}
           changeHandler={changeHandler}
           value={inputValue}
@@ -61,7 +94,7 @@ export default function InviteModal() {
           isFull
         />
         <div className="text-medium px-2 text-4 leading-normal text-gray-500">
-          Please enter the email of the person you want to invite to the project
+          {t.instruction}
         </div>
       </div>
       <div>
@@ -75,14 +108,14 @@ export default function InviteModal() {
           />
         ))}
       </div>
-      <div className="flex w-full flex-row justify-end space-x-[15px]">
+      <div className="relative flex w-full flex-row justify-end space-x-[15px]">
         <DropDown
           size="small"
           value={role}
-          options={["Viewer", "Editor"]}
+          options={[t.viewer, t.editor]}
           changeHandler={setRole}
         />
-        <Button type="Invite" onClick={onClick} />
+        <Button type={t.invite} onClick={onClick} />
       </div>
     </div>
   );

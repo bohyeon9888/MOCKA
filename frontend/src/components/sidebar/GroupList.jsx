@@ -5,6 +5,7 @@ import GroupEditModal from "../modal/GroupEditModal";
 import { useState } from "react";
 import { deleteGroup } from "../../apis/group";
 import { getProjectDetail } from "../../apis/project";
+import { useLanguage } from "../../contexts/LanguageContext";
 import deleteQueryParam from "../../utils/deleteQueryParam";
 import updateQueryParam from "../../utils/updateQueryParam";
 
@@ -14,7 +15,20 @@ export default function GroupList() {
   const selectedGroupId = searchParams.get("groupId");
   const { openModal } = useModalStore();
   const { project, setProject } = useProjectStore();
+  const { language } = useLanguage();
   const [hoveredGroupId, setHoveredGroupId] = useState();
+
+  const translations = {
+    ko: {
+      createNewGroup: "새 그룹 만들기",
+    },
+    en: {
+      createNewGroup: "Create New Group",
+    },
+  };
+
+  const t = translations[language];
+
   const onClickDeleteGroup = (groupId) => {
     deleteGroup({ projectId: project.projectId, groupId }).then(() => {
       getProjectDetail(project.projectId).then((data) => {
@@ -105,17 +119,14 @@ export default function GroupList() {
         className="ml-auto mr-auto mt-auto flex h-[15px] flex-row items-center opacity-60 duration-200 hover:opacity-100"
         type="button"
         onClick={() => {
-          openModal("Create New Group", <GroupEditModal />);
+          openModal(t.createNewGroup, <GroupEditModal />);
         }}
       >
-        {/* <span className="mr-1 mt-[1px] flex size-[14px] items-center justify-center rounded-full bg-black pb-[2px] text-[13px] font-semibold leading-none text-white">
-          +
-        </span> */}
         <img
           className="mb-[1px] mr-1 size-[14px]"
           src="/asset/sidebar/sidebar-plus.svg"
         />
-        <span className="text-[15px] font-semibold">Create New Group</span>
+        <span className="text-[15px] font-semibold">{t.createNewGroup}</span>
       </button>
     </div>
   );

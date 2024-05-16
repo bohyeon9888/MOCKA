@@ -12,7 +12,7 @@ import Sidebar from "./components/Sidebar";
 import ModalContainer from "./components/ModalContainer";
 import useModalStore from "./store/modal";
 import Login from "./pages/Login";
-
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { isAuthenticated } from "./utils/auth";
 import Main from "./pages/Main";
 import Initializer from "./pages/Initializer";
@@ -39,25 +39,30 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Header />
-      <main className="flex w-full grow flex-row">
-        <Sidebar />
-        <div className="h-full grow overflow-hidden">
-          <Routes>
-            <Route path="/login/google" element={<Login />} />
-            <Route path="/main" element={<Main />} />
-            <Route path="/update-history" element={<UpdateHistory />} />
-            <Route element={<RequireAuthRoutes />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/initializer/:projectId" element={<Initializer />} />
-              <Route path="/project/:projectId" element={<Project />} />
-              <Route path="/invite" element={<Invite />} />
-            </Route>
-            <Route path="/*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </div>
-      </main>
-      {isOpen && <ModalContainer title={title}>{children}</ModalContainer>}
+      <LanguageProvider>
+        <Header />
+        <main className="flex w-full grow flex-row">
+          <Sidebar />
+          <div className="h-full grow overflow-hidden">
+            <Routes>
+              <Route path="/login/google" element={<Login />} />
+              <Route path="/main" element={<Main />} />
+              <Route path="/update-history" element={<UpdateHistory />} />
+              <Route element={<RequireAuthRoutes />}>
+                <Route path="/" element={<Home />} />
+                <Route
+                  path="/initializer/:projectId"
+                  element={<Initializer />}
+                />
+                <Route path="/project/:projectId" element={<Project />} />
+                <Route path="/invite" element={<Invite />} />
+              </Route>
+              <Route path="/*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </main>
+        {isOpen && <ModalContainer title={title}>{children}</ModalContainer>}
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
