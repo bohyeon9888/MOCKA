@@ -330,13 +330,16 @@ public class MockService {
                     for (int i = 0; i < response.getArraySize(); i++) {
                         list.add(getObject(response));
                     }
-                    result.put(response.getKey(), list.toString());
+                    result.put(response.getKey(), mapper.valueToTree(list));
                 }
                 else {
-                    if(response.getType().equals("Object"))
+                    if(response.getType().equals("Object")){
+                        log.info("creatMock : " + response.getKey());
                         result.put(response.getKey(),getObject(response));
-                    else
+                    }
+                    else{
                         result.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(),response.getFakerSub(), response.getType()));
+                    }
                 }
             }
             return result;
@@ -344,7 +347,7 @@ public class MockService {
     }
 
     public JsonNode getObject(ApiResponse response){
-        log.info("jsonString : " + response.getData());
+        log.info("jsonString : " + response.getData() +" "+ response.getType());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
 //        if(!response.getType().equals("Object")){
@@ -357,7 +360,7 @@ public class MockService {
         try {
             if(response.getType().equals("Object"))
                 apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
-        } catch (Exception e) {
+    } catch (Exception e) {
             try {
                 String jsonString = mapper.writeValueAsString(response.getData());
 
@@ -396,7 +399,7 @@ public class MockService {
                     }
                     resultList.add(temp);
                 }
-                return mapper.valueToTree(mapper.valueToTree(resultList));
+                return mapper.valueToTree(resultList);
             }
             else{
                 log.info("3#");
@@ -411,9 +414,10 @@ public class MockService {
             }
         }
         else { // not list
-            if(response.equals("Object")){
+            log.info("not list");
+            if(response.getType().equals("Object")){
+                log.info("object");
                 for (ResponseApiDto responseNode : apiResponseList) {
-                    log.info("6");
                     if(!responseNode.getType().equals("Object"))
                         result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
                     else
@@ -424,10 +428,10 @@ public class MockService {
                 }
             }
             else {
+                log.info("not object");
                 return mapper.valueToTree(generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
                 //result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
             }
-            log.info("7");
             return result;
         }
     }
