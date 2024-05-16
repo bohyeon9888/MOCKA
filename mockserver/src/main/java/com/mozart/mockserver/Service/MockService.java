@@ -2,7 +2,9 @@ package com.mozart.mockserver.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.javafaker.Faker;
 import com.mozart.mockserver.domain.*;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 
@@ -291,32 +294,39 @@ public class MockService {
 
     public Object createMock(Long apiId) {
         log.info("createMock");
+
+        //project 확인
         Optional<ApiProjects> apiProjects = apiProjectRepository.findById(apiId);
         if(apiProjects.isEmpty())
             return null;
+
+        //request 정보 get
         List<ApiResponse> apiResponseList = apiResponseRepository.findByApiProject_ApiId(apiId);
         ObjectMapper mapper = new ObjectMapper();
 
+        //request 가 배열일 경우
         if(apiProjects.get().isApiResponseIsArray()){
             List<ObjectNode> resultList = new ArrayList<>();
+
+            //list 갯수 만큼 생성
             for (int i = 0; i < apiProjects.get().getApiResponseSize(); i++) {
                 ObjectNode temp = mapper.createObjectNode();
                 for (ApiResponse response : apiResponseList) {
                     if(!response.getType().equals("Object"))
                         temp.put(response.getKey(),generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
-                    else
+                    else //object
                         temp.put(response.getKey(),getObject(response));
                 }
                 resultList.add(temp);
             }
             return resultList;
         }
-        else {
+        else { // request가 객체일 경우
             ObjectNode result = mapper.createObjectNode();
             for (ApiResponse response : apiResponseList) {
                 log.info(response.getKey() + response.getArrayList() + response.getType());
                 if(response.getArrayList()){
-                    List<ObjectNode> list = new ArrayList<>();
+                    List<JsonNode> list = new ArrayList<>();
                     for (int i = 0; i < response.getArraySize(); i++) {
                         list.add(getObject(response));
                     }
@@ -333,19 +343,22 @@ public class MockService {
         }
     }
 
-    public ObjectNode getObject(ApiResponse response){
+    public JsonNode getObject(ApiResponse response){
+        log.info("jsonString : " + response.getData());
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        if(!response.getType().equals("Object")){
-            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
-            return result;
-        }
+//        if(!response.getType().equals("Object")){
+//            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+//            return result;
+//        }
         List<ResponseApiDto> apiResponseList;
 
+        //api responseList check
         try {apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
         } catch (Exception e) {
             try {
                 String jsonString = mapper.writeValueAsString(response.getData());
+
                 List<Map<String, String>> mapList = parseStringToMapList(jsonString);
                 jsonString = "[" + mapper.writeValueAsString(mapList).replace("[","").replace("]","") + "]";
                 apiResponseList = mapper.readValue(jsonString, new TypeReference<List<ResponseApiDto>>() {});
@@ -355,8 +368,13 @@ public class MockService {
             }
         }
 
+        //object가 list 일때
         if(response.getArrayList()){ //list
             List<ObjectNode> resultList = new ArrayList<>();
+            log.info("list");
+            log.info(response.getKey() +response.getArrayList()+ response.getArraySize() );
+            if(response.getArraySize() < 0)
+                response.setArraySize(2);
             for (int i = 0; i < response.getArraySize(); i++) {
                 log.info("1");
                 ObjectNode temp = mapper.createObjectNode();
@@ -364,16 +382,30 @@ public class MockService {
                     log.info("2");
                     if(!responseNode.getType().equals("Object"))
                         temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
-                    else
+                    else {
+                        if(response.getArrayList()){
+                            List<JsonNode> array1 = new ArrayList<>();
+
+                        }else{
+
+                        }
                         temp.put(responseNode.getKey(),getObject(new ApiResponse
                                 (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
                                         responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+                    }
+
                 }
                 log.info("3");
                 resultList.add(temp);
             }
-            log.info("4");
-            return result.put("adsafsdaf","safdsaf");
+            log.info("4" + response.getArraySize());
+            log.info(response.getData());
+//            JsonNode jsonNode = mapper.valueToTree(resultList);
+//            result.set("responseApiDtoList", mapper.valueToTree(resultList));
+            // 리스트를 ArrayNode로 변환
+            ArrayNode arrayNode = mapper.valueToTree(resultList);
+            return mapper.valueToTree(resultList);
+//            return result.put("adsafsdaf","safdsaf");
         }
         else { // not list
             for (ResponseApiDto responseNode : apiResponseList) {
@@ -413,6 +445,8 @@ public class MockService {
     }
 
     private Faker findLocal(String local) {
+        if(local == null)
+            return new Faker(Locale.ENGLISH);
         return switch (local) {
             case "EN", "ENGLISH" -> new Faker(Locale.ENGLISH);
             case "KO", "KOREAN" -> new Faker(Locale.KOREAN);
