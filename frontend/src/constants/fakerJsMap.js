@@ -34,10 +34,14 @@ const fakerJsMap = {
   Byte: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Byte"] },
+    min: -128,
+    max: 127,
   },
   Short: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Short"] },
+    min: -32768,
+    max: 32767,
   },
   Character: {
     first: ["Character", "직접 입력"],

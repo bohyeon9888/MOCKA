@@ -23,9 +23,9 @@ export default function RequestPathVariableBox({
     setPathVariables(newQuery);
   };
 
-  const setValue = (idx, value) => {
+  const setInput = (idx, value) => {
     const newQuery = [...pathVariables];
-    newQuery[idx].value = value;
+    newQuery[idx].input = value;
     setPathVariables(newQuery);
   };
 
@@ -50,7 +50,7 @@ export default function RequestPathVariableBox({
       ) : (
         <div>
           {pathVariables.map(
-            ({ key, data, first, second, min, max, value }, idx) => (
+            ({ key, data, first, second, min, max, input }, idx) => (
               <div key={key} className="flex flex-row items-center space-x-2">
                 <Input value={key} readOnly />
                 <div className="pb-1 text-2 text-gray-500">:</div>
@@ -58,7 +58,7 @@ export default function RequestPathVariableBox({
                   value={data}
                   readOnly
                   style={{
-                    width: "85px",
+                    width: "90px",
                     textAlign: "center",
                   }}
                 />
@@ -71,9 +71,9 @@ export default function RequestPathVariableBox({
                 />
                 {first === "직접 입력" ? (
                   <Input
-                    value={value}
+                    value={input}
                     changeHandler={(e) => {
-                      setValue(idx, e.target.value);
+                      setInput(idx, e.target.value);
                     }}
                   />
                 ) : (

@@ -23,9 +23,9 @@ export default function RequestQueryParamsBox({
     setQueryParameters(newQuery);
   };
 
-  const setValue = (idx, value) => {
+  const setInput = (idx, value) => {
     const newQuery = [...queryParameters];
-    newQuery[idx].value = value;
+    newQuery[idx].input = value;
     setQueryParameters(newQuery);
   };
   const setMin = (idx, value) => {
@@ -49,7 +49,7 @@ export default function RequestQueryParamsBox({
       ) : (
         <div>
           {queryParameters.map(
-            ({ key, type, first, second, min, max, value }, idx) => (
+            ({ key, type, first, second, min, max, input }, idx) => (
               <div key={key} className="flex flex-row items-center space-x-2">
                 <Input value={key} readOnly />
                 <div className="pb-1 text-2 text-gray-500">:</div>
@@ -57,7 +57,7 @@ export default function RequestQueryParamsBox({
                   value={type}
                   readOnly
                   style={{
-                    width: "85px",
+                    width: "90px",
                     textAlign: "center",
                   }}
                 />
@@ -70,9 +70,9 @@ export default function RequestQueryParamsBox({
                 />
                 {first === "직접 입력" ? (
                   <Input
-                    value={value}
+                    value={input}
                     changeHandler={(e) => {
-                      setValue(idx, e.target.value);
+                      setInput(idx, e.target.value);
                     }}
                   />
                 ) : (

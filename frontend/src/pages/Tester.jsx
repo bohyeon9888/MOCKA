@@ -45,7 +45,7 @@ export default function Tester({ project }) {
   };
 
   const handleResponseCopyClick = () => {
-    navigator.clipboard.writeText(response);
+    navigator.clipboard.writeText(JSON.stringify(response));
   };
 
   useEffect(() => {
@@ -257,7 +257,7 @@ export default function Tester({ project }) {
                 <h2>Response</h2>
                 <img
                   src="/asset/tester/tester-copy.svg"
-                  className="h-4 cursor-pointer"
+                  className="mt-2 h-4 cursor-pointer"
                   onClick={handleResponseCopyClick}
                 />
               </div>

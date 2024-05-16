@@ -37,6 +37,7 @@ const randomValue = ({ first, second, input, min, max }) => {
       min: BigInt("-9223372036854775807"),
       max: BigInt("9223372036854775808"),
     });
+  if (second === "Byte") return faker.number.int({ min, max });
   return faker[first.toLowerCase()][second.toLowerCase()]({ min, max });
 };
 

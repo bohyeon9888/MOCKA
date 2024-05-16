@@ -113,7 +113,7 @@ function RequestBodyItem({
           value={type}
           readOnly
           style={{
-            width: "85px",
+            width: "90px",
             textAlign: "center",
           }}
         />
@@ -141,14 +141,14 @@ function RequestBodyItem({
           ))}
         {arrayList && (
           <div className="flex grow items-center space-x-2">
-            {/* <Input
+            <Input
               value="Array"
               readOnly
               style={{
-                width: "85px",
+                width: "80px",
                 textAlign: "center",
               }}
-            /> */}
+            />
             <div className="font-semibold">x</div>
             <input
               type="number"

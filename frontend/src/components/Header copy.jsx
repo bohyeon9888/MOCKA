@@ -51,6 +51,26 @@ function Header() {
     };
   }, [showHeaderProjectEditModal]); // 옵션 상태 변경될때마다 업데이트
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      // 모달이 열려있고, 클릭한 요소가 모달 내부가 아니라면 모달을 닫음
+      if (
+        showHeaderLanguageModal &&
+        !event.target.closest("#header-language-modal")
+      ) {
+        setShowHeaderLanguageModal(false);
+      }
+    };
+
+    if (showHeaderLanguageModal) {
+      document.addEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [showHeaderLanguageModal]); // 옵션 상태 변경될때마다 업데이트
+
   const openInviteModal = () => {
     openModal(t.inviteMember, <InviteModal />, {
       projectId: project.projectId,
