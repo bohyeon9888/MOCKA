@@ -3,11 +3,24 @@ import dependencyList from "../../constants/dependencies";
 import combineClassName from "../../utils/combineClassName";
 import CheckBox from "../CheckBox";
 import { useModalStore } from "../../store";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function DependencyModal() {
   const [selected, setSelected] = useState([]);
   const { state, closeModal } = useModalStore();
   const { dependencies, setDependencies } = state;
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      add: "추가",
+    },
+    en: {
+      add: "Add",
+    },
+  };
+
+  const t = translations[language];
 
   const selectedClassName = "mb-1 text-[17px] text-green-600 font-medium";
 
@@ -82,7 +95,7 @@ export default function DependencyModal() {
         className="ml-auto mt-4 flex h-[30px] w-[85px] shrink-0 items-center justify-center rounded-[4px] bg-green-500 px-1 text-white"
         onClick={addDependencies}
       >
-        <div className={selected.length > 0 ? "ml-1" : ""}>Add</div>
+        <div className={selected.length > 0 ? "ml-1" : ""}>{t.add}</div>
         {selected.length > 0 && (
           <div className="ml-1.5 flex size-[18px] items-center justify-center rounded-full bg-white text-[11px] font-medium text-green-500">
             {selected.length}

@@ -3,7 +3,9 @@ import { useModalStore, useProjectStore } from "../store";
 import InviteModal from "./modal/InviteModal";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import HeaderProjectEditModal from "./modal/HeaderProejctEditModal";
+import HeaderLanguageModal from "./modal/HeaderLanguageModal";
 import updateQueryParam from "../utils/updateQueryParam";
+import { useLanguage } from "../contexts/LanguageContext";
 
 function Header() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,7 +16,20 @@ function Header() {
   const { project } = useProjectStore();
   const navigate = useNavigate();
   const [showHeaderProjectEditModal, setShowHeaderProjectEditModal] =
-    useState(false); //옵션버튼
+    useState(false); // 옵션버튼
+  const [showHeaderLanguageModal, setShowHeaderLanguageModal] = useState(false); // 언어 버튼
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      inviteMember: "멤버 초대",
+    },
+    en: {
+      inviteMember: "Invite Member",
+    },
+  };
+
+  const t = translations[language];
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -37,7 +52,7 @@ function Header() {
   }, [showHeaderProjectEditModal]); // 옵션 상태 변경될때마다 업데이트
 
   const openInviteModal = () => {
-    openModal("Invite Member", <InviteModal />, {
+    openModal(t.inviteMember, <InviteModal />, {
       projectId: project.projectId,
     });
   };
@@ -45,6 +60,11 @@ function Header() {
   const toggleHeaderProjectEditModal = (event) => {
     event.stopPropagation();
     setShowHeaderProjectEditModal(!showHeaderProjectEditModal);
+  };
+
+  const toggleHeaderLanguageModal = (event) => {
+    event.stopPropagation();
+    setShowHeaderLanguageModal(!showHeaderLanguageModal);
   };
 
   const toggleMode = () => {
@@ -63,79 +83,110 @@ function Header() {
 
   return (
     <header className="bg-gray-700">
-      <div className="mx-auto flex  h-11 flex-wrap items-center justify-between p-2">
+      <div className="mx-auto flex h-11 flex-wrap items-center justify-between p-2">
         <div className="ml-11">
           <Link to="/" className="flex items-center space-x-2">
             <img src="/logo.svg" className="h-4" alt="Mocka Logo" />
             <span className="text-h3 font-bold text-white">Mocka</span>
           </Link>
         </div>
-        {project && (
-          <div
-            className="mr-3 hidden w-full md:block md:w-auto"
-            id="navbar-default"
-          >
-            <ul className="flex items-center md:space-x-[14px]">
-              <li>
-                <img
-                  src="/asset/tester/tester-start.svg"
-                  className="h-[14px] cursor-pointer"
-                  title="테스트"
-                  alt="tester-start"
-                />
-              </li>
-              <li onClick={openInviteModal}>
-                <img
-                  src="/asset/header/header-invite.svg"
-                  className="h-[13px] cursor-pointer"
-                  alt="header-invite"
-                />
-              </li>
-              <li
-                onClick={() => {
-                  navigate(`/initializer/${project.projectId}`);
-                }}
-              >
-                <img
-                  src="/asset/header/header-link.svg"
-                  className="h-[13px] cursor-pointer"
-                  alt="header-link"
-                />
-              </li>
-              <li onClick={toggleMode} className="cursor-pointer">
-                {isTestMode ? (
+        <div className="flex items-center md:space-x-[14px]">
+          {project ? (
+            <>
+              <img
+                onClick={toggleHeaderLanguageModal}
+                src="/asset/header/header-language.svg"
+                className="h-4 cursor-pointer"
+                alt="header-language"
+              />
+              <ul className="ml-2 flex items-center space-x-2 md:space-x-[14px]">
+                <li>
                   <img
-                    src="/asset/header/header-edit-mode.svg"
-                    className="h-7 cursor-pointer pt-1"
-                    alt="header-edit-mode"
+                    src="/asset/tester/tester-start.svg"
+                    className="h-[14px] cursor-pointer"
+                    title="테스트"
+                    alt="tester-start"
                   />
-                ) : (
+                </li>
+                <li onClick={openInviteModal}>
                   <img
-                    src="/asset/header/header-viewer-mode.svg"
-                    className="h-7 cursor-pointer pt-1"
-                    alt="header-edit-mode"
+                    src="/asset/header/header-invite.svg"
+                    className="h-[13px] cursor-pointer"
+                    alt="header-invite"
                   />
-                )}
-              </li>
-              <li onClick={toggleHeaderProjectEditModal}>
-                <img
-                  src="/asset/header/header-option.svg"
-                  className="h-4 cursor-pointer"
-                  alt="header-option"
-                />
-              </li>
-            </ul>
-          </div>
-        )}
-        {showHeaderProjectEditModal && (
-          <div
-            style={{ position: "absolute", right: "0px", top: "40px" }}
-            id="header-option-modal"
-            className="z-20"
-          >
-            <HeaderProjectEditModal />
-          </div>
-        )}
+                </li>
+                <li
+                  onClick={() => {
+                    navigate(`/initializer/${project.projectId}`);
+                  }}
+                >
+                  <img
+                    src="/asset/header/header-link.svg"
+                    className="h-[13px] cursor-pointer"
+                    alt="header-link"
+                  />
+                </li>
+                <li onClick={toggleMode} className="cursor-pointer">
+                  {isTestMode ? (
+                    <img
+                      src="/asset/header/header-edit-mode.svg"
+                      className="h-7 cursor-pointer pt-1"
+                      alt="header-edit-mode"
+                    />
+                  ) : (
+                    <img
+                      src="/asset/header/header-viewer-mode.svg"
+                      className="h-7 cursor-pointer pt-1"
+                      alt="header-edit-mode"
+                    />
+                  )}
+                </li>
+                <li onClick={toggleHeaderProjectEditModal}>
+                  <img
+                    src="/asset/header/header-option.svg"
+                    className="h-4 cursor-pointer"
+                    alt="header-option"
+                  />
+                </li>
+              </ul>
+            </>
+          ) : (
+            <>
+              <ul className="flex items-center space-x-2">
+                <li>
+                  <img
+                    onClick={toggleHeaderLanguageModal}
+                    src="/asset/header/header-language.svg"
+                    className="h-4 cursor-pointer"
+                    alt="header-language"
+                  />
+                </li>
+              </ul>
+            </>
+          )}
+          {showHeaderLanguageModal && (
+            <div
+              style={{
+                position: "absolute",
+                right: project ? "153px" : "0px",
+                top: "40px",
+              }}
+              id="header-language-modal"
+              className="z-20"
+            >
+              <HeaderLanguageModal />
+            </div>
+          )}
+          {showHeaderProjectEditModal && (
+            <div
+              style={{ position: "absolute", right: "0px", top: "40px" }}
+              id="header-option-modal"
+              className="z-20"
+            >
+              <HeaderProjectEditModal />
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
