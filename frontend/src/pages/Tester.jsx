@@ -46,7 +46,6 @@ export default function Tester({ project }) {
     if (!apiId) return;
 
     getApi({ projectId, apiId }).then((data) => {
-      console.log(data.apiRequests);
       // console.log(setDefaultFakerJsBody(data.apiRequests));
       setDocument({
         ...data,

@@ -10,8 +10,8 @@ const fakerJsMap = {
     max: 2147483647,
   },
   Boolean: {
-    first: ["Boolean", "직접 입력"],
-    second: { Boolean: ["Boolean"] },
+    first: ["Datatype", "직접 입력"],
+    second: { Datatype: ["Boolean"] },
   },
   Long: {
     first: ["Number", "직접 입력"],

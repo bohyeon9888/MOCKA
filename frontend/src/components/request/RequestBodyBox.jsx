@@ -87,6 +87,23 @@ function RequestBodyItem({
     setItem(newValue);
   };
 
+  const setArraySize = (value) => {
+    const newValue = {
+      id,
+      arrayList,
+      arraySize,
+      type,
+      first,
+      second,
+      data,
+      setItem,
+      key: _key,
+      input,
+    };
+    newValue.arraySize = value;
+    setItem(newValue);
+  };
+
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex flex-row items-center space-x-2">
@@ -138,6 +155,9 @@ function RequestBodyItem({
               value={arraySize}
               className="h-10 w-14 rounded-[8px] border border-gray-500 pl-2 pr-2 text-4"
               title="Array Size"
+              onChange={(e) => {
+                setArraySize(e.target.value);
+              }}
             />
           </div>
         )}
@@ -185,7 +205,6 @@ function RequestBodyItem({
 }
 
 export default function RequestBodyBox({ body, setBody }) {
-  console.log(body);
   return (
     <div>
       {body.length === 0 ? (

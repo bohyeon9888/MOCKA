@@ -19,7 +19,6 @@ function ProjectEditModal() {
 
   const update = () => {
     if (isValid) {
-      console.log("Updated Value:", inputValue);
       project.projectName = inputValue; //프로젝트 이름 변경
       alert("Project name changed."); //"프로젝트 이름이 변경됨."
       closeModal();

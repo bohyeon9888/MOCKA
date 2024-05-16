@@ -26,59 +26,121 @@ const randomValueByType = (type) => {
   }
 };
 
+const randomValue = ({ first, second, input, min, max }) => {
+  if (first === "직접 입력") return input;
+  if (first === "Character")
+    return String.fromCharCode(faker.number.int({ min: 0, max: 65535 }));
+  if (second === "Integer") return faker.number.int({ min, max });
+  if (second === "Double") return faker.number.float({ min, max });
+  if (second === "Long")
+    return faker.number.bigInt({
+      min: BigInt("-9223372036854775807"),
+      max: BigInt("9223372036854775808"),
+    });
+  return faker[first.toLowerCase()][second.toLowerCase()]({ min, max });
+};
+
 const extractObject = (object) => {
   if (!object || object.length < 1) return {};
   const result = {};
-
-  object.forEach(({ arraySize, arrayList, key, type, value }) => {
-    if (type === "Object") {
-      result[key] = extractObject(value)
-        ? Array.from({ length: arraySize }, () => extractObject(value))
-        : extractObject(value);
-    } else {
-      result[key] = arrayList
-        ? Array.from({ length: arraySize }, () => randomValueByType(type))
-        : randomValueByType(type);
-    }
-  });
+  object.forEach(
+    ({
+      key,
+      first,
+      second,
+      type,
+      arrayList,
+      arraySize,
+      data,
+      input,
+      min,
+      max,
+    }) => {
+      if (type === "Object") {
+        result[key] = arrayList
+          ? Array.from({ length: arraySize }, () => extractObject(data))
+          : extractObject(data);
+      } else {
+        result[key] = arrayList
+          ? Array.from({ length: arraySize }, () =>
+              randomValue({ first, second, input, min, max }),
+            )
+          : randomValue({ first, second, input, min, max });
+      }
+    },
+  );
 
   return result;
 };
 
-const fakeRequestBody = (data) => {
-  if (!data || data.length < 1) return {};
-  const parsedRequests = data.map((request) => {
-    return {
-      ...request,
-      value: request.data === "null" ? null : JSON.parse(request.data),
-    };
-  });
+// const fakeRequestBody = (data) => {
+//   if (!data || data.length < 1) return {};
+//   const parsedRequests = data.map((request) => {
+//     return {
+//       ...request,
+//       value: request.data === "null" ? null : JSON.parse(request.data),
+//     };
+//   });
 
+//   const result = {};
+//   parsedRequests.forEach(({ arrayList, arraySize, key, type, value }) => {
+//     if (type === "Object") {
+//       result[key] = arrayList
+//         ? Array.from({ length: arraySize }, () => extractObject(value))
+//         : extractObject(value);
+//     } else {
+//       result[key] = arrayList
+//         ? Array.from({ length: arraySize }, () => randomValueByType(type))
+//         : randomValueByType(type);
+//     }
+//   });
+
+//   return result;
+// };
+
+const makeFakeApiRequest = (body) => {
+  // return fakeRequestBody(apiRequest);
   const result = {};
-  parsedRequests.forEach(({ arrayList, arraySize, key, type, value }) => {
-    if (type === "Object") {
-      result[key] = arrayList
-        ? Array.from({ length: arraySize }, () => extractObject(value))
-        : extractObject(value);
-    } else {
-      result[key] = arrayList
-        ? Array.from({ length: arraySize }, () => randomValueByType(type))
-        : randomValueByType(type);
-    }
-  });
+  body.forEach(
+    ({
+      key,
+      first,
+      second,
+      type,
+      arrayList,
+      arraySize,
+      data,
+      input,
+      min,
+      max,
+    }) => {
+      if (type === "Object") {
+        result[key] = arrayList
+          ? Array.from({ length: arraySize }, () => extractObject(data))
+          : extractObject(data);
+      } else {
+        result[key] = arrayList
+          ? Array.from({ length: arraySize }, () =>
+              randomValue({ first, second, input, min, max }),
+            )
+          : randomValue({ first, second, input, min, max });
+      }
+    },
+  );
 
   return result;
 };
 
-const makeFakeApiRequest = (apiRequest) => {
-  return fakeRequestBody(apiRequest);
-};
-
-const makeFakeApiUri = (apiUri, apiPaths) => {
+const makeFakeApiUri = (apiUri, queryParameters, pathVariables) => {
   const [uri, queryString] = apiUri.split("?");
   const pathMap = {};
-  apiPaths.forEach(({ key, data }) => {
-    pathMap[key] = data;
+  pathVariables.forEach((pathVariable) => {
+    pathMap[pathVariable.key] = { ...pathVariable };
+  });
+
+  const paramMap = {};
+  queryParameters.forEach((queryParameter) => {
+    paramMap[queryParameter.key] = { ...queryParameter };
   });
 
   const fakeUri = uri
@@ -87,8 +149,8 @@ const makeFakeApiUri = (apiUri, apiPaths) => {
       const regex = /\{([A-Za-z0-9]+)\}/g;
       const key = regex.exec(path);
       if (!key) return path;
-      const type = pathMap[key[1]];
-      return randomValueByType(type);
+      const template = pathMap[key[1]];
+      return randomValue(template);
     })
     .join("/");
 
@@ -96,7 +158,7 @@ const makeFakeApiUri = (apiUri, apiPaths) => {
     ?.split("&")
     .map((query) => {
       const [key, type] = query.split("=");
-      return `${key}=${randomValueByType(type)}`;
+      return `${key}=${randomValue(paramMap[key])}`;
     })
     .join("&");
 

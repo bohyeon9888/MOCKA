@@ -67,9 +67,7 @@ export default function Initializer() {
       projectId,
       initializerSetting,
       projectName: project.projectName,
-    }).then((data) => {
-      console.log(data);
-    });
+    }).then((data) => {});
   };
 
   const deleteDependency = (idx) => {
