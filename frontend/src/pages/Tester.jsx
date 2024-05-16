@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getApi } from "../apis/api";
 import { sendRequest } from "../apis/test";
-import Tab from "../components/Tab";
 import BaseUrl from "../components/BaseUrl";
 import Method from "../components/Method";
 import PrettyJson from "../components/PrettyJson";
@@ -15,10 +14,18 @@ import parseQueryParameters from "../utils/parseQueryParameters";
 import setDefaultFakerJs, {
   setDefaultFakerJsBody,
 } from "../utils/setDefaultFakerJs";
+import TabBar from "../components/TabBar";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
+  const [selectedTab, setSelectedTab] = useState(-1);
   const { projectId } = useParams();
+  const savedTabs =
+    localStorage?.tabs &&
+    JSON.parse(localStorage.tabs) &&
+    JSON.parse(localStorage.tabs)[projectId];
+  console.log(savedTabs);
+  const [tabs, setTabs] = useState(savedTabs || []);
   const apiId = searchParams.get("apiId");
   const [document, setDocument] = useState({
     headers: [],
@@ -46,7 +53,6 @@ export default function Tester({ project }) {
     if (!apiId) return;
 
     getApi({ projectId, apiId }).then((data) => {
-      // console.log(setDefaultFakerJsBody(data.apiRequests));
       setDocument({
         ...data,
         headers: [],
@@ -55,6 +61,22 @@ export default function Tester({ project }) {
         queryParameters: setDefaultFakerJs(
           parseQueryParameters(data.apiUriStr),
         ),
+      });
+      setTabs((prev) => {
+        const idList = prev.map(({ id }) => id);
+        setSelectedTab(data.apiId);
+        if (idList.includes(data.apiId)) {
+          return prev;
+        } else
+          return [
+            ...tabs,
+            {
+              id: data.apiId,
+              groupId: searchParams.get("groupId"),
+              type: data.apiMethod.toUpperCase(),
+              title: data.name,
+            },
+          ];
       });
     });
   }, [apiId]);
@@ -66,6 +88,18 @@ export default function Tester({ project }) {
         : "",
     );
   }, [project]);
+
+  useEffect(() => {
+    const savedTab =
+      (localStorage?.tabs && JSON.parse(localStorage?.tabs)) || {};
+    localStorage.setItem(
+      "tabs",
+      JSON.stringify({
+        ...savedTab,
+        [projectId]: tabs,
+      }),
+    );
+  }, [tabs]);
 
   const resetBaseUrl = () => {
     setBaseUrl(`https://${project?.projectHashKey}.mock-a.com`);
@@ -86,7 +120,7 @@ export default function Tester({ project }) {
       });
   };
 
-  if (!apiId)
+  if (tabs.length === 0)
     return (
       <div className="flex h-full w-full items-center justify-center">
         <div className="text-2 font-semibold text-gray-500">
@@ -97,11 +131,12 @@ export default function Tester({ project }) {
 
   return (
     <div className="relative flex h-full w-full flex-col items-center overflow-y-scroll">
-      <div className="flex w-full bg-background-color">
-        <Tab type="POST" isSelected="true" />
-        <Tab type="GET" isSelected="false" />
-        <Tab type="DELETE" isSelected="false" />
-      </div>
+      <TabBar
+        tabs={tabs}
+        setTabs={setTabs}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      />
       <div className="my-8 flex max-w-[95%] items-center justify-center">
         <div className="w-full rounded-[15px] border-[2px] border-gray-300 px-8 pb-8">
           <div className="mt-[24px] flex items-center justify-between">
@@ -115,7 +150,9 @@ export default function Tester({ project }) {
           <div className="flex items-center">
             <div className="mt-[10px] flex h-[40px] grow items-center rounded-[10px] bg-gray-100 pl-[8px] pr-[8px]">
               <Method type={document?.apiMethod?.toUpperCase() || "GET"} />
-              <h4 className="ml-[10px]">{baseUrl + document?.apiUriStr}</h4>
+              <h4 className="ml-[10px]">
+                {baseUrl + project?.commonUri + document?.apiUriStr}
+              </h4>
             </div>
             <img
               src="/asset/tester/tester-copy.svg"

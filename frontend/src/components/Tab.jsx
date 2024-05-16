@@ -1,6 +1,4 @@
-import React from "react";
-
-function Tab({ type, isSelected, title }) {
+function Tab({ type, isSelected, title, onClick, onRemove }) {
   const getColorClass = (type) => {
     switch (type) {
       case "GET":
@@ -20,29 +18,33 @@ function Tab({ type, isSelected, title }) {
 
   return (
     <div
-      className={`flex h-[36px] shrink-0 grow-0 cursor-pointer items-center justify-center bg-background-color text-primary-color
-      ${isSelected === "true" ? "w-[134px]" : "w-[114px]"}`}
+      className={`relative flex h-[36px] w-[154px] cursor-pointer items-center justify-center ${
+        isSelected
+          ? "border-r border-t bg-white"
+          : "border-b border-r border-t bg-background-color opacity-50"
+      } flex-shrink-0 text-black`}
+      onClick={onClick}
     >
-      {/* <div
-        className={`fixed ml-[16px] mr-[108px] flex h-[16px] w-[16px] shrink-0 grow-0 items-center justify-center rounded-[15px] text-white ${getColorClass(type)}`}
-      > */}
       <div
-        className={`absolute ml-[16px] mr-[108px] flex h-[16px] w-[16px] shrink-0 grow-0 items-center justify-center rounded-[15px] text-white ${getColorClass(type)}`}
+        className={`absolute left-[16px] flex h-[16px] w-[16px] items-center justify-center rounded-full text-white ${getColorClass(
+          type,
+        )}`}
       >
         <h5>{type[0]}</h5>
       </div>
-      <h5 className="absolute ml-[5px] max-w-[75px] overflow-hidden text-ellipsis font-medium">
+      <h5 className="ml-[15px] max-w-[85px] overflow-hidden text-ellipsis whitespace-nowrap font-medium">
         {title}
       </h5>
-      {isSelected === "true" ? (
-        <img
-          src="/asset/tester/tester-tap-close.svg"
-          className="absolute ml-[108px] mr-[16px] h-2.5 shrink-0 grow-0"
-          alt="tester-tap-close"
-        />
-      ) : (
-        <></>
-      )}
+      <img
+        src="/asset/tester/tester-tap-close.svg"
+        className="absolute right-[16px] h-2.5"
+        alt="tester-tap-close"
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(type);
+        }}
+        style={{ visibility: isSelected ? "visible" : "hidden" }}
+      />
     </div>
   );
 }
