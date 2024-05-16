@@ -14,12 +14,15 @@ import com.mozart.mockserver.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLData;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -94,14 +97,19 @@ public class MockService {
             log.info("--" + i);
             log.info(pathUrl.substring(0, pathUrl.length()-1));
             log.info("--");
-            Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
-
-
-            if(apiProjects.isPresent()){
-                ApiProjects apiProject = apiProjects.get();
-                log.info("pathVal");
-                return pathVariableCheck(apiProject, path, numString);
+            try{
+                Optional<ApiProjects> apiProjects = apiProjectRepository.findByApiUri(project.getProjectId(), method, pathUrl.substring(0, pathUrl.length()-1));
+                if(apiProjects.isPresent()){
+                    ApiProjects apiProject = apiProjects.get();
+                    log.info("pathVal");
+                    return pathVariableCheck(apiProject, path, numString);
+                }
+            } catch (Exception e){
+                log.info("InvalidDataAccessResourceUsageException");
             }
+
+
+
         }
 
         return -1L;
@@ -142,6 +150,7 @@ public class MockService {
         return apiProject.getApiId();
     }
     public void typeCheck(String type, String str) throws NumberFormatException{
+        log.info("path check" + type + " / " + str);
         switch (type){
             case "String":
                 break;
