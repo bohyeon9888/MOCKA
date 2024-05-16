@@ -236,6 +236,10 @@ public class AuthService {
         if(! Objects.equals(group.getProject().getProjectId(), projectId)) {
             throw new CustomException(GroupErrorCode.ProjectNotMatch.getCode(),GroupErrorCode.ProjectNotMatch.getDescription());
         }
+
+        if(Objects.equals(project.getDefaultGroupId(), group.getGroupId())){
+            throw new CustomException(GroupErrorCode.DefaultGroup.getCode(),GroupErrorCode.DefaultGroup.getDescription());
+        }
     }
     public void groupUpdateCheck(String providerId,Long projectId,Long groupId){
         Projects project=projectRepository.findByProjectId(projectId);

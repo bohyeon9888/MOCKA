@@ -76,6 +76,7 @@ public class GroupController {
     ){
         //사용자 프로젝트 편집 권한 check
         authService.groupDeleteCheck(user.getProviderId(),projectId,groupId);
+
         apiService.deleteGroup(projectId,groupId);
         return new ResponseEntity<>("delete success",HttpStatus.OK);
     }
