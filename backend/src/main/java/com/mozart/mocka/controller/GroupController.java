@@ -4,7 +4,6 @@ import com.mozart.mocka.domain.CustomUserDetails;
 import com.mozart.mocka.domain.Groups;
 import com.mozart.mocka.dto.request.CreateGroupRequestDto;
 import com.mozart.mocka.dto.response.GroupResponseDto;
-import com.mozart.mocka.repository.GroupRepository;
 import com.mozart.mocka.service.*;
 import com.mozart.mocka.util.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
