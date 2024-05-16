@@ -1,4 +1,4 @@
-function BaseUrl({ baseUrl, setBaseUrl }) {
+function BaseUrl({ baseUrl, setBaseUrl, resetBaseUrl }) {
   const handleSaveClick = () => {
     localStorage.setItem("baseUrl", baseUrl); // 로컬 스토리지에 저장 (확인용)
   };
@@ -17,6 +17,9 @@ function BaseUrl({ baseUrl, setBaseUrl }) {
           type="text"
           value={baseUrl}
           onChange={(e) => setBaseUrl(e.target.value)}
+          onBlur={(e) => {
+            if (e.target.value.trim() === "") resetBaseUrl();
+          }}
           className="h-[34px] w-full truncate rounded-[6px] border-[1px] border-gray-500 pl-[10px] pr-[50px] text-[12px]"
           placeholder="Please enter the base url"
         />

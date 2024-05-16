@@ -1,4 +1,5 @@
 const parseQueryParameters = (apiUri) => {
+  if (!apiUri) return [];
   const queryString = apiUri.split("?")[1];
   if (!queryString) {
     return [];

@@ -182,22 +182,24 @@ export default function ApiEditModal() {
           setPathVariableType={setPathVariableType}
         />
       </ContentBox>
-      <ContentBox
-        title="Request Body"
-        description="Define Resource template, it will be used to generate mock data."
-      >
-        <RequestBodyEditor
-          apiRequest={document.apiRequest}
-          setApiRequest={(apiRequest) => {
-            setDocument((document) => {
-              return {
-                ...document,
-                apiRequest,
-              };
-            });
-          }}
-        />
-      </ContentBox>
+      {document.apiMethod !== "GET" && (
+        <ContentBox
+          title="Request Body"
+          description="Define Resource template, it will be used to generate mock data."
+        >
+          <RequestBodyEditor
+            apiRequest={document.apiRequest}
+            setApiRequest={(apiRequest) => {
+              setDocument((document) => {
+                return {
+                  ...document,
+                  apiRequest,
+                };
+              });
+            }}
+          />
+        </ContentBox>
+      )}
       <ContentBox
         title="Response Body"
         description="Define Resource template, it will be used to generate mock data."

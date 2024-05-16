@@ -4,7 +4,7 @@ const randomValueByType = (type) => {
   switch (type) {
     case "String":
       return faker.word.words();
-    case "Int":
+    case "Integer":
       return faker.number.int({ min: -2147483648, max: 2147483647 });
     case "Boolean":
       return faker.datatype.boolean();

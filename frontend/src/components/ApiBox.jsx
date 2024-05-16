@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Method from "./Method";
 import PrettyJson from "./PrettyJson";
 import formatRequestBody from "../utils/formatRequestBody";
-import formatResponseBody from "../utils/fromatResponseBody";
+import formatResponseBody from "../utils/formatResponseBody";
 import { deleteApi } from "../apis/api";
 import ApiDeleteModal from "./modal/ApiDeleteModal";
 import { useModalStore, useProjectStore } from "../store";

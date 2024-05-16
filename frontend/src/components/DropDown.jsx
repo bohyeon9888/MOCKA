@@ -10,7 +10,7 @@ export default function DropDown({ value, options, changeHandler, size }) {
   const optionClassName =
     "cursor-pointer block px-4 py-2 text-5 font-normal hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white";
   const buttonClassName = combineClassName(
-    "relative justify-between inline-flex h-full w-full items-center pl-2 pr-2 text-5 border-gray-500 border",
+    "relative justify-between inline-flex h-full w-full items-center px-2 text-5 border-gray-500 border",
     size === "small" ? "rounded-[4px]" : "rounded-[10px]",
   );
 
