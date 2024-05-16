@@ -351,10 +351,12 @@ public class MockService {
 //            result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
 //            return result;
 //        }
-        List<ResponseApiDto> apiResponseList;
+        List<ResponseApiDto> apiResponseList = new ArrayList<>();
 
         //api responseList check
-        try {apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
+        try {
+            if(response.getType().equals("Object"))
+                apiResponseList = mapper.readValue(response.getData(), new TypeReference<List<ResponseApiDto>>() {});
         } catch (Exception e) {
             try {
                 String jsonString = mapper.writeValueAsString(response.getData());
@@ -375,48 +377,55 @@ public class MockService {
             log.info(response.getKey() +response.getArrayList()+ response.getArraySize() );
             if(response.getArraySize() < 0)
                 response.setArraySize(2);
-            for (int i = 0; i < response.getArraySize(); i++) {
-                log.info("1");
-                ObjectNode temp = mapper.createObjectNode();
-                for (ResponseApiDto responseNode : apiResponseList) {
-                    log.info("2");
-                    if(!responseNode.getType().equals("Object"))
-                        temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
-                    else {
-                        if(response.getArrayList()){
-                            List<JsonNode> array1 = new ArrayList<>();
-
-                        }else{
-
-                        }
+            if(response.getType().equals("Object")){
+                for (int i = 0; i < response.getArraySize(); i++) {
+                    log.info("1 / ");
+                    ObjectNode temp = mapper.createObjectNode();
+                    for (ResponseApiDto responseNode : apiResponseList) {
+                        log.info("2//" + responseNode.getKey());
+        //                    if(!responseNode.getType().equals("Object"))
+        //                        temp.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+        //                    else {
+        //                        log.info("2#");
+        //                        temp.put(responseNode.getKey(),getObject(new ApiResponse
+        //                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+        //                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+        //                    }
                         temp.put(responseNode.getKey(),getObject(new ApiResponse
-                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
-                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(), responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
                     }
-
+                    resultList.add(temp);
                 }
-                log.info("3");
-                resultList.add(temp);
+                return mapper.valueToTree(mapper.valueToTree(resultList));
             }
-            log.info("4" + response.getArraySize());
-            log.info(response.getData());
-//            JsonNode jsonNode = mapper.valueToTree(resultList);
-//            result.set("responseApiDtoList", mapper.valueToTree(resultList));
-            // 리스트를 ArrayNode로 변환
-            ArrayNode arrayNode = mapper.valueToTree(resultList);
-            return mapper.valueToTree(resultList);
-//            return result.put("adsafsdaf","safdsaf");
+            else{
+                log.info("3#");
+                List<Object> temp = new ArrayList<>();
+                for (int i = 0; i < response.getArraySize(); i++){
+                    temp.add(generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+                }
+                ObjectNode objectNodeTemp = mapper.createObjectNode();
+                objectNodeTemp.set(response.getKey(), mapper.valueToTree(temp));
+                resultList.add(objectNodeTemp);
+                return mapper.valueToTree(temp);
+            }
         }
         else { // not list
-            for (ResponseApiDto responseNode : apiResponseList) {
-                log.info("6");
-                if(!responseNode.getType().equals("Object"))
-                    result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
-                else
-                    result.put(responseNode.getKey(),getObject(new ApiResponse
-                            (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
-                                    responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
+            if(response.equals("Object")){
+                for (ResponseApiDto responseNode : apiResponseList) {
+                    log.info("6");
+                    if(!responseNode.getType().equals("Object"))
+                        result.put(responseNode.getKey(),generateFakeData(responseNode.getFakerLocale(),responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getType()));
+                    else
+                        result.put(responseNode.getKey(),getObject(new ApiResponse
+                                (null, responseNode.getKey(), responseNode.getType(), responseNode.getValue(), responseNode.getFakerLocale(),
+                                        responseNode.getFakerMajor(), responseNode.getFakerSub(), responseNode.getArrayList(), responseNode.getArraySize())));
 
+                }
+            }
+            else {
+                return mapper.valueToTree(generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
+                //result.put(response.getKey(), generateFakeData(response.getFakerLocale(),response.getFakerMajor(), response.getFakerSub(), response.getType()));
             }
             log.info("7");
             return result;
