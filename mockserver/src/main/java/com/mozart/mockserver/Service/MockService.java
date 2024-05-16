@@ -117,7 +117,7 @@ public class MockService {
 
     private Long pathVariableCheck(ApiProjects apiProject, String substring, String subnet) {
         List<ApiPath> apiPathList = apiPathRepository.findByApiProject_ApiId(apiProject.getApiId());
-
+        log.info(apiProject.getApiId() + " / " + substring + " / " + subnet);
         int pathCnt = 0;
         //pathvar과 0의 갯수가 같은지확인.
         for (int i = 0; i < subnet.length(); i++) {
@@ -134,7 +134,7 @@ public class MockService {
         String[] inputPath = substring.split("/");
         for (ApiPath apiPath : apiPathList) {
             for(int i = 0 ; i < path.length ; i++){
-                if(path[i].contains(apiPath.getKey())){
+                if(path[i].contains("{"+apiPath.getKey()+"}")){
                     //그 자리가 path로 되어 있는지
                     if(subnet.charAt(i) == '1')
                         return 0L;
