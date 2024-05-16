@@ -81,9 +81,11 @@ function Home() {
     )
       return;
     createProject({ projectName, commonUri, visibility }).then(() => {
-      getProjectList().then((data) => {
-        setProjectList(data);
-      });
+      setTimeout(() => {
+        getProjectList().then((data) => {
+          setProjectList(data);
+        });
+      }, 100);
     });
   };
 

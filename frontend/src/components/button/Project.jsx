@@ -1,10 +1,11 @@
 import { getProjectDetail } from "../../apis/project";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import formatDateString from "../../utils/formatDateString";
 import { useProjectStore } from "../../store";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 function Project({ title, date, projectId }) {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setProject } = useProjectStore();
   const { language } = useLanguage();
@@ -26,7 +27,8 @@ function Project({ title, date, projectId }) {
   const onClick = () => {
     getProjectDetail(projectId).then((data) => {
       setProject(data);
-      navigate(`/project/${projectId}`, {
+      const param = new URLSearchParams(searchParams);
+      navigate(`/project/${projectId}?${param}`, {
         state: { data },
       });
     });

@@ -15,6 +15,7 @@ import setDefaultFakerJs, {
   setDefaultFakerJsBody,
 } from "../utils/setDefaultFakerJs";
 import TabBar from "../components/TabBar";
+import filterTabs from "../utils/filterTabs";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
@@ -24,6 +25,7 @@ export default function Tester({ project }) {
     localStorage?.tabs &&
     JSON.parse(localStorage.tabs) &&
     JSON.parse(localStorage.tabs)[projectId];
+  // const filteredTabs = filterTabs(savedTabs, project);
   const [tabs, setTabs] = useState(savedTabs || []);
   const apiId = searchParams.get("apiId");
   const [document, setDocument] = useState({

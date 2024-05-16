@@ -2,7 +2,7 @@
 import React from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 
-function HeaderLanguageModal() {
+function HeaderLanguageModal({ setShowHeaderLanguageModal }) {
   const { setLanguage } = useLanguage();
 
   return (
@@ -10,7 +10,10 @@ function HeaderLanguageModal() {
       <div className="relative h-[120px] w-[120px] rounded-bl-[10px] rounded-br-[10px] rounded-tl-[10px] bg-secondary-color pt-[25px]">
         <div
           className="ml-[25px] flex cursor-pointer items-center"
-          onClick={() => setLanguage("ko")}
+          onClick={() => {
+            setLanguage("ko");
+            setShowHeaderLanguageModal(false);
+          }}
         >
           <h4 className="font-medium">한국어</h4>
         </div>
@@ -20,7 +23,10 @@ function HeaderLanguageModal() {
         ></div>
         <div
           className="ml-[25px] mt-[40px] flex cursor-pointer items-center"
-          onClick={() => setLanguage("en")}
+          onClick={() => {
+            setLanguage("en");
+            setShowHeaderLanguageModal(false);
+          }}
         >
           <h4 className="font-medium">English</h4>
         </div>

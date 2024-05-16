@@ -16,7 +16,7 @@ export const LanguageProvider = ({ children }) => {
       searchParams,
       setSearchParams,
     });
-  }, [language, setSearchParams]);
+  }, [language]);
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>

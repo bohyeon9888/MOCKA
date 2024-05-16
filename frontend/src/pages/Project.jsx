@@ -22,7 +22,7 @@ export default function Project() {
   return (
     <div className="h-full w-full">
       {mode === "test" ? (
-        <Tester project={project} />
+        project && <Tester project={project} />
       ) : (
         <Document project={project} />
       )}

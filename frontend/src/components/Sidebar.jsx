@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useModalStore, useProjectStore, useUserStore } from "../store";
 import LoginModal from "./modal/LoginModal";
 import GroupList from "./sidebar/GroupList";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../contexts/LanguageContext";
 
 function Sidebar() {
@@ -13,6 +13,7 @@ function Sidebar() {
   const [isTeamsOpen, setIsTeamsOpen] = useState(false);
   const { user } = useUserStore();
   const { language } = useLanguage();
+  const navigate = useNavigate();
 
   const translations = {
     ko: {
@@ -49,7 +50,13 @@ function Sidebar() {
       className="flex w-[216px] shrink-0 flex-col items-center space-y-3 bg-secondary-color py-5"
     >
       <div className="flex h-10 justify-center">
-        <h5 className="text-center text-3 font-bold leading-10 text-gray-700">
+        <h5
+          className="cursor-pointer text-center text-3 font-bold leading-10 text-gray-700"
+          onClick={() => {
+            if (!project) return;
+            navigate(`/project/${project.projectId}?lang=${language}`);
+          }}
+        >
           {project ? project.projectName : t.projectList}
         </h5>
       </div>
