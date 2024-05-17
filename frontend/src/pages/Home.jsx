@@ -84,6 +84,9 @@ function Home() {
       setTimeout(() => {
         getProjectList().then((data) => {
           setProjectList(data);
+          setCommonUri("");
+          setProjectName("");
+          setVisibility(t.select);
         });
       }, 100);
     });
