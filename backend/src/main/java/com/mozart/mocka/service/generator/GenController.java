@@ -30,7 +30,6 @@ public class GenController {
     private final ApiProjectRepository apiProjectRepository;
     private final GenRequest genRequest;
     private final GenResponse genResponse;
-    static final String HASH = "34e1c029fab";
     static final String basePath = "src/main/java/";
 
     public int createController(
