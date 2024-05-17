@@ -37,7 +37,7 @@ const updateApi = async ({ document, projectId, groupId, apiId }) => {
     }),
   };
 
-  const { data } = await axios.post(
+  const { data } = await axios.put(
     `method/${projectId}/${groupId}/${apiId}`,
     requestBody,
   );

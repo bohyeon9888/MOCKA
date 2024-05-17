@@ -40,7 +40,6 @@ export default function Initializer() {
 
   const translations = {
     ko: {
-      projectName: "프로젝트 이름",
       springInitializerSetting: "Spring 초기 설정",
       selectSettings:
         "Spring 초기 설정을 선택하여 새 Spring Boot 프로젝트를 구성하십시오",
@@ -70,7 +69,6 @@ export default function Initializer() {
       },
     },
     en: {
-      projectName: "Project Name",
       springInitializerSetting: "Spring Initializer Setting",
       selectSettings:
         "Select your preferred settings on Spring Initializer to configure your new Spring Boot project",
@@ -167,7 +165,9 @@ export default function Initializer() {
 
   return (
     <div className="flex h-full grow-0 flex-col items-start overflow-y-scroll px-12 py-10 pb-40">
-      <div className="text-1 font-semibold leading-normal">{t.projectName}</div>
+      <div className="text-1 font-semibold leading-normal">
+        {project.projectName}
+      </div>
       <div className="mt-8 flex flex-col space-y-[27px] px-20">
         <div>
           <h2 className="leading-normal">{t.springInitializerSetting}</h2>
