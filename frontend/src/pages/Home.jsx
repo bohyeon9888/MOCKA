@@ -11,6 +11,7 @@ import {
   getProjectList,
   getRecentProjectList,
 } from "../apis/project.js";
+import combineClassName from "../utils/combineClassName.js";
 
 function Home() {
   const { language } = useLanguage();
@@ -60,6 +61,11 @@ function Home() {
     setVisibility(value);
   }
 
+  const isValidUri = (uri) => {
+    const regex = /^\/[a-zA-Z_]*$/;
+    return regex.test(uri);
+  };
+
   useEffect(() => {
     if (project) setProject(null);
     if (projectList && projectList.length > 0) return;
@@ -77,7 +83,8 @@ function Home() {
       !commonUri ||
       visibility === t.select ||
       projectName.trim() === "" ||
-      commonUri.trim() === ""
+      commonUri.trim() === "" ||
+      !isValidUri(commonUri)
     )
       return;
     createProject({ projectName, commonUri, visibility }).then(() => {
@@ -118,7 +125,10 @@ function Home() {
             />
             <h5 className="mt-[15px] tracking-[0.1em]">{t.commonUri}</h5>
             <input
-              className="mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white p-2"
+              className={combineClassName(
+                "mt-[4px] h-[30px] w-[366px] place-content-start rounded-[4px] border-[1px] border-gray-500 bg-white p-2 outline-none",
+                !commonUri || isValidUri(commonUri) ? "" : "border-red-500",
+              )}
               value={commonUri}
               onChange={(e) => {
                 setCommonUri(e.target.value);
