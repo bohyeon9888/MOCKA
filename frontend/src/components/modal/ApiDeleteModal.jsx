@@ -1,10 +1,11 @@
-import { React } from "react";
-import { useModalStore } from "../../store";
+import { useModalStore, useProjectStore } from "../../store";
 import { deleteApi } from "../../apis/api";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { getProjectDetail } from "../../apis/project";
 
 function ApiDeleteModal() {
   const { closeModal, state } = useModalStore();
+  const { project, setProject } = useProjectStore();
   const { language } = useLanguage();
 
   const translations = {
@@ -25,9 +26,14 @@ function ApiDeleteModal() {
   const t = translations[language];
 
   const Yes = () => {
-    alert(t.alertMessage);
-    deleteApi({ projectId: state.projectId, apiId: state.apiId });
-    closeModal();
+    deleteApi({ projectId: state.projectId, apiId: state.apiId }).then(() => {
+      setTimeout(() => {
+        getProjectDetail(project.projectId).then((data) => {
+          setProject(data);
+        });
+      }, 100);
+      closeModal();
+    });
   };
 
   const No = () => {
