@@ -1,6 +1,7 @@
 import fakerJsMap from "../../constants/fakerJsMap";
 import DropDown from "../DropDown";
 import Input from "../Input";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function RequestPathVariableBox({
   pathVariables,
@@ -41,11 +42,24 @@ export default function RequestPathVariableBox({
     setPathVariables(newQuery);
   };
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      NoPathOption: "경로 변수 없음",
+    },
+    en: {
+      NoPathOption: "No Path Variables",
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div>
       {pathVariables.length === 0 ? (
         <div className="text-center font-medium text-gray-500">
-          No Path Variables
+          {t.NoPathOption}
         </div>
       ) : (
         <div>
