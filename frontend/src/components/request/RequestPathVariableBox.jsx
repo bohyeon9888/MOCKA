@@ -46,7 +46,8 @@ export default function RequestPathVariableBox({
 
   const translations = {
     ko: {
-      NoPathOption: "경로 변수 없음",
+      // NoPathOption: "경로 변수 없음",
+      NoPathOption: "Path Variable 없음",
     },
     en: {
       NoPathOption: "No Path Variables",

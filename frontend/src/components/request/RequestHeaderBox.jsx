@@ -42,7 +42,8 @@ export default function RequestHeaderBox({ headers, setHeaders }) {
 
   const translations = {
     ko: {
-      noHeaderOption: "헤더 옵션 없음",
+      // noHeaderOption: "헤더 옵션 없음",
+      noHeaderOption: "Header 옵션 없음",
       key: "키",
       value: "값",
     },

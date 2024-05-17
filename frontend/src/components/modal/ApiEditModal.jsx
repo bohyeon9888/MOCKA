@@ -115,18 +115,22 @@ export default function ApiEditModal() {
       apiPathTitle: "API 경로 URL",
       apiPathDescription:
         "의미 있는 자원 이름을 입력하세요. 이는 API 엔드포인트를 생성하는 데 사용됩니다.",
-      queryParamsTitle: "쿼리 매개변수",
+      // queryParamsTitle: "쿼리 매개변수",
+      queryParamsTitle: "Query Parameters",
       queryParamsDescription:
         "쿼리 문자열 매개변수의 데이터 유형을 정의하세요.",
-      pathVarsTitle: "경로 변수",
+      // pathVarsTitle: "경로 변수",
+      pathVarsTitle: "Path Variables",
       pathVarsDescription: "경로 변수의 데이터 유형을 정의하세요.",
-      requestBodyTitle: "요청 본문",
+      // requestBodyTitle: "요청 본문",
+      requestBodyTitle: "Request Body",
       requestBodyDescription:
         "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
-      responseBodyTitle: "응답 본문",
+      // responseBodyTitle: "응답 본문",
+      responseBodyTitle: "Response Body",
       responseBodyDescription:
         "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
-      applyButton: "적용",
+      applyButton: "생성",
     },
     en: {
       nameTitle: "API Name",
@@ -148,7 +152,7 @@ export default function ApiEditModal() {
       responseBodyTitle: "Response Body",
       responseBodyDescription:
         "Define Resource template, it will be used to generate mock data.",
-      applyButton: "Apply",
+      applyButton: "Create",
     },
   };
 

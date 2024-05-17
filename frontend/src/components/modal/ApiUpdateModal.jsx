@@ -36,15 +36,19 @@ export default function ApiUpdateModal() {
       apiPathUrl: "API 경로 URL",
       apiPathUrlDescription:
         "의미 있는 자원 이름을 입력하세요. 이는 API 엔드포인트를 생성하는 데 사용됩니다.",
-      queryParams: "쿼리 매개변수",
+      // queryParams: "쿼리 매개변수",
+      queryParams: "Query Parameters",
       queryParamsDescription:
         "쿼리 문자열 매개변수의 데이터 유형을 정의하세요.",
-      pathVars: "경로 변수",
+      // pathVars: "경로 변수",
+      pathVars: "Path Variables",
       pathVarsDescription: "경로 변수의 데이터 유형을 정의하세요.",
-      requestBody: "요청 본문",
+      // requestBody: "요청 본문",
+      requestBody: "Request Body",
       requestBodyDescription:
         "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
-      responseBody: "응답 본문",
+      // responseBody: "응답 본문",
+      responseBody: "Response Body",
       responseBodyDescription:
         "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
       applyButton: "적용",

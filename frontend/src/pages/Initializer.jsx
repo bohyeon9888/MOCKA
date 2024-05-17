@@ -58,12 +58,12 @@ export default function Initializer() {
       addDependencies: "의존성 추가",
       generate: "생성",
       lombok: {
-        name: "롬복",
+        name: "Lombok",
         description:
           "보일러 플레이트 코드를 줄이는 데 도움이 되는 Java 어노테이션 라이브러리입니다.",
       },
       springWeb: {
-        name: "스프링 웹",
+        name: "Spring Web",
         description:
           "Spring MVC를 사용하여 RESTful 응용 프로그램을 포함한 웹을 빌드합니다. 기본 임베디드 컨테이너로 Apache Tomcat을 사용합니다.",
       },

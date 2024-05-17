@@ -210,7 +210,8 @@ export default function RequestBodyBox({ body, setBody }) {
 
   const translations = {
     ko: {
-      NoBodyOption: "요청 본문 없음",
+      // NoBodyOption: "요청 본문 없음",
+      NoBodyOption: "Request Body 없음",
     },
     en: {
       NoBodyOption: "No Request Body",

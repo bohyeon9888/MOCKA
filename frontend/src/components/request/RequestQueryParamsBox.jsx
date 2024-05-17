@@ -45,7 +45,8 @@ export default function RequestQueryParamsBox({
 
   const translations = {
     ko: {
-      NoQueryOption: "쿼리 매개변수 없음",
+      // NoQueryOption: "쿼리 매개변수 없음",
+      NoQueryOption: "Query Parameter 없음",
     },
     en: {
       NoQueryOption: "No Query Parameters",

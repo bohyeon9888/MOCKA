@@ -55,8 +55,10 @@ function ApiBox({
       deleteApi: "API 삭제",
       api: "API",
       description: "설명",
-      requestBody: "요청 본문",
-      responseBody: "응답 본문",
+      // requestBody: "요청 본문",
+      requestBody: "Request Body",
+      // responseBody: "응답 본문",
+      responseBody: "Response Body",
     },
     en: {
       ApiUpdateModal: "Edit API",
