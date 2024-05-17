@@ -21,7 +21,9 @@ import { useLanguage } from "../../contexts/LanguageContext";
 export default function ApiEditModal() {
   const [searchParams] = useSearchParams();
   const { project, setProject } = useProjectStore();
-  const [groupId, setGroupId] = useState(searchParams.get("groupId"));
+  const [groupId, setGroupId] = useState(
+    searchParams.get("groupId") || project.defaultGroupId,
+  );
   const { closeModal } = useModalStore();
   const [document, setDocument] = useState({
     name: "",
