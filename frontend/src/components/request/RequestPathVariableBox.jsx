@@ -63,7 +63,7 @@ export default function RequestPathVariableBox({
           {t.NoPathOption}
         </div>
       ) : (
-        <div>
+        <div className="flex flex-col space-y-2">
           {pathVariables.map(
             ({ key, data, first, second, min, max, input }, idx) => (
               <div key={key} className="flex flex-row items-center space-x-2">
