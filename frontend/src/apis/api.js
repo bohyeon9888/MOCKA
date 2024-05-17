@@ -24,10 +24,17 @@ const createApi = async ({ document, projectId, groupId }) => {
 
 const updateApi = async ({ document, projectId, groupId, apiId }) => {
   const requestBody = {
-    ...document,
+    name: document.name,
+    apiUri: document.apiUri,
+    description: document.description,
     apiMethod: capitalize(document.apiMethod),
+    apiResponseIsArray: document.apiResponseIsArray,
+    apiResponseSize: document.apiResponseSize,
     apiRequest: document.apiRequest.map((body) => formatData(body)),
     apiResponse: document.apiResponse.map((body) => formatData(body)),
+    apiPathVariable: document.apiPathVariable.map(({ key, type }) => {
+      return { key, type };
+    }),
   };
 
   const { data } = await axios.post(

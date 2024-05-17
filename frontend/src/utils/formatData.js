@@ -8,6 +8,9 @@ export default function formatData(body) {
     fakerLocale: body.fakerLocale || null,
     fakerMajor: body.fakerMajor || null,
     fakerSub: body.fakerSub || null,
-    value: body.value && body.value.map((v) => formatData(v)),
+    value:
+      !body.value || body.value.length === 0
+        ? null
+        : body.value.map((v) => formatData(v)),
   };
 }

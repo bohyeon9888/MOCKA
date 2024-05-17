@@ -13,7 +13,7 @@ export default function ResponseBodyEditor({
   setApiResponseSize,
 }) {
   const { language } = useLanguage();
-
+  console.log(apiResponse);
   const translations = {
     ko: {
       isArray: "배열 여부",
