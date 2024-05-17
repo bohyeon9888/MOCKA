@@ -16,6 +16,7 @@ import GroupSelect from "../GroupSelect";
 import { useSearchParams } from "react-router-dom";
 import { useModalStore, useProjectStore } from "../../store";
 import { getProjectDetail } from "../../apis/project";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function ApiEditModal() {
   const [searchParams] = useSearchParams();
@@ -102,9 +103,60 @@ export default function ApiEditModal() {
     });
   }, [document.apiResponseIsArray]);
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      nameTitle: "API 이름",
+      descriptionTitle: "API 설명",
+      groupSelectTitle: "그룹 선택",
+      groupSelectDescription:
+        "그룹을 선택하면, 그룹의 공통 URI가 API 경로의 시작 부분에 추가됩니다.",
+      apiPathTitle: "API 경로 URL",
+      apiPathDescription:
+        "의미 있는 자원 이름을 입력하세요. 이는 API 엔드포인트를 생성하는 데 사용됩니다.",
+      queryParamsTitle: "쿼리 매개변수",
+      queryParamsDescription:
+        "쿼리 문자열 매개변수의 데이터 유형을 정의하세요.",
+      pathVarsTitle: "경로 변수",
+      pathVarsDescription: "경로 변수의 데이터 유형을 정의하세요.",
+      requestBodyTitle: "요청 본문",
+      requestBodyDescription:
+        "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
+      responseBodyTitle: "응답 본문",
+      responseBodyDescription:
+        "리소스 템플릿을 정의하세요. 이는 모의 데이터를 생성하는 데 사용됩니다.",
+      applyButton: "적용",
+    },
+    en: {
+      nameTitle: "API Name",
+      descriptionTitle: "API Description",
+      groupSelectTitle: "Group Select",
+      groupSelectDescription:
+        "When a group is selected, the group's common URI is added to the beginning of the API path.",
+      apiPathTitle: "API Path URL",
+      apiPathDescription:
+        "Enter meaningful resource name, it will be used to generate API endpoints.",
+      queryParamsTitle: "Query Parameters",
+      queryParamsDescription:
+        "Define the data types for the query string parameters.",
+      pathVarsTitle: "Path Variables",
+      pathVarsDescription: "Define the data types for the path variables.",
+      requestBodyTitle: "Request Body",
+      requestBodyDescription:
+        "Define Resource template, it will be used to generate mock data.",
+      responseBodyTitle: "Response Body",
+      responseBodyDescription:
+        "Define Resource template, it will be used to generate mock data.",
+      applyButton: "Apply",
+    },
+  };
+
+  const t = translations[language];
+
   return (
-    <div className="flex flex-col space-y-[27px] overflow-y-scroll px-5">
-      <ContentBox title="API Name" description="">
+    <div className="flex min-w-[700px] max-w-[700px] flex-col space-y-[27px] overflow-y-scroll px-5">
+      <ContentBox title={t.nameTitle} description="">
         <Input
           isFull
           value={document.name}
@@ -116,7 +168,7 @@ export default function ApiEditModal() {
           }}
         />
       </ContentBox>
-      <ContentBox title="API Description" description="">
+      <ContentBox title={t.descriptionTitle} description="">
         <Input
           isFull
           value={document.description}
@@ -129,8 +181,8 @@ export default function ApiEditModal() {
         />
       </ContentBox>
       <ContentBox
-        title="Group Select"
-        description="When a group is selected, the group's common URI is added to the beginning of the API path."
+        title={t.groupSelectTitle}
+        description={t.groupSelectDescription}
       >
         <GroupSelect
           groupId={groupId}
@@ -138,11 +190,7 @@ export default function ApiEditModal() {
           setDocument={setDocument}
         />
       </ContentBox>
-      <ContentBox
-        title="API Path URL"
-        description="Enter meaningful resource name, it will be used to generate API
-            endpoints."
-      >
+      <ContentBox title={t.apiPathTitle} description={t.apiPathDescription}>
         <div className="relative w-full">
           <Input
             placeHolder="ex) /user/projects"
@@ -164,8 +212,8 @@ export default function ApiEditModal() {
         </div>
       </ContentBox>
       <ContentBox
-        title="Query Parameters"
-        description="Define the data types for the query string parameters."
+        title={t.queryParamsTitle}
+        description={t.queryParamsDescription}
       >
         <QueryStringEditor
           parameters={parameters}
@@ -177,10 +225,7 @@ export default function ApiEditModal() {
           }}
         />
       </ContentBox>
-      <ContentBox
-        title="Path Variables"
-        description="Define the data types for the path variables."
-      >
+      <ContentBox title={t.pathVarsTitle} description={t.pathVarsDescription}>
         <PathVariableEditor
           pathVariable={document.apiPathVariable}
           setPathVariableType={setPathVariableType}
@@ -188,8 +233,8 @@ export default function ApiEditModal() {
       </ContentBox>
       {document.apiMethod !== "GET" && (
         <ContentBox
-          title="Request Body"
-          description="Define Resource template, it will be used to generate mock data."
+          title={t.requestBodyTitle}
+          description={t.requestBodyDescription}
         >
           <RequestBodyEditor
             apiRequest={document.apiRequest}
@@ -205,8 +250,8 @@ export default function ApiEditModal() {
         </ContentBox>
       )}
       <ContentBox
-        title="Response Body"
-        description="Define Resource template, it will be used to generate mock data."
+        title={t.responseBodyTitle}
+        description={t.responseBodyDescription}
       >
         <ResponseBodyEditor
           apiResponse={document.apiResponse}
@@ -240,7 +285,9 @@ export default function ApiEditModal() {
       </ContentBox>
       <div className="h-10 w-full" />
       <div className="flex w-full justify-end">
-        <Button type="Apply" onClick={onClickButton} />
+        <Button type={t.applyButton} onClick={onClickButton}>
+          {t.applyButton}
+        </Button>
       </div>
       <div className="h-2 w-full" />
     </div>

@@ -17,6 +17,7 @@ import setDefaultFakerJs, {
 import TabBar from "../components/TabBar";
 import filterTabs from "../utils/filterTabs";
 import Spinner from "../components/Spinner";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
@@ -51,6 +52,19 @@ export default function Tester({ project }) {
   const handleResponseCopyClick = () => {
     navigator.clipboard.writeText(JSON.stringify(response));
   };
+
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      noSelect: "사이드바에서 API를 선택하세요.",
+    },
+    en: {
+      noSelect: "Please select the API from the sidebar",
+    },
+  };
+
+  const t = translations[language];
 
   useEffect(() => {
     if (!apiId) return;
@@ -132,9 +146,7 @@ export default function Tester({ project }) {
   if (tabs.length === 0)
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <div className="text-2 font-semibold text-gray-500">
-          Please select the API from the sidebar
-        </div>
+        <div className="text-2 font-semibold text-gray-500">{t.noSelect}</div>
       </div>
     );
 

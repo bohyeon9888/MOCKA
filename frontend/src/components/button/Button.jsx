@@ -6,10 +6,15 @@ function Button({ type, onClick }) {
       case "Generate":
         return "w-[100px]";
       case "Invite":
+      case "초대":
       case "Apply":
+      case "적용":
       case "Create":
+      case "생성":
       case "Save":
+      case "저장":
       case "Send":
+      case "전송":
         return "w-[71px]";
       default:
         return "w-[71px]";
