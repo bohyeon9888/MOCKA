@@ -119,11 +119,13 @@ export default function Tester({ project }) {
       commonUri: project.commonUri,
     })
       .then(({ data, status }) => {
-        setIsLoading(false);
         setResponse({ status, data });
       })
       .catch((e) => {
         setResponse(e);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
