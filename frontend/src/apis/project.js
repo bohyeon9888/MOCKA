@@ -4,6 +4,9 @@ const visibilityMapping = {
   Public: 1,
   Teams: 2,
   Private: 3,
+  공개: 1,
+  팀: 2,
+  비공개: 3,
 };
 
 const updateProject = async ({ projectName, commonUri, visibility }) => {
