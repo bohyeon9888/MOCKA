@@ -27,7 +27,7 @@ authAxios.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response?.status === 400) {
+    if (error.response?.status === 401) {
       try {
         await tokenRefresh();
         const accessToken = getToken();
