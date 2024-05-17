@@ -1,6 +1,7 @@
 import fakerJsMap from "../../constants/fakerJsMap";
 import DropDown from "../DropDown";
 import Input from "../Input";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function RequestQueryParamsBox({
   queryParameters,
@@ -40,11 +41,24 @@ export default function RequestQueryParamsBox({
     setQueryParameters(newQuery);
   };
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      NoQueryOption: "쿼리 매개변수 없음",
+    },
+    en: {
+      NoQueryOption: "No Query Parameters",
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div>
       {queryParameters.length === 0 ? (
         <div className="text-center font-medium text-gray-500">
-          No Query Parameters
+          {t.NoQueryOption}
         </div>
       ) : (
         <div>

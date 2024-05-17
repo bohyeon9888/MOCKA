@@ -1,6 +1,7 @@
 import fakerJsMap from "../../constants/fakerJsMap";
 import DropDown from "../DropDown";
 import Input from "../Input";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 function RequestBodyItem({
   id,
@@ -205,11 +206,23 @@ function RequestBodyItem({
 }
 
 export default function RequestBodyBox({ body, setBody }) {
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      NoBodyOption: "요청 본문 없음",
+    },
+    en: {
+      NoBodyOption: "No Request Body",
+    },
+  };
+
+  const t = translations[language];
   return (
     <div>
       {body.length === 0 ? (
         <div className="text-center font-medium text-gray-500">
-          No Request Body
+          {t.NoBodyOption}
         </div>
       ) : (
         <div className="flex flex-col space-y-2">
