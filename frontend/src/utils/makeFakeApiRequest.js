@@ -32,11 +32,7 @@ const randomValue = ({ first, second, input, min, max }) => {
     return String.fromCharCode(faker.number.int({ min: 0, max: 65535 }));
   if (second === "Integer") return faker.number.int({ min, max });
   if (second === "Double") return faker.number.float({ min, max });
-  if (second === "Long")
-    return faker.number.bigInt({
-      min: BigInt("-9223372036854775807"),
-      max: BigInt("9223372036854775808"),
-    });
+  if (second === "Long") return faker.number.bigInt({ min, max }).toString();
   if (second === "Byte") return faker.number.int({ min, max });
   return faker[first.toLowerCase()][second.toLowerCase()]({ min, max });
 };
