@@ -7,6 +7,7 @@ function createTypeValidationRegex(typesArray) {
 }
 
 export default function isValidURI(uri) {
+  if (uri === "") return true;
   const regex = createTypeValidationRegex(javaPrimitiveTypes);
   // TODO : queryParameters, pathVariables key 중복 확인
   return regex.test(uri);

@@ -5,7 +5,7 @@ export default function formatData(body) {
     type: body.type || "String",
     arrayList: body.arrayList || false,
     arraySize: body.arraySize || -1,
-    fakerLocale: body.fakerLocale || null,
+    fakerLocale: "KO" || body.fakerLocale || null,
     fakerMajor: body.fakerMajor || null,
     fakerSub: body.fakerSub || null,
     value:

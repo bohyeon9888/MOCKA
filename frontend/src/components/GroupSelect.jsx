@@ -26,20 +26,20 @@ export default function GroupSelect({ groupId, setGroupId, setDocument }) {
         options={groupList}
         changeHandler={(value) => {
           if (value === groupId) return;
-          const prevUri = project.groups.filter(
-            (group) => group.groupId == groupId,
-          )[0].groupUri;
-          const nextUri = project.groups.filter(
-            (group) => group.groupId == value,
-          )[0].groupUri;
+          // const prevUri = project.groups.filter(
+          //   (group) => group.groupId == groupId,
+          // )[0].groupUri;
+          // const nextUri = project.groups.filter(
+          //   (group) => group.groupId == value,
+          // )[0].groupUri;
           setGroupId(value);
-          setDocument((document) => {
-            const newUri = document.apiUri.replace(prevUri, nextUri);
-            return {
-              ...document,
-              apiUri: newUri,
-            };
-          });
+          // setDocument((document) => {
+          //   const newUri = document.apiUri.replace(prevUri, nextUri);
+          //   return {
+          //     ...document,
+          //     apiUri: newUri,
+          //   };
+          // });
         }}
       />
     </div>
