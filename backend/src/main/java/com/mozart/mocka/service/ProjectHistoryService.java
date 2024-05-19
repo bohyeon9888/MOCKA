@@ -111,6 +111,7 @@ public class ProjectHistoryService {
                 .memberId(memberId)
                 .projectId(projectId)
                 .build();
+        log.info("check authority");
         return historyRepository.existsByProjectHistoryPK(pk);
     }
 }
