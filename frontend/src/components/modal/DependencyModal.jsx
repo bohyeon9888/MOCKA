@@ -1,5 +1,6 @@
 import { useState } from "react";
-import dependencyList from "../../constants/dependencies";
+import dependencyList_en from "../../constants/dependencies";
+import dependencyList_ko from "../../constants/dependencies_ko";
 import combineClassName from "../../utils/combineClassName";
 import CheckBox from "../CheckBox";
 import { useModalStore } from "../../store";
@@ -14,13 +15,16 @@ export default function DependencyModal() {
   const translations = {
     ko: {
       add: "추가",
+      dependencyList: dependencyList_ko,
     },
     en: {
       add: "Add",
+      dependencyList: dependencyList_en,
     },
   };
 
   const t = translations[language];
+  const dependencyList = t.dependencyList;
 
   const selectedClassName = "mb-1 text-[17px] text-green-600 font-medium";
 

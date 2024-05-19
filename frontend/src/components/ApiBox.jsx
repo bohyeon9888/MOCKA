@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Method from "./Method";
 import PrettyJson from "./PrettyJson";
 import formatRequestBody from "../utils/formatRequestBody";
@@ -8,8 +8,10 @@ import ApiDeleteModal from "./modal/ApiDeleteModal";
 import { useModalStore, useProjectStore } from "../store";
 import { useParams } from "react-router-dom";
 import ApiEditModal from "./modal/ApiEditModal";
-/**바꿀거 */
-// 메소드 타입별로 placeholder 내용 다르게 -> 영어버전으로 바꾸기 🍒
+import ApiUpdateModal from "./modal/ApiUpdateModal";
+import parseResponse from "../utils/parseResponse";
+import convertBody from "../utils/convertBody";
+import { useLanguage } from "../contexts/LanguageContext";
 
 function ApiBox({
   apiId,
@@ -22,65 +24,99 @@ function ApiBox({
   apiPaths,
   apiRequests,
   apiResponses,
+  groupId,
 }) {
-  const originalApiName = name; // api명세서 보고 변수로 바꾸기 🍒
-  const [isDetailVisible, setIsDetailVisible] = useState(false); //자세히 보기 버튼
-  const methodType = apiMethod.toUpperCase(); //method타입과 placeholder내용
+  const originalApiName = name;
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const methodType = apiMethod.toUpperCase();
   const [apiName, setApiName] = useState(originalApiName);
-  const [inputValue, setInputValue] = useState(apiName); // 입력 필드 값 관리
-  const [isSaved, setIsSaved] = useState(true); // apiName 저장 상태 관리
-  const [apiUri] = useState(apiUriStr); //나중에 명세서 변수보고 바꾸기 🍒
-  const [apiUriCopy, setApiUriCopy] = useState(apiUri); //api uri복사
+  const [inputValue, setInputValue] = useState(apiName);
+  const [isSaved, setIsSaved] = useState(true);
+  const [apiUri] = useState(apiUriStr);
+  const [apiUriCopy, setApiUriCopy] = useState(apiUri);
   const [CopySuccess, setCopySuccess] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const { openModal } = useModalStore();
   const { projectId } = useParams();
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      ApiUpdateModal: "API 편집",
+      ApiDelete: "Api 삭제",
+      getPlaceholder: "사용자 정보 조회 => API 이름 or 간단 설명 작성",
+      postPlaceholder: "사용자 등록",
+      putPlaceholder: "사용자 정보 변경",
+      deletePlaceholder: "사용자 삭제",
+      patchPlaceholder: "사용자 상태 변경",
+      copied: "복사됨",
+      editApi: "API 수정",
+      deleteApi: "API 삭제",
+      api: "API",
+      description: "설명",
+      // requestBody: "요청 본문",
+      requestBody: "Request Body",
+      // responseBody: "응답 본문",
+      responseBody: "Response Body",
+    },
+    en: {
+      ApiUpdateModal: "Edit API",
+      ApiDelete: "Delete Api",
+      getPlaceholder:
+        "Retrieve user information => Write API name or short description",
+      postPlaceholder: "Register user",
+      putPlaceholder: "Update user information",
+      deletePlaceholder: "Delete user",
+      patchPlaceholder: "Change user status",
+      copied: "copied",
+      editApi: "Edit API",
+      deleteApi: "Delete API",
+      api: "API",
+      description: "Description",
+      requestBody: "Request Body",
+      responseBody: "Response Body",
+    },
+  };
+
+  const t = translations[language];
+
   const toggleDetails = () => {
     setIsDetailVisible(!isDetailVisible);
   };
 
-  //일반 vs 자세히 보기 div박스 크기 다르게
   const boxStyle = isDetailVisible
     ? {
-        // width: "1400px",
         width: "80%",
         height: "485px",
         transition: "all 0.3s ease",
       }
     : {
-        // width: "1400px",
         width: "80%",
         height: "110px",
         transition: "all 0.3s ease",
       };
 
-  // 메소드 타입별로 placeholder 다른내용 나오게
   let placeholderText;
 
   switch (methodType) {
     case "GET":
-      placeholderText = "사용자 정보 조회 => API 이름 or 간단 설명 작성";
+      placeholderText = t.getPlaceholder;
       break;
-
     case "POST":
-      placeholderText = "사용자 등록";
+      placeholderText = t.postPlaceholder;
       break;
-
     case "PUT":
-      placeholderText = "사용자 정보 변경";
+      placeholderText = t.putPlaceholder;
       break;
-
     case "DELETE":
-      placeholderText = "사용자 삭제";
+      placeholderText = t.deletePlaceholder;
       break;
-
     case "PATCH":
-      placeholderText = "사용자 상태 변경";
+      placeholderText = t.patchPlaceholder;
       break;
   }
 
-  //apiUri 복사 - apiUri가 변경될 때마다 apiUriCopy를 업데이트
   useEffect(() => {
     setApiUriCopy(apiUri);
   }, [apiUri]);
@@ -89,14 +125,13 @@ function ApiBox({
     try {
       await navigator.clipboard.writeText(apiUriCopy);
       setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 4000); // 4초 후 메시지 숨김
+      setTimeout(() => setCopySuccess(false), 4000);
     } catch (err) {
-      console.error("Copy fail. ´。＿。｀ : ", err);
+      console.error("Copy failed: ", err);
       setCopySuccess(false);
     }
   };
 
-  //apiName 실시간 확인 및 변경
   useEffect(() => {
     if (inputValue === apiName) {
       setIsSaved(true);
@@ -105,37 +140,42 @@ function ApiBox({
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
-    setIsSaved(false); // 변경 시 저장 상태를 false로 설정
+    setIsSaved(false);
   };
 
-  //엔터를 누르면 무조건 saved
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      setApiName(inputValue); // 엔터 키가 눌리면 apiName 상태 업데이트
-      setIsSaved(true); // 저장 상태를 true로 설정
+      setApiName(inputValue);
+      setIsSaved(true);
     }
   };
 
   const openApiEditModal = () => {
-    openModal("Edit API", <ApiEditModal />, {
+    openModal(t.ApiUpdateModal, <ApiUpdateModal />, {
       document: {
         name,
         description,
         apiId,
-        apiMethod,
+        apiMethod: apiMethod.toUpperCase(),
         apiUri: apiUriStr,
-        apiRequest: apiRequests,
-        apiResponse: apiResponses,
+        apiRequest: convertBody(apiRequests),
+        apiResponse: convertBody(apiResponses),
         apiResponseIsArray,
         apiResponseSize,
-        apiPathVariable: apiPaths,
+        groupId,
+        apiPathVariable: apiPaths.map(({ id, key, data }) => {
+          return {
+            id,
+            key,
+            type: data,
+          };
+        }),
       },
     });
   };
 
-  //apiBox 삭제
   const openApiDeleteModal = () => {
-    openModal("Delete Api", <ApiDeleteModal />, { apiName, projectId, apiId });
+    openModal(t.ApiDelete, <ApiDeleteModal />, { apiName, projectId, apiId });
   };
 
   return (
@@ -154,28 +194,22 @@ function ApiBox({
             placeholder={placeholderText}
           />
         ) : (
-          <h3>{name || "API"}</h3>
+          <h3>{name || t.api}</h3>
         )}
-        {/* {isSaved ? (
-          <h6 className="ml-[-60px] text-green-400">saved</h6>
-        ) : (
-          <h6 className="ml-[-100px] text-red-400">press enter</h6>
-        )} */}
       </div>
       <div className="mt-[13px] flex items-center">
         <Method type={methodType} />
         <p className="ml-[16px] font-medium">{apiUri}</p>
         <div className="flex-grow"></div>
         <div className="flex items-center">
-          {/* 링크복사 */}
           {CopySuccess && (
             <h6 className="mr-[10px] text-green-400 opacity-100 transition-opacity">
-              copied
+              {t.copied}
             </h6>
           )}
           {!CopySuccess && (
             <h6 className="mr-[10px] text-green-400 opacity-0 transition-opacity ">
-              copied
+              {t.copied}
             </h6>
           )}
           <img
@@ -185,72 +219,58 @@ function ApiBox({
             onClick={copy}
           />
 
-          {/* 수정모달 */}
           <img
             src="/asset/project/project-edit.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-edit"
             onClick={openApiEditModal}
           />
-          {/* 삭제 */}
+
           <img
             src="/asset/project/project-delete.svg"
             className="mr-[18px] h-4 cursor-pointer"
             alt="project-delete"
             onClick={openApiDeleteModal}
           />
-          {/* 자세히 보기 (위/아래화살표 아이콘) */}
+
           {isDetailVisible ? (
-            <>
-              <img
-                src="/asset/project/project-up-pointer.svg"
-                className="h-3 cursor-pointer"
-                alt="project-up-pointer"
-                onClick={toggleDetails}
-              />
-            </>
+            <img
+              src="/asset/project/project-up-pointer.svg"
+              className="h-3 cursor-pointer"
+              alt="project-up-pointer"
+              onClick={toggleDetails}
+            />
           ) : (
-            <>
-              <img
-                src="/asset/project/project-down-pointer.svg"
-                className="h-3 cursor-pointer"
-                alt="project-down-pointer"
-                onClick={toggleDetails}
-              />
-            </>
+            <img
+              src="/asset/project/project-down-pointer.svg"
+              className="h-3 cursor-pointer"
+              alt="project-down-pointer"
+              onClick={toggleDetails}
+            />
           )}
         </div>
       </div>
 
-      {/* 자세히 보기*/}
       {isDetailVisible && (
         <div className="transition-all-[0.9s ease]">
           <div className="mt-[20px] h-[339px] border-2 border-gray-200 bg-white">
             <div className="flex h-[38px] items-center border-b-[2px] border-gray-200">
-              <h4 className="ml-[14px]">Description</h4>
+              <h4 className="ml-[14px]">{t.description}</h4>
               <div className="ml-4 text-gray-700">{description}</div>
             </div>
             <div className="flex flex-row">
               <div className="flex h-[298px] flex-1 flex-col overflow-auto p-[14px]">
-                <h4 className="mb-2">Request Body</h4>
+                <h4 className="mb-2">{t.requestBody}</h4>
                 <PrettyJson data={formatRequestBody(apiRequests)} />
               </div>
               <div className="h-[298px] border-r-[2px]"></div>
               <div className="flex h-[298px] flex-1 flex-col overflow-auto p-[14px]">
-                <h4 className="mb-2">Response Body</h4>
+                <h4 className="mb-2">{t.responseBody}</h4>
                 <PrettyJson
                   data={formatResponseBody(apiResponses, apiResponseIsArray)}
                 />
               </div>
             </div>
-            {/* <div className="[239px] flex h-[80px] items-center justify-center">
-              <img
-                src="/asset/project/project-up-pointer.svg"
-                className="h-3 cursor-pointer "
-                alt="project-down-pointer"
-                onClick={toggleDetails}
-              />
-            </div> */}
           </div>
         </div>
       )}

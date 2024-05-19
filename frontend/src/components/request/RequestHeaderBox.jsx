@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Input from "../Input";
 import combineClassName from "../../utils/combineClassName";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function RequestHeaderBox({ headers, setHeaders }) {
   const [hoveredIdx, setHoveredIdx] = useState(-1);
@@ -37,12 +38,30 @@ export default function RequestHeaderBox({ headers, setHeaders }) {
   const iconClassName =
     "flex size-[22px] cursor-pointer items-center justify-center rounded-full hover:bg-gray-200";
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      // noHeaderOption: "헤더 옵션 없음",
+      noHeaderOption: "Header 옵션 없음",
+      key: "키",
+      value: "값",
+    },
+    en: {
+      noHeaderOption: "No Header Options",
+      key: "Key",
+      value: "Value",
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div>
       <div className="mb-5 flex flex-col space-y-2">
         {headers.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No Header Options
+            {t.noHeaderOption}
           </div>
         ) : (
           headers.map(({ id, key, value }, idx) => (
@@ -61,7 +80,7 @@ export default function RequestHeaderBox({ headers, setHeaders }) {
                 changeHandler={(e) => {
                   changeKeyHandler(idx, e.target.value);
                 }}
-                placeHolder="Key"
+                placeHolder={t.key}
               />
               <div className="pb-1 text-2 text-gray-500">:</div>
               <Input
@@ -69,7 +88,7 @@ export default function RequestHeaderBox({ headers, setHeaders }) {
                 changeHandler={(e) => {
                   changeValueHandler(idx, e.target.value);
                 }}
-                placeHolder="Value"
+                placeHolder={t.value}
                 isGrow
               />
               <div

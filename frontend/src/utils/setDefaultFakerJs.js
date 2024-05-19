@@ -10,7 +10,7 @@ const setDefaultFakerJs = (object) => {
       data,
       first,
       second,
-      value: "",
+      input: "",
       min: fakerJsMap[type || data]?.min,
       max: fakerJsMap[type || data]?.max,
     };

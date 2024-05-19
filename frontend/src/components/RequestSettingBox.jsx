@@ -33,25 +33,27 @@ export default function RequestSettingBox({
   };
 
   switch (activeText) {
-    case "Headers":
+    case "headers":
       return (
         <RequestHeaderBox headers={document?.headers} setHeaders={setHeaders} />
       );
-    case "Query Parameters":
+    case "queryParameters":
       return (
         <RequestQueryParamsBox
           queryParameters={document?.queryParameters}
           setQueryParameters={setQueryParameters}
         />
       );
-    case "Path Variables":
+    case "pathVariables":
       return (
         <RequestPathVariableBox
           pathVariables={document?.pathVariables}
           setPathVariables={setPathVariables}
         />
       );
-    case "Body":
+    case "body":
       return <RequestBodyBox body={document?.body} setBody={setBody} />;
+    default:
+      return null;
   }
 }

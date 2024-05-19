@@ -4,7 +4,7 @@ import ProjectDeleteModal from "./ProjectDeleteModal";
 import { useModalStore } from "../../store";
 import { useLanguage } from "../../contexts/LanguageContext";
 
-function HeaderProjectEditModal() {
+function HeaderProjectEditModal({ setShowHeaderProjectEditModal }) {
   const { openModal } = useModalStore();
   const { language } = useLanguage();
 
@@ -23,10 +23,12 @@ function HeaderProjectEditModal() {
 
   const openProjectEditModal = () => {
     openModal(t.rename, <ProjectEditModal />);
+    setShowHeaderProjectEditModal(false);
   };
 
   const openProjectDeleteModal = () => {
     openModal(t.delete, <ProjectDeleteModal />);
+    setShowHeaderProjectEditModal(false);
   };
 
   return (

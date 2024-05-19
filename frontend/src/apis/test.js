@@ -19,22 +19,29 @@ const sendRequest = async ({
   // console.log(headers, queryParameters, pathVariables, body);
   // const fakeApiRequest = makeFakeApiRequest(apiRequests);
   // const fakeApiUri = makeFakeApiUri(apiUriStr, apiPaths);
-  const fakeApiRequest = makeFakeApiRequest(body);
-  const fakeApiUri = makeFakeApiUri(apiUriStr, queryParameters, pathVariables);
+  try {
+    const fakeApiRequest = makeFakeApiRequest(body);
+    const fakeApiUri = makeFakeApiUri(
+      apiUriStr,
+      queryParameters,
+      pathVariables,
+    );
+    const header = { "Content-Type": "application/json" };
+    headers.forEach(({ key, value }) => {
+      header[key] = value;
+    });
 
-  const header = { "Content-Type": "application/json" };
-  headers.forEach(({ key, value }) => {
-    header[key] = value;
-  });
+    const result = await axios({
+      method: apiMethod.toLowerCase(),
+      url: `${baseUrl}${commonUri}${fakeApiUri}`,
+      data: fakeApiRequest,
+      headers: header,
+    });
 
-  const result = await axios({
-    method: apiMethod.toLowerCase(),
-    url: `${baseUrl}${commonUri}${fakeApiUri}`,
-    data: fakeApiRequest,
-    headers: header,
-  });
-
-  return result;
+    return result;
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 export { sendRequest };

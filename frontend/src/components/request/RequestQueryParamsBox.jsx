@@ -1,6 +1,7 @@
 import fakerJsMap from "../../constants/fakerJsMap";
 import DropDown from "../DropDown";
 import Input from "../Input";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function RequestQueryParamsBox({
   queryParameters,
@@ -23,9 +24,9 @@ export default function RequestQueryParamsBox({
     setQueryParameters(newQuery);
   };
 
-  const setValue = (idx, value) => {
+  const setInput = (idx, value) => {
     const newQuery = [...queryParameters];
-    newQuery[idx].value = value;
+    newQuery[idx].input = value;
     setQueryParameters(newQuery);
   };
   const setMin = (idx, value) => {
@@ -40,16 +41,30 @@ export default function RequestQueryParamsBox({
     setQueryParameters(newQuery);
   };
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      // NoQueryOption: "쿼리 매개변수 없음",
+      NoQueryOption: "Query Parameter 없음",
+    },
+    en: {
+      NoQueryOption: "No Query Parameters",
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div>
       {queryParameters.length === 0 ? (
         <div className="text-center font-medium text-gray-500">
-          No Query Parameters
+          {t.NoQueryOption}
         </div>
       ) : (
         <div>
           {queryParameters.map(
-            ({ key, type, first, second, min, max, value }, idx) => (
+            ({ key, type, first, second, min, max, input }, idx) => (
               <div key={key} className="flex flex-row items-center space-x-2">
                 <Input value={key} readOnly />
                 <div className="pb-1 text-2 text-gray-500">:</div>
@@ -57,7 +72,7 @@ export default function RequestQueryParamsBox({
                   value={type}
                   readOnly
                   style={{
-                    width: "85px",
+                    width: "90px",
                     textAlign: "center",
                   }}
                 />
@@ -70,9 +85,9 @@ export default function RequestQueryParamsBox({
                 />
                 {first === "직접 입력" ? (
                   <Input
-                    value={value}
+                    value={input}
                     changeHandler={(e) => {
-                      setValue(idx, e.target.value);
+                      setInput(idx, e.target.value);
                     }}
                   />
                 ) : (

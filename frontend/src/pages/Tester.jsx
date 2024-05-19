@@ -15,6 +15,8 @@ import setDefaultFakerJs, {
   setDefaultFakerJsBody,
 } from "../utils/setDefaultFakerJs";
 import TabBar from "../components/TabBar";
+import Spinner from "../components/Spinner";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
@@ -24,7 +26,6 @@ export default function Tester({ project }) {
     localStorage?.tabs &&
     JSON.parse(localStorage.tabs) &&
     JSON.parse(localStorage.tabs)[projectId];
-  console.log(savedTabs);
   const [tabs, setTabs] = useState(savedTabs || []);
   const apiId = searchParams.get("apiId");
   const [document, setDocument] = useState({
@@ -35,10 +36,64 @@ export default function Tester({ project }) {
   });
   const [response, setResponse] = useState(null);
   const [baseUrl, setBaseUrl] = useState("");
-  const [activeText, setActiveText] = useState("Headers");
-  const texts = ["Headers", "Query Parameters", "Path Variables", "Body"];
-  const handleTextClick = (Text) => {
-    setActiveText(Text);
+  const [activeText, setActiveText] = useState("headers");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      noSelect: "사이드바에서 API를 선택하세요.",
+      description: "설명",
+      // requestBody: "요청 본문",
+      requestBody: "Request Body",
+      // responseBody: "응답 본문",
+      responseBody: "Response Body",
+      request: "요청",
+      response: "응답",
+      templateInfo:
+        "모의 데이터 템플릿을 사용하면 전송 시 요청이 템플릿된 모의 데이터로 자동 채워집니다.",
+      templateName: "템플릿 이름",
+      // headers: "헤더",
+      headers: "Headers",
+      // queryParameters: "쿼리 매개변수",
+      queryParameters: "Query Parameters",
+      // pathVariables: "경로 변수",
+      pathVariables: "Path Variables",
+      // body: "본문",
+      body: "Body",
+      saveButton: "저장",
+      sendButton: "전송",
+    },
+    en: {
+      noSelect: "Please select the API from the sidebar.",
+      description: "Description",
+      requestBody: "Request Body",
+      responseBody: "Response Body",
+      request: "Request",
+      response: "Response",
+      templateInfo:
+        "If use mock data templates, request will automatically be filled with templated mock data when sent.",
+      templateName: "Template Name",
+      headers: "Headers",
+      queryParameters: "Query Parameters",
+      pathVariables: "Path Variables",
+      body: "Body",
+      saveButton: "Save",
+      sendButton: "Send",
+    },
+  };
+
+  const t = translations[language];
+  const texts = [
+    { key: "headers", label: t.headers },
+    { key: "queryParameters", label: t.queryParameters },
+    { key: "pathVariables", label: t.pathVariables },
+    { key: "body", label: t.body },
+  ];
+
+  const handleTextClick = (key) => {
+    setActiveText(key);
   };
 
   const handleApiCopyClick = () => {
@@ -46,7 +101,7 @@ export default function Tester({ project }) {
   };
 
   const handleResponseCopyClick = () => {
-    navigator.clipboard.writeText(response);
+    navigator.clipboard.writeText(JSON.stringify(response));
   };
 
   useEffect(() => {
@@ -67,7 +122,7 @@ export default function Tester({ project }) {
         setSelectedTab(data.apiId);
         if (idList.includes(data.apiId)) {
           return prev;
-        } else
+        } else {
           return [
             ...tabs,
             {
@@ -77,7 +132,10 @@ export default function Tester({ project }) {
               title: data.name,
             },
           ];
+        }
       });
+
+      setResponse(null);
     });
   }, [apiId]);
 
@@ -106,7 +164,8 @@ export default function Tester({ project }) {
   };
 
   const sendMethod = () => {
-    if (!document) return;
+    if (!document || isLoading) return;
+    setIsLoading(true);
     sendRequest({
       ...document,
       baseUrl,
@@ -117,15 +176,16 @@ export default function Tester({ project }) {
       })
       .catch((e) => {
         setResponse(e);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   if (tabs.length === 0)
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <div className="text-2 font-semibold text-gray-500">
-          Please select the API from the sidebar
-        </div>
+        <div className="text-2 font-semibold text-gray-500">{t.noSelect}</div>
       </div>
     );
 
@@ -164,19 +224,19 @@ export default function Tester({ project }) {
           {/* Request, Response박스 */}
           <div className="mt-[20px] h-[239px] border-2 border-gray-200 bg-white">
             <div className="flex h-[38px] items-center border-b-[2px] border-gray-200">
-              <h4 className="ml-[14px]">Description</h4>
+              <h4 className="ml-[14px]">{t.description}</h4>
               <div className="ml-4 text-gray-700">
                 {document?.description ? document?.description : ""}
               </div>
             </div>
             <div className="flex flex-row">
               <div className="flex h-[198px] flex-1 flex-col overflow-auto p-[14px]">
-                <h4 className="mb-2">Request Body</h4>
+                <h4 className="mb-2">{t.requestBody}</h4>
                 <PrettyJson data={formatRequestBody(document?.apiRequests)} />
               </div>
               <div className="h-[198px] border-r-[2px]"></div>
               <div className="flex h-[198px] flex-1 flex-col overflow-auto p-[14px]">
-                <h4 className="mb-2">Response Body</h4>
+                <h4 className="mb-2">{t.responseBody}</h4>
                 <PrettyJson
                   data={formatResponseBody(
                     document?.apiResponses,
@@ -191,11 +251,8 @@ export default function Tester({ project }) {
           <div className="mt-[20px]">
             <div className="flex justify-between">
               <div>
-                <h2>Request</h2>
-                <h4 className="mt-[8px] text-gray-400">
-                  If use mock data templates, request will automatically be
-                  filled with templated mock data when sent.
-                </h4>
+                <h2>{t.request}</h2>
+                <h4 className="mt-[8px] text-gray-400">{t.templateInfo}</h4>
               </div>
               <div className="flex items-center">
                 <img
@@ -205,38 +262,43 @@ export default function Tester({ project }) {
                 />
                 <input
                   className="mr-[10px] h-[30px] w-[200px] rounded-[4px] border-[1px] border-gray-400 pl-[8px] text-[12px]"
-                  placeholder="Template Name"
+                  placeholder={t.templateName}
                 />
-                <Button type="Save" />
+                <Button type={t.saveButton} />
               </div>
             </div>
             {/* Headers, Query Params, Path Variables, Body 선택 */}
-            <div className="my-[14px] flex h-[30px] w-[500px] justify-between">
-              {texts.map((text) => (
+            <div
+              className={combineClassName(
+                "my-[14px] flex h-[30px] w-[500px]",
+                language === "ko" ? "space-x-7" : "space-x-4",
+              )}
+            >
+              {texts.map(({ key, label }) => (
                 <h3
-                  key={text}
+                  key={key}
                   className={combineClassName(
                     "cursor-pointer duration-200",
-                    activeText === text
+                    activeText === key
                       ? "text-black opacity-100"
                       : "opacity-50 hover:opacity-70",
                   )}
                   style={{
                     position: "relative",
-                    color: activeText === text ? "black" : "inherit",
-                    textDecoration: activeText === text ? "none" : "initial",
+                    color: activeText === key ? "black" : "inherit",
+                    textDecoration: activeText === key ? "none" : "initial",
                   }}
-                  onClick={() => handleTextClick(text)}
+                  onClick={() => handleTextClick(key)}
                 >
-                  {text}
+                  {label}
                   <span
                     className={combineClassName(
                       "opacity-90 duration-150",
-                      text === activeText ? "left-0 w-full" : "left-1/2 w-0",
+                      key === activeText ? "left-0 w-full" : "left-1/2 w-0",
                     )}
                     style={{
                       position: "absolute",
-                      bottom: 4, // 밑줄을 더 아래로 떨어지게
+                      bottom: 4,
                       height: "2px",
                       backgroundColor: "black",
                     }}
@@ -253,18 +315,24 @@ export default function Tester({ project }) {
             {/* Response (실제 데이터 전송하고 응답값 받는 걸로 바꾸기)*/}
             <div className="mt-[20px] w-full">
               <div className="flex items-center justify-between">
-                <h2>Response</h2>
+                <h2>{t.response}</h2>
                 <img
                   src="/asset/tester/tester-copy.svg"
-                  className="h-4 cursor-pointer"
+                  className="mt-2 h-4 cursor-pointer"
                   onClick={handleResponseCopyClick}
                 />
               </div>
               <div className="mt-[20px] flex h-[180px] w-[1000px] border-2 border-gray-200 bg-white p-[14px]">
-                <PrettyJson data={response} />
+                {isLoading ? (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  <PrettyJson data={response} />
+                )}
               </div>
               <div className="mt-[20px] flex justify-end">
-                <Button type="Send" onClick={sendMethod} />
+                <Button type={t.sendButton} onClick={sendMethod} />
               </div>
             </div>
           </div>

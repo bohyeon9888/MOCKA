@@ -10,13 +10,18 @@ export default function Document({ project }) {
   const group =
     groupId && project?.groups?.filter((group) => group.groupId == groupId)[0];
   const groupName = group && group.groupName;
+  const groupUri = group && group.groupUri;
   const { openModal } = useModalStore();
 
   return (
     <div className="relative flex h-full w-full flex-col overflow-y-scroll p-6 pb-[220px]">
-      <h2>
+      <h2 className="flex flex-row items-center">
         {project && <span>{project.projectName}</span>}
-        {groupName && <span>{` / ${groupName}`}</span>}
+        {groupName && <span className="ml-2">{` / ${groupName}`}</span>}
+        <span className="ml-4 rounded-[6px] bg-gray-100 px-2 py-[6px] font-Fira text-[18px] font-medium text-red-300">
+          <span>{project?.commonUri}</span>
+          <span className="ml-[2px]">{groupUri || ""}</span>
+        </span>
       </h2>
       {!groupId && project && project.groups && (
         <ApiListAll groups={project.groups} />

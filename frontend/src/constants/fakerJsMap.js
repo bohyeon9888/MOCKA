@@ -16,28 +16,32 @@ const fakerJsMap = {
   Long: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Long"] },
-    min: BigInt("-9223372036854775807"),
-    max: BigInt("9223372036854775808"),
+    min: BigInt("-92233720368547758"),
+    max: BigInt("92233720368547758"),
   },
   Float: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Float"] },
-    min: -3.4e38,
-    max: 3.4e38,
+    min: -3.4e5,
+    max: 3.4e5,
   },
   Double: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Double"] },
-    min: -1.8e308,
-    max: 1.8e308,
+    min: -1.8e10,
+    max: 1.8e10,
   },
   Byte: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Byte"] },
+    min: -128,
+    max: 127,
   },
   Short: {
     first: ["Number", "직접 입력"],
     second: { Number: ["Short"] },
+    min: -32768,
+    max: 32767,
   },
   Character: {
     first: ["Character", "직접 입력"],

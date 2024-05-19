@@ -1,6 +1,7 @@
 import fakerJsMap from "../../constants/fakerJsMap";
 import DropDown from "../DropDown";
 import Input from "../Input";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function RequestPathVariableBox({
   pathVariables,
@@ -23,9 +24,9 @@ export default function RequestPathVariableBox({
     setPathVariables(newQuery);
   };
 
-  const setValue = (idx, value) => {
+  const setInput = (idx, value) => {
     const newQuery = [...pathVariables];
-    newQuery[idx].value = value;
+    newQuery[idx].input = value;
     setPathVariables(newQuery);
   };
 
@@ -41,16 +42,30 @@ export default function RequestPathVariableBox({
     setPathVariables(newQuery);
   };
 
+  const { language } = useLanguage();
+
+  const translations = {
+    ko: {
+      // NoPathOption: "경로 변수 없음",
+      NoPathOption: "Path Variable 없음",
+    },
+    en: {
+      NoPathOption: "No Path Variables",
+    },
+  };
+
+  const t = translations[language];
+
   return (
     <div>
       {pathVariables.length === 0 ? (
         <div className="text-center font-medium text-gray-500">
-          No Path Variables
+          {t.NoPathOption}
         </div>
       ) : (
-        <div>
+        <div className="flex flex-col space-y-2">
           {pathVariables.map(
-            ({ key, data, first, second, min, max, value }, idx) => (
+            ({ key, data, first, second, min, max, input }, idx) => (
               <div key={key} className="flex flex-row items-center space-x-2">
                 <Input value={key} readOnly />
                 <div className="pb-1 text-2 text-gray-500">:</div>
@@ -58,7 +73,7 @@ export default function RequestPathVariableBox({
                   value={data}
                   readOnly
                   style={{
-                    width: "85px",
+                    width: "90px",
                     textAlign: "center",
                   }}
                 />
@@ -71,9 +86,9 @@ export default function RequestPathVariableBox({
                 />
                 {first === "직접 입력" ? (
                   <Input
-                    value={value}
+                    value={input}
                     changeHandler={(e) => {
-                      setValue(idx, e.target.value);
+                      setInput(idx, e.target.value);
                     }}
                   />
                 ) : (

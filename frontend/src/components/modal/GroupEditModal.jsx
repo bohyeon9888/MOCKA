@@ -46,10 +46,12 @@ export default function GroupEditModal() {
       groupName,
       groupUri,
     }).then(() => {
-      getProjectDetail(project.projectId).then((data) => {
-        setProject(data);
-        closeModal();
-      });
+      setTimeout(() => {
+        getProjectDetail(project.projectId).then((data) => {
+          setProject(data);
+          closeModal();
+        });
+      }, 100);
     });
   };
 

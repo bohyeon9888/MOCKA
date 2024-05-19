@@ -2,11 +2,13 @@ import React from "react";
 import { useModalStore, useProjectStore } from "../../store";
 import { deleteProject } from "../../apis/project";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 function ProjectDeleteModal() {
   const { project } = useProjectStore(); //프로젝트 이름
   const { closeModal } = useModalStore();
   const { language } = useLanguage();
+  const navigate = useNavigate();
 
   const translations = {
     ko: {
@@ -26,9 +28,10 @@ function ProjectDeleteModal() {
   const t = translations[language];
 
   const Yes = () => {
-    alert(t.projectDeleted);
-    deleteProject(project.projectId);
-    closeModal();
+    deleteProject(project.projectId).then(() => {
+      closeModal();
+      navigate(`/?lang=${language}`);
+    });
   };
 
   const No = () => {
