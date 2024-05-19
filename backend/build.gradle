@@ -57,3 +57,12 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// templates 복사작업
+task copyTemplates(type: Copy) {
+	from 'src/main/java/com/mozart/mocka/templates'
+	into 'build/templates'
+}
+
+// 기존 빌드 작업에 새로운 작업 의존성 추가
+build.dependsOn(copyTemplates)
