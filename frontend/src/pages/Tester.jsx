@@ -38,6 +38,7 @@ export default function Tester({ project }) {
   const [baseUrl, setBaseUrl] = useState("");
   const [activeText, setActiveText] = useState("headers");
   const [isLoading, setIsLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { language } = useLanguage();
 
@@ -322,7 +323,12 @@ export default function Tester({ project }) {
                   onClick={handleResponseCopyClick}
                 />
               </div>
-              <div className="mt-[20px] flex h-[180px] w-[1000px] border-2 border-gray-200 bg-white p-[14px]">
+              <div
+                className={combineClassName(
+                  "mt-[20px] flex  w-[1000px] border-2 border-gray-200 bg-white p-[14px] duration-200",
+                  isExpanded ? "h-[500px]" : "h-[180px]",
+                )}
+              >
                 {isLoading ? (
                   <div className="flex h-full w-full items-center justify-center">
                     <Spinner />
@@ -330,6 +336,17 @@ export default function Tester({ project }) {
                 ) : (
                   <PrettyJson data={response} />
                 )}
+              </div>
+              <div
+                className="mt-2 flex w-full cursor-pointer justify-center p-2 opacity-70 hover:opacity-100"
+                onClick={() => {
+                  setIsExpanded((isExpanded) => !isExpanded);
+                }}
+              >
+                <img
+                  className="w-[20px]"
+                  src={`/asset/project/project-${isExpanded ? "up" : "down"}-pointer.svg`}
+                />
               </div>
               <div className="mt-[20px] flex justify-end">
                 <Button type={t.sendButton} onClick={sendMethod} />

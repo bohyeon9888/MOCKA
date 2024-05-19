@@ -27,6 +27,13 @@ const randomValueByType = (type) => {
   }
 };
 
+const convertValue = (s) => {
+  if (s === "") return "";
+  const start = s[0].toLowerCase();
+  const others = s.slice(1);
+  return start + others;
+};
+
 const randomValue = ({ first, second, input, min, max }) => {
   if (first === "직접 입력") return input;
   if (first === "Character")
@@ -36,7 +43,7 @@ const randomValue = ({ first, second, input, min, max }) => {
   if (second === "Long") return faker.number.bigInt({ min, max }).toString();
   if (second === "Byte") return faker.number.int({ min, max });
   if (second === "Boolean") return faker.datatype.boolean();
-  return faker[first.toLowerCase()][second.toLowerCase()]({ min, max });
+  return faker[convertValue(first)][convertValue(second)]({ min, max });
 };
 
 const extractObject = (object) => {

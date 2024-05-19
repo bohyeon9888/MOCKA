@@ -9,10 +9,12 @@ import DependencyModal from "../components/modal/DependencyModal";
 import { useParams, useSearchParams } from "react-router-dom";
 import { getProjectDetail } from "../apis/project";
 import { useLanguage } from "../contexts/LanguageContext";
+import Spinner from "../components/Spinner";
 
 export default function Initializer() {
   const { openModal } = useModalStore();
   const { language } = useLanguage();
+  const [isLoading, setIsLoading] = useState();
   const [initializerSetting, setInitializerSetting] = useState({
     project: "Gradle-Groovy",
     language: "Java",
@@ -128,11 +130,17 @@ export default function Initializer() {
   };
 
   const onClick = () => {
+    if (isLoading) return;
+    setIsLoading(true);
     downloadSpringInitializer({
       projectId,
       initializerSetting,
       projectName: project.projectName,
-    }).then((data) => {});
+    })
+      .then((data) => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const deleteDependency = (idx) => {
@@ -336,7 +344,17 @@ export default function Initializer() {
           </div>
         </div>
         <div className="ml-auto">
-          <Button type={t.generate} onClick={onClick} />
+          {isLoading ? (
+            <div className="flex h-[30px] w-[71px] cursor-auto items-center justify-center rounded-[10px] bg-gray-600">
+              <Spinner
+                style={{
+                  width: "20px",
+                }}
+              />
+            </div>
+          ) : (
+            <Button type={t.generate} onClick={onClick} />
+          )}
         </div>
       </div>
     </div>
