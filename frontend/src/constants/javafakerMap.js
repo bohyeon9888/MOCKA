@@ -11,13 +11,15 @@ const javafakerMap = {
       "file",
       "music",
       "country",
+      "string",
+      "crypto",
     ],
     sub: {
       name: ["firstName", "lastName", "fullName"],
       address: ["fullAddress", "city", "country"],
       company: ["name", "industry", "catchPhrase", "url", "logo"],
       phoneNumber: ["phoneNumber"],
-      lorem: ["sentence", "paragraph"],
+      lorem: ["paragraph", "sentence", "word", "character"],
       date: ["past", "future"],
       internet: [
         "avatar",
@@ -31,6 +33,8 @@ const javafakerMap = {
       file: ["extension", "fileName", "mimeType"],
       music: ["chord", "genre", "instrument", "key"],
       country: ["capital", "countryCode", "currency", "flag", "name"],
+      string: ["uuid", "alpha", "binary", "numeric", "sample"],
+      crypto: ["md5", "sha1", "sha256", "sha512"],
     },
   },
   Boolean: {
