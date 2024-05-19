@@ -13,7 +13,7 @@ export default function RequestPathVariableBox({
     const newQuery = [...pathVariables];
     newQuery[idx].first = value;
     if (value !== "직접 입력")
-      newQuery[idx].second = fakerJsMap[type].second[value];
+      newQuery[idx].second = fakerJsMap[type].second[value][0];
     setPathVariables(newQuery);
   };
 
@@ -94,11 +94,12 @@ export default function RequestPathVariableBox({
                 ) : (
                   <>
                     <DropDown
-                      value={second}
+                      value={second || fakerJsMap[data].second[first][0]}
                       options={fakerJsMap[data].second[first]}
                       changeHandler={(value) => {
                         setSecond(idx, value);
                       }}
+                      style={{ width: "150px" }}
                     />
                     {/* {min !== undefined && (
                       <Input

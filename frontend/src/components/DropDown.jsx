@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import combineClassName from "../utils/combineClassName";
 
-export default function DropDown({ value, options, changeHandler, size }) {
+export default function DropDown({
+  value,
+  options,
+  changeHandler,
+  size,
+  style,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -28,7 +34,7 @@ export default function DropDown({ value, options, changeHandler, size }) {
   }, [dropdownRef]);
 
   return (
-    <div className={baseClassName} ref={dropdownRef}>
+    <div className={baseClassName} ref={dropdownRef} style={style}>
       <button
         className={buttonClassName}
         type="button"

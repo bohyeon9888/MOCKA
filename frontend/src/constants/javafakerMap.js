@@ -1,13 +1,36 @@
 const javafakerMap = {
   String: {
-    major: ["name", "address", "company", "phoneNumber", "lorem", "date"],
+    major: [
+      "name",
+      "address",
+      "company",
+      "phoneNumber",
+      "lorem",
+      "date",
+      "internet",
+      "file",
+      "music",
+      "country",
+    ],
     sub: {
       name: ["firstName", "lastName", "fullName"],
       address: ["fullAddress", "city", "country"],
-      company: ["name", "industry"],
+      company: ["name", "industry", "catchPhrase", "url", "logo"],
       phoneNumber: ["phoneNumber"],
       lorem: ["sentence", "paragraph"],
       date: ["past", "future"],
+      internet: [
+        "avatar",
+        "domainName",
+        "emailAddress",
+        "image",
+        "password",
+        "ipV4Address",
+        "url",
+      ],
+      file: ["extension", "fileName", "mimeType"],
+      music: ["chord", "genre", "instrument", "key"],
+      country: ["capital", "countryCode", "currency", "flag", "name"],
     },
   },
   Boolean: {

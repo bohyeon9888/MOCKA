@@ -13,7 +13,7 @@ export default function RequestQueryParamsBox({
     const newQuery = [...queryParameters];
     newQuery[idx].first = value;
     if (value !== "직접 입력")
-      newQuery[idx].second = fakerJsMap[type].second[value];
+      newQuery[idx].second = fakerJsMap[type].second[value][0];
     setQueryParameters(newQuery);
   };
 
@@ -93,11 +93,12 @@ export default function RequestQueryParamsBox({
                 ) : (
                   <>
                     <DropDown
-                      value={second}
+                      value={second || fakerJsMap[type].second[first][0]}
                       options={fakerJsMap[type].second[first]}
                       changeHandler={(value) => {
                         setSecond(idx, value);
                       }}
+                      style={{ width: "150px" }}
                     />
                     {/* {min !== undefined && (
                       <Input

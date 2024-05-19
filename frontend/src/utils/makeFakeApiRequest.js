@@ -1,4 +1,5 @@
-import { faker } from "@faker-js/faker";
+// import { faker } from "@faker-js/faker";
+import faker from "./localeFaker";
 
 const randomValueByType = (type) => {
   switch (type) {
@@ -34,6 +35,7 @@ const randomValue = ({ first, second, input, min, max }) => {
   if (second === "Double") return faker.number.float({ min, max });
   if (second === "Long") return faker.number.bigInt({ min, max }).toString();
   if (second === "Byte") return faker.number.int({ min, max });
+  if (second === "Boolean") return faker.datatype.boolean();
   return faker[first.toLowerCase()][second.toLowerCase()]({ min, max });
 };
 
