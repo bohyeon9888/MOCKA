@@ -1,6 +1,7 @@
 package com.mozart.mocka.service.generator;
 
 import com.mozart.mocka.dto.request.InitializerRequestDto;
+import com.mozart.mocka.service.FileDownloader;
 import com.mozart.mocka.util.DependencyManager;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -206,8 +207,10 @@ public class GenInit {
 //        Path sourceDirectory = Paths.get(
 //            "src/main/java/com/mozart/mocka/templates/maven" + request.getSpringPlatformVersion());
         // 로컬 환경
-        Path sourceDirectory = Paths.get(
-            "./templates/maven" + request.getSpringPlatformVersion());
+        //Path sourceDirectory = Paths.get(
+        //    "./templates/maven" + request.getSpringPlatformVersion());
+        String baseUrl = "https://raw.githubusercontent.com/beomk41/ieumpay_shop/main/templates/maven" + request.getSpringPlatformVersion() + "/";
+
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
         String[] requiredFiles = {
@@ -221,7 +224,7 @@ public class GenInit {
 
         // 각 파일을 복사
         for (String fileName : requiredFiles) {
-            Path sourceFile = sourceDirectory.resolve(fileName);
+            String fileUrl = baseUrl + fileName;
             Path targetFile = projectRoot.resolve(fileName);
 
             // 상위 디렉토리가 필요한 경우 생성
@@ -229,12 +232,12 @@ public class GenInit {
                 Files.createDirectories(targetFile.getParent());
             }
 
-            if (Files.exists(sourceFile)) {
-                Files.copy(sourceFile, targetFile);
-                log.info("Copied: " + sourceFile + " to " + targetFile);
-            } else {
-                log.info(Paths.get("").toAbsolutePath().toString());
-                log.info("File does not exist: " + sourceFile);
+            try {
+                FileDownloader.downloadFile(fileUrl, targetFile);
+                log.info("Downloaded: " + fileUrl + " to " + targetFile);
+            } catch (IOException e) {
+                log.info("Failed to download: " + fileUrl);
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -244,8 +247,9 @@ public class GenInit {
 //        Path sourceDirectory = Paths.get(
 //            "src/main/java/com/mozart/mocka/templates/gradle" + request.getSpringPlatformVersion());
 //        로컬 환경
-        Path sourceDirectory = Paths.get(
-            "./templates/gradle" + request.getSpringPlatformVersion());
+//        Path sourceDirectory = Paths.get(
+//            "./templates/gradle" + request.getSpringPlatformVersion());
+        String baseUrl = "https://raw.githubusercontent.com/beomk41/ieumpay_shop/main/templates/gradle" + request.getSpringPlatformVersion() + "/";
 
 
         // 파일 목록: 이곳에 필요한 파일 이름을 추가합니다.
@@ -261,7 +265,7 @@ public class GenInit {
 
         // 각 파일을 복사
         for (String fileName : requiredFiles) {
-            Path sourceFile = sourceDirectory.resolve(fileName);
+            String fileUrl = baseUrl + fileName;
             Path targetFile = projectRoot.resolve(fileName);
 
             // 상위 디렉토리가 필요한 경우 생성
@@ -269,12 +273,12 @@ public class GenInit {
                 Files.createDirectories(targetFile.getParent());
             }
 
-            if (Files.exists(sourceFile)) {
-                Files.copy(sourceFile, targetFile);
-                log.info("Copied: " + sourceFile + " to " + targetFile);
-            } else {
-                log.info(Paths.get("").toAbsolutePath().toString());
-                log.info("File does not exist: " + sourceFile);
+            try {
+                FileDownloader.downloadFile(fileUrl, targetFile);
+                log.info("Downloaded: " + fileUrl + " to " + targetFile);
+            } catch (IOException e) {
+                log.info("Failed to download: " + fileUrl);
+                log.error(e.getMessage(), e);
             }
         }
     }
