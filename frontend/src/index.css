@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  main * {
+    @apply shrink-0;
+  }
+
+  body {
+    @apply font-Pretendard leading-none;
+  }
+
+  #root {
+    @apply relative;
+  }
+
+  h1 {
+    @apply text-1 font-bold;
+  }
+
+  h2 {
+    @apply text-2 font-semibold;
+  }
+
+  h3 {
+    @apply text-3 font-semibold;
+  }
+
+  h4 {
+    @apply text-4 font-medium;
+  }
+
+  h5 {
+    @apply text-5 font-normal;
+  }
+}
+
+html,
+body,
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  height: calc(100vh - 44px);
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  background-color: #8b8a8a66;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+  margin: 3px;
+}

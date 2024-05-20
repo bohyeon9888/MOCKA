@@ -25,10 +25,33 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.6.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	// spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// spring oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	// mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	//jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+	// log
+	implementation 'org.jboss.logging:jboss-logging:3.4.1.Final'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
+	// configuration
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+//	implementation 'org.hibernate:hibernate-core:6.1.5.Final'  // 최신 버전 확인 필요
+//	implementation 'com.vladmihalcea:hibernate-types-60:2.16.3'
 }
 
 tasks.named('test') {
