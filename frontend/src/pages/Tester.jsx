@@ -17,6 +17,7 @@ import setDefaultFakerJs, {
 import TabBar from "../components/TabBar";
 import Spinner from "../components/Spinner";
 import { useLanguage } from "../contexts/LanguageContext";
+import { makeFakeApiUri } from "../utils/makeFakeApiRequest";
 
 export default function Tester({ project }) {
   const [searchParams] = useSearchParams();
@@ -98,7 +99,12 @@ export default function Tester({ project }) {
   };
 
   const handleApiCopyClick = () => {
-    navigator.clipboard.writeText(baseUrl + document?.apiUriStr);
+    const apiUrl = makeFakeApiUri(
+      document?.apiUriStr,
+      document.queryParameters,
+      document.pathVariables,
+    );
+    navigator.clipboard.writeText(baseUrl + project.commonUri + apiUrl);
   };
 
   const handleResponseCopyClick = () => {

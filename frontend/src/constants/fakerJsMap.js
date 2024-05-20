@@ -13,7 +13,7 @@ const fakerJsMap = {
       "직접 입력",
     ],
     second: {
-      Word: ["words", "adverb", "adjective", "noun", "verb", ""],
+      Word: ["noun", "words", "adverb", "adjective", "verb"],
       Phone: ["number"],
       Color: ["cmyk", "hsl", "rgb"],
       Commerce: [
