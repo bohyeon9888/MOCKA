@@ -330,8 +330,3 @@ Commit 메세지 구조
 
 [Backend 코딩컨벤션](https://www.notion.so/3381a3c2d2914cc8bf7961516f22d730?pvs=21)
 
-## 💻 구동 방법
-
-[포팅메뉴얼 - 빌드 및 배포](https://www.notion.so/exec/빌드 및 배포 정리.pdf) 
-
-[포팅매뉴얼 - 외부 서비스](https://www.notion.so/exec/외부 서비스 정리.pdf)
