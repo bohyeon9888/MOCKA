@@ -1,6 +1,6 @@
 # MOCKA
 
-<img src="./img/main.PNG" width="100%"/>
+<img src="./img/main.png" width="100%"/>
 
 <br/>
 
@@ -22,13 +22,55 @@
 
 ### Frontend
 
-<table style="width : 300px; text-align: center">   <tr>     <td style="padding: 8px"><img src="./img/profile/강대은.png" alt="강대은" width="100"><strong style="display:block; margin-top: 8px">강대은</strong></td>     <td style="padding: 8px"><img src="./img/profile/황정민.png" alt="황정민" width="100"><strong style="display:block; margin-top: 8px">황정민</strong></td>   </tr> </table>
+<table style="width: 300px; text-align: center;">
+  <tr>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/강대은.png" alt="강대은" width="100">
+        <br/>
+        <strong>강대은</strong>
+      </div>
+    </td>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/황정민.png" alt="황정민" width="100">
+        <br/>
+        <strong>황정민</strong>
+      </div>
+    </td>
+  </tr>
+</table>
+
 
 <br/>
 
 ### Backend
 
-<table style="width : 450px; text-align: center">   <tr>     <td style="padding: 8px"><img src="./img/profile/김범수.png" alt="김범수" width="100"><strong style="display:block; margin-top: 8px">김범수</strong></td>     <td style="padding: 8px"><img src="./img/profile/김보경.png" alt="김보경" width="100"><strong style="display:block; margin-top: 8px">김보경</strong></td><td style="padding: 8px"><img src="./img/profile/서정현.png" alt="서정현" width="100"><strong style="display:block; margin-top: 8px">서정현</strong></td>   </tr> </table>
+<table style="width: 450px; text-align: center;">
+  <tr>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/김범수.png" alt="김범수" width="100">
+        <br/>
+        <strong>김범수</strong>
+      </div>
+    </td>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/김보경.png" alt="김보경" width="100">
+        <br/>
+        <strong>김보경</strong>
+      </div>
+    </td>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/서정현.png" alt="서정현" width="100">
+        <br/>
+        <strong>서정현</strong>
+      </div>
+    </td>
+  </tr>
+</table>
 
 <br/>
 
