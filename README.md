@@ -69,6 +69,13 @@
         <strong>서정현</strong>
       </div>
     </td>
+    <td style="padding: 8px; text-align: center;">
+      <div style="display: inline-block;">
+        <img src="./img/profile/서보현.png" alt="서보현" width="100">
+        <br/>
+        <strong>서보현</strong>
+      </div>
+    </td>
   </tr>
 </table>
 
@@ -163,6 +170,11 @@ MOCKA는 개발자들이 API 문서를 쉽게 작성하고 효율적으로 협�
 
 - Mock Server
 - DB 설계 및 관리
+
+### 서보현 - Backend
+
+- 인프라(기본 서버 CICD)
+- 메일 서버 및 시큐리티 구축
 
 ### 서정현 - Backend, Infrastructure
 
